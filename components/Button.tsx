@@ -38,7 +38,7 @@ const Button: React.FC<ButtonProps> = ({
     <button
       className="bg-white px-8 h-10 flex items-center justify-center border-2 border-black relative min-w-[160px]"
       type={type}
-      onClick={onClick}
+      onClick={isLoading ? undefined : onClick}
       onMouseEnter={() => {
         if (isLoading) return;
         slideOut(true);
