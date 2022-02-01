@@ -23,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({ label, type = "button", onClick }) => {
 
   return (
     <button
-      className="bg-white px-8 py-2 border-2 border-black relative"
+      className="bg-white px-8 h-10 flex items-center justify-center border-2 border-black relative"
       type={type}
       onClick={onClick}
       onMouseEnter={() => slideOut(true)}
