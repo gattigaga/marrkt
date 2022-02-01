@@ -31,29 +31,38 @@ const Menu: React.FC<MenuProps> = ({}) => {
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", function () {
-      const isAtTheTop = window.scrollY == 0;
+    const animation = () => {
+      const isScrollAtTheTop = window.scrollY == 0;
 
       if (!refContainer.current) return;
+      if (isCartOpen) return;
 
-      if (isAtTheTop) {
+      if (isScrollAtTheTop) {
         gsap.to(refContainer.current, {
           borderColor: "rgba(229 231 235, 0)",
           background: "rgba(255, 255, 255, 0)",
-          duration: 0.5,
+          duration: 0.3,
         });
       } else {
         gsap.to(refContainer.current, {
           borderColor: "rgba(229 231 235, 1)",
           background: "rgba(255, 255, 255, 0.9)",
-          duration: 0.5,
+          duration: 0.3,
         });
       }
-    });
-  }, []);
+    };
+
+    window.addEventListener("scroll", animation);
+
+    return () => {
+      window.removeEventListener("scroll", animation);
+    };
+  }, [isCartOpen]);
 
   useEffect(() => {
     if (refContainer.current) {
+      const isScrollAtTheTop = window.scrollY == 0;
+
       if (isCartOpen) {
         gsap.to(refContainer.current, {
           borderColor: "rgba(229 231 235, 0)",
@@ -61,11 +70,13 @@ const Menu: React.FC<MenuProps> = ({}) => {
           duration: 0.5,
         });
       } else {
-        gsap.to(refContainer.current, {
-          borderColor: "rgba(229 231 235, 1)",
-          background: "rgba(255, 255, 255, 0.9)",
-          duration: 0.5,
-        });
+        if (!isScrollAtTheTop) {
+          gsap.to(refContainer.current, {
+            borderColor: "rgba(229 231 235, 1)",
+            background: "rgba(255, 255, 255, 0.9)",
+            duration: 0.5,
+          });
+        }
       }
     }
   }, [isCartOpen]);
