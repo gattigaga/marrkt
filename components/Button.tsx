@@ -1,13 +1,20 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import BeatLoader from "react-spinners/BeatLoader";
 
 type ButtonProps = {
   label: string;
   type?: "submit" | "button";
+  isLoading?: boolean;
   onClick?: () => void;
 };
 
-const Button: React.FC<ButtonProps> = ({ label, type = "button", onClick }) => {
+const Button: React.FC<ButtonProps> = ({
+  label,
+  type = "button",
+  isLoading,
+  onClick,
+}) => {
   const refSlide = useRef();
   const refLabel = useRef();
 
@@ -21,21 +28,39 @@ const Button: React.FC<ButtonProps> = ({ label, type = "button", onClick }) => {
     gsap.to(refLabel.current, { color: textColor, duration: 0.3 });
   };
 
+  useEffect(() => {
+    if (isLoading !== undefined) {
+      slideOut(!!isLoading);
+    }
+  }, [isLoading]);
+
   return (
     <button
       className="bg-white px-8 h-10 flex items-center justify-center border-2 border-black relative min-w-[160px]"
       type={type}
       onClick={onClick}
-      onMouseEnter={() => slideOut(true)}
-      onMouseLeave={() => slideOut(false)}
+      onMouseEnter={() => {
+        if (isLoading) return;
+        slideOut(true);
+      }}
+      onMouseLeave={() => {
+        if (isLoading) return;
+        slideOut(false);
+      }}
     >
       <div
         ref={refSlide}
         className="w-full h-full bg-black absolute top-0 left-0"
       />
-      <span ref={refLabel} className="relative text-white text-xs font-medium">
-        {label}
-      </span>
+      {!isLoading && (
+        <span
+          ref={refLabel}
+          className="relative text-white text-xs font-medium"
+        >
+          {label}
+        </span>
+      )}
+      {isLoading && <BeatLoader color="black" size={8} loading />}
     </button>
   );
 };
