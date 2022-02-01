@@ -131,16 +131,16 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClickBackdrop }) => {
   return (
     <div
       ref={refBackdrop}
-      className="fixed flex flex-col top-0 left-0 z-1 w-full h-full p-2 bg-black/50"
+      className="fixed flex-col top-0 left-0 z-1 w-full h-full p-2 bg-black/50 opacity-0"
       onClick={onClickBackdrop}
     >
       <div
         ref={refCart}
         style={{ width: 400 }}
-        className="bg-white self-end max-h-full px-6"
+        className="bg-white self-end max-h-full h-0 px-6"
         onClick={(event) => event.stopPropagation()}
       >
-        <div ref={refCartContent} className="h-full flex flex-col">
+        <div ref={refCartContent} className="h-full flex flex-col opacity-0">
           <div className="h-32" />
           {!!items.length && (
             <>
