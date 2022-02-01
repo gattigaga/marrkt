@@ -33,10 +33,7 @@ const Button: React.FC<ButtonProps> = ({ label, type = "button", onClick }) => {
         ref={refSlide}
         className="w-full h-full bg-black absolute top-0 left-0"
       />
-      <span
-        ref={refLabel}
-        className="relative z-10 text-white text-xs font-medium"
-      >
+      <span ref={refLabel} className="relative text-white text-xs font-medium">
         {label}
       </span>
     </button>
