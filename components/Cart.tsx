@@ -142,33 +142,47 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClickBackdrop }) => {
       >
         <div ref={refCartContent} className="h-full flex flex-col">
           <div className="h-32" />
-          <div className="max-h-full overflow-y-scroll">
-            {items.map((item, index) => {
-              const isLast = index === items.length - 1;
+          {!!items.length && (
+            <>
+              <div className="max-h-full overflow-y-scroll">
+                {items.map((item, index) => {
+                  const isLast = index === items.length - 1;
 
-              return (
-                <div key={item.id}>
-                  <CartItem
-                    name={item.name}
-                    quantity={item.quantity}
-                    price={item.price}
-                    image="https://via.placeholder.com/128x128"
-                  />
-                  {!isLast && (
-                    <div className="w-full border-t border-gray-200" />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-          <div className="flex items-center justify-between py-4 border-t border-b border-gray-200">
-            <p className="text-xs text-black">Subtotal</p>
-            <p className="text-xs text-black">{numberToCurrency(subtotal)}</p>
-          </div>
-          <div className="flex flex-col items-end mt-4">
-            <Button label="Checkout" />
-          </div>
-          <div className="h-6" />
+                  return (
+                    <div key={item.id}>
+                      <CartItem
+                        name={item.name}
+                        quantity={item.quantity}
+                        price={item.price}
+                        image="https://via.placeholder.com/128x128"
+                      />
+                      {!isLast && (
+                        <div className="w-full border-t border-gray-200" />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex items-center justify-between py-4 border-t border-b border-gray-200">
+                <p className="text-xs text-black">Subtotal</p>
+                <p className="text-xs text-black">
+                  {numberToCurrency(subtotal)}
+                </p>
+              </div>
+              <div className="flex flex-col items-end mt-4">
+                <Button label="Checkout" />
+              </div>
+              <div className="h-6" />
+            </>
+          )}
+          {!items.length && (
+            <>
+              <p className="text-xs text-center">
+                There&lsquo;s no items in the cart.
+              </p>
+              <div className="h-12" />
+            </>
+          )}
         </div>
       </div>
     </div>
