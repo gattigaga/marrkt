@@ -11,8 +11,9 @@ type CartProps = {
 };
 
 const Cart: React.FC<CartProps> = ({ isOpen, onClickBackdrop }) => {
-  const refBackdrop = useRef();
-  const refCart = useRef();
+  const refBackdrop = useRef<HTMLElement>();
+  const refCart = useRef<HTMLElement>();
+  const refCartContent = useRef<HTMLElement>();
 
   const items = useMemo(
     () => [
@@ -76,8 +77,8 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClickBackdrop }) => {
   }, [items]);
 
   useEffect(() => {
-    if (refBackdrop.current && refCart.current) {
-      if (isOpen) {
+    const showCart = () => {
+      if (refBackdrop.current && refCart.current && refCartContent.current) {
         gsap
           .timeline()
           .set(refBackdrop.current, {
@@ -90,10 +91,20 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClickBackdrop }) => {
           .to(refCart.current, {
             height: "auto",
             duration: 0.3,
+          })
+          .to(refCartContent.current, {
+            opacity: 1,
           });
-      } else {
+      }
+    };
+
+    const hideCart = () => {
+      if (refBackdrop.current && refCart.current && refCartContent.current) {
         gsap
           .timeline()
+          .to(refCartContent.current, {
+            opacity: 0,
+          })
           .to(refCart.current, {
             height: 0,
             duration: 0.3,
@@ -106,6 +117,12 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClickBackdrop }) => {
             display: "none",
           });
       }
+    };
+
+    if (isOpen) {
+      showCart();
+    } else {
+      hideCart();
     }
   }, [isOpen]);
 
@@ -118,32 +135,38 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClickBackdrop }) => {
       <div
         ref={refCart}
         style={{ width: 400 }}
-        className="bg-white self-end max-h-full flex flex-col px-6 pt-24 pb-6"
+        className="bg-white self-end max-h-full px-6"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="max-h-full overflow-y-scroll">
-          {items.map((item, index) => {
-            const isLast = index === items.length - 1;
+        <div ref={refCartContent} className="h-full flex flex-col">
+          <div className="h-32" />
+          <div className="max-h-full overflow-y-scroll">
+            {items.map((item, index) => {
+              const isLast = index === items.length - 1;
 
-            return (
-              <div key={item.id}>
-                <CartItem
-                  name={item.name}
-                  quantity={item.quantity}
-                  price={item.price}
-                  image="https://via.placeholder.com/128x128"
-                />
-                {!isLast && <div className="w-full border-t border-gray-200" />}
-              </div>
-            );
-          })}
-        </div>
-        <div className="flex items-center justify-between py-4 border-t border-b border-gray-200">
-          <p className="text-xs text-black">Subtotal</p>
-          <p className="text-xs text-black">{numberToCurrency(subtotal)}</p>
-        </div>
-        <div className="flex flex-col items-end mt-4">
-          <Button label="Checkout" />
+              return (
+                <div key={item.id}>
+                  <CartItem
+                    name={item.name}
+                    quantity={item.quantity}
+                    price={item.price}
+                    image="https://via.placeholder.com/128x128"
+                  />
+                  {!isLast && (
+                    <div className="w-full border-t border-gray-200" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex items-center justify-between py-4 border-t border-b border-gray-200">
+            <p className="text-xs text-black">Subtotal</p>
+            <p className="text-xs text-black">{numberToCurrency(subtotal)}</p>
+          </div>
+          <div className="flex flex-col items-end mt-4">
+            <Button label="Checkout" />
+          </div>
+          <div className="h-6" />
         </div>
       </div>
     </div>
