@@ -82,7 +82,7 @@ const Menu: React.FC<MenuProps> = ({}) => {
   }, [isCartOpen]);
 
   return (
-    <header className="fixed px-2 mt-2 w-full">
+    <header className="fixed px-2 mt-2 w-full z-10">
       <div
         ref={refContainer}
         className={`flex items-center justify-between px-4 py-6 border border-gray-200/[0] md:px-6`}
