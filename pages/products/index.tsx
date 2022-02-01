@@ -10,7 +10,7 @@ const ProductsPage: NextPage = () => {
     image: "https://via.placeholder.com/320x320",
     name: "CB 01 Black",
     price: 189,
-    url: "https://google.com",
+    url: "/products/cb-01-black",
   }));
 
   return (
