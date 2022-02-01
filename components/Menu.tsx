@@ -3,6 +3,7 @@ import Link from "next/link";
 import { gsap } from "gsap";
 
 import Logo from "./Logo";
+import Cart from "./Cart";
 
 type MenuProps = {};
 
@@ -14,11 +15,6 @@ const Menu: React.FC<MenuProps> = ({}) => {
   const refLine3 = useRef();
 
   const totalCartItems = 3;
-  const headerBackgroundColor = isCartOpen ? "" : "bg-white";
-
-  const headerBorderColor = isCartOpen
-    ? "border-gray-200/[0]"
-    : "border-gray-200";
 
   const showLine = (element: gsap.TweenTarget) => {
     gsap
@@ -55,6 +51,24 @@ const Menu: React.FC<MenuProps> = ({}) => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (refContainer.current) {
+      if (isCartOpen) {
+        gsap.to(refContainer.current, {
+          borderColor: "rgba(229 231 235, 0)",
+          background: "rgba(255, 255, 255, 0)",
+          duration: 0.5,
+        });
+      } else {
+        gsap.to(refContainer.current, {
+          borderColor: "rgba(229 231 235, 1)",
+          background: "rgba(255, 255, 255, 0.9)",
+          duration: 0.5,
+        });
+      }
+    }
+  }, [isCartOpen]);
 
   return (
     <header className="fixed px-2 mt-2 w-full">
@@ -145,26 +159,14 @@ const Menu: React.FC<MenuProps> = ({}) => {
           </ul>
           <button
             className="w-6 h-6 rounded-full bg-black flex justify-center items-center cursor-pointer"
+            type="button"
             onClick={() => setIsCartOpen(true)}
           >
             <span className="text-xs text-white">{totalCartItems}</span>
           </button>
         </nav>
       </div>
-
-      {/* Cart */}
-      {isCartOpen && (
-        <div
-          className="fixed flex flex-col top-0 left-0 z-1 w-full h-full p-2 bg-black/50"
-          onClick={() => setIsCartOpen(false)}
-        >
-          <div
-            style={{ width: 400, height: "100%" }}
-            className="bg-white self-end"
-            onClick={(event) => event.stopPropagation()}
-          ></div>
-        </div>
-      )}
+      <Cart onClickBackdrop={() => setIsCartOpen(false)} isOpen={isCartOpen} />
     </header>
   );
 };
