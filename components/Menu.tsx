@@ -2,6 +2,8 @@ import React, { useRef } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 
+import Logo from "./Logo";
+
 type MenuProps = {};
 
 const Menu: React.FC<MenuProps> = ({}) => {
@@ -29,7 +31,7 @@ const Menu: React.FC<MenuProps> = ({}) => {
     <header className="flex items-center justify-between h-5 px-10 py-8 bg-white">
       <Link href="/">
         <a>
-          <h1 className="font-bold text-2xl">marrkt.</h1>
+          <Logo scale={0.4} />
         </a>
       </Link>
       <nav className="flex">
@@ -105,7 +107,7 @@ const Menu: React.FC<MenuProps> = ({}) => {
             </div>
           </li>
         </ul>
-        <div className="w-6 h-6 rounded-full bg-black flex justify-center items-center">
+        <div className="w-6 h-6 rounded-full bg-black flex justify-center items-center cursor-pointer">
           <span className="text-xs text-white">{totalCartItems}</span>
         </div>
       </nav>
