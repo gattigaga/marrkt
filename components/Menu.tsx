@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 
@@ -8,6 +8,7 @@ type MenuProps = {};
 
 const Menu: React.FC<MenuProps> = ({}) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const refContainer = useRef();
   const refLine1 = useRef();
   const refLine2 = useRef();
   const refLine3 = useRef();
@@ -33,10 +34,33 @@ const Menu: React.FC<MenuProps> = ({}) => {
       .to(element, { width: "0%" });
   };
 
+  useEffect(() => {
+    window.addEventListener("scroll", function () {
+      const isAtTheTop = window.scrollY == 0;
+
+      if (!refContainer.current) return;
+
+      if (isAtTheTop) {
+        gsap.to(refContainer.current, {
+          borderColor: "rgba(229 231 235, 0)",
+          background: "rgba(255, 255, 255, 0)",
+          duration: 0.5,
+        });
+      } else {
+        gsap.to(refContainer.current, {
+          borderColor: "rgba(229 231 235, 1)",
+          background: "rgba(255, 255, 255, 0.9)",
+          duration: 0.5,
+        });
+      }
+    });
+  }, []);
+
   return (
     <header className="fixed px-2 mt-2 w-full">
       <div
-        className={`flex items-center justify-between px-4 py-6 border ${headerBorderColor} ${headerBackgroundColor} md:px-6`}
+        ref={refContainer}
+        className={`flex items-center justify-between px-4 py-6 border border-gray-200/[0] md:px-6`}
       >
         <Link href="/">
           <a>
