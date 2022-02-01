@@ -1,14 +1,14 @@
 import React from "react";
 import { numberToCurrency } from "../helpers/formatter";
 
-type Product = {
+type ProductProps = {
   image: string;
   name: string;
   price: number;
   url: string;
 };
 
-const Product: React.FC<Product> = ({ image, name, price, url }) => {
+const Product: React.FC<ProductProps> = ({ image, name, price, url }) => {
   const formattedPrice = numberToCurrency(price);
 
   return (
