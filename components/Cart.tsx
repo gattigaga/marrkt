@@ -94,6 +94,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClickBackdrop }) => {
           })
           .to(refCartContent.current, {
             opacity: 1,
+            duration: 0.5,
           });
       }
     };
@@ -104,6 +105,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClickBackdrop }) => {
           .timeline()
           .to(refCartContent.current, {
             opacity: 0,
+            duration: 0.5,
           })
           .to(refCart.current, {
             height: 0,
