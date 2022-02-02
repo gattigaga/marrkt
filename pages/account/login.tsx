@@ -93,7 +93,7 @@ const LoginPage: NextPage = () => {
                   )}
                 </div>
                 <div className="flex justify-between items-center">
-                  <Link href="/register">
+                  <Link href="/account/register">
                     <a>
                       <p className="text-xs underline">
                         Don&lsquo;t have an account ?

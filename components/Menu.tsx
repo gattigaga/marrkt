@@ -157,15 +157,17 @@ const Menu: React.FC<MenuProps> = ({}) => {
                 }
               }}
             >
-              <div className="flex flex-col">
-                <a className="text-xs" href="#">
-                  My Account
-                </a>
-                <div
-                  ref={refLine3}
-                  className="w-0 border-t border-black mt-1"
-                />
-              </div>
+              <Link href="/account/login">
+                <div className="flex flex-col">
+                  <a className="text-xs" href="#">
+                    My Account
+                  </a>
+                  <div
+                    ref={refLine3}
+                    className="w-0 border-t border-black mt-1"
+                  />
+                </div>
+              </Link>
             </li>
           </ul>
           <button
