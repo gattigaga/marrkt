@@ -7,6 +7,7 @@ type CartItemProps = {
   quantity: number;
   price: number;
   image: string;
+  isRemovable?: boolean;
   onClickRemove?: () => void;
 };
 
@@ -15,6 +16,7 @@ const CartItem: React.FC<CartItemProps> = ({
   quantity,
   price,
   image,
+  isRemovable,
   onClickRemove,
 }) => {
   const total = price * quantity;
@@ -32,9 +34,11 @@ const CartItem: React.FC<CartItemProps> = ({
       </div>
       <div className="flex flex-col items-end justify-between py-2">
         <p className="text-black text-xs">{numberToCurrency(total)}</p>
-        <button type="button" onClick={onClickRemove}>
-          <p className="text-black text-xs underline">Remove</p>
-        </button>
+        {isRemovable && (
+          <button type="button" onClick={onClickRemove}>
+            <p className="text-black text-xs underline">Remove</p>
+          </button>
+        )}
       </div>
     </div>
   );
