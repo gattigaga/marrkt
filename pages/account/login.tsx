@@ -6,6 +6,7 @@ import * as Yup from "yup";
 
 import Menu from "../../components/Menu";
 import Button from "../../components/Button";
+import Input from "../../components/Input";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -49,48 +50,32 @@ const LoginPage: NextPage = () => {
             }) => (
               <form onSubmit={handleSubmit}>
                 <div className="mb-6">
-                  <label
-                    className="text-xs text-black mb-2 block"
-                    htmlFor="email"
-                  >
-                    Email Address*
-                  </label>
-                  <input
-                    className="border border-gray-200 px-4 py-3 text-xs w-96"
-                    id="email"
-                    type="email"
+                  <Input
                     name="email"
+                    id="email"
+                    label="Email Address*"
+                    type="email"
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.email}
                     disabled={isSubmitting}
+                    hasError={!!(errors.email && touched.email)}
+                    errorText={errors.email}
                   />
-                  {errors.email && touched.email && (
-                    <p className="text-xs text-red-600 mt-2">{errors.email}</p>
-                  )}
                 </div>
                 <div className="mb-8">
-                  <label
-                    className="text-xs text-black mb-2 block"
-                    htmlFor="password"
-                  >
-                    Password*
-                  </label>
-                  <input
-                    className="border border-gray-200 px-4 py-3 text-xs w-96"
-                    id="password"
-                    type="password"
+                  <Input
                     name="password"
+                    id="password"
+                    label="Password*"
+                    type="password"
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.password}
                     disabled={isSubmitting}
+                    hasError={!!(errors.password && touched.password)}
+                    errorText={errors.password}
                   />
-                  {errors.password && touched.password && (
-                    <p className="text-xs text-red-600 mt-2">
-                      {errors.password}
-                    </p>
-                  )}
                 </div>
                 <div className="flex justify-between items-center">
                   <Link href="/account/register">
