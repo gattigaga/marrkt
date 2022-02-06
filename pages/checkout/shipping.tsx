@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import React, { useMemo } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { Formik } from "formik";
@@ -8,6 +9,8 @@ import Menu from "../../components/Menu";
 import Button from "../../components/Button";
 import Steps from "../../components/Steps";
 import Input from "../../components/Input";
+import CartItem from "../../components/CartItem";
+import { numberToCurrency } from "../../helpers/formatter";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First name is required"),
@@ -22,6 +25,39 @@ const validationSchema = Yup.object({
 });
 
 const CheckoutShippingPage: NextPage = () => {
+  const items = useMemo(
+    () => [
+      {
+        id: 1,
+        name: "LT 01 Alloy",
+        price: 2456,
+        quantity: 2,
+        image: "https://via.placeholder.com/128x128",
+      },
+      {
+        id: 2,
+        name: "LT 01 Alloy",
+        price: 2456,
+        quantity: 2,
+        image: "https://via.placeholder.com/128x128",
+      },
+      {
+        id: 3,
+        name: "LT 01 Alloy",
+        price: 2456,
+        quantity: 2,
+        image: "https://via.placeholder.com/128x128",
+      },
+    ],
+    []
+  );
+
+  const subtotal = useMemo(() => {
+    return items.reduce((acc, item) => {
+      return acc + item.price * item.quantity;
+    }, 0);
+  }, [items]);
+
   return (
     <div>
       <Head>
@@ -29,8 +65,8 @@ const CheckoutShippingPage: NextPage = () => {
       </Head>
 
       <Menu />
-      <main className="px-4 min-h-screen md:px-32">
-        <div className="w-2/3 pt-28 pb-24">
+      <main className="px-4 min-h-screen flex md:px-32">
+        <div className="flex-1 pt-28 pb-24 mr-16">
           <Steps
             items={["Shipping", "Payment", "Information"]}
             activeIndex={0}
@@ -214,6 +250,31 @@ const CheckoutShippingPage: NextPage = () => {
               </form>
             )}
           </Formik>
+        </div>
+        <div className="w-1/3 pt-28 pb-24">
+          <div>
+            {items.map((item, index) => {
+              const isLast = index === items.length - 1;
+
+              return (
+                <div key={item.id}>
+                  <CartItem
+                    name={item.name}
+                    quantity={item.quantity}
+                    price={item.price}
+                    image="https://via.placeholder.com/128x128"
+                  />
+                  {!isLast && (
+                    <div className="w-full border-t border-gray-200" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex items-center justify-between py-4 border-t border-b border-gray-200">
+            <p className="text-xs text-black">Subtotal</p>
+            <p className="text-xs text-black">{numberToCurrency(subtotal)}</p>
+          </div>
         </div>
       </main>
     </div>
