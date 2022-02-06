@@ -6,6 +6,7 @@ import * as Yup from "yup";
 
 import Menu from "../../components/Menu";
 import Button from "../../components/Button";
+import Input from "../../components/Input";
 
 const validationSchema = Yup.object({
   firstName: Yup.string()
@@ -63,98 +64,62 @@ const RegisterPage: NextPage = () => {
               <form onSubmit={handleSubmit}>
                 <div className="flex mb-6">
                   <div className="mr-6 flex-1">
-                    <label
-                      className="text-xs text-black mb-2 block"
-                      htmlFor="firstName"
-                    >
-                      First Name*
-                    </label>
-                    <input
-                      className="border border-gray-200 px-4 py-3 text-xs w-full"
-                      id="firstName"
-                      type="text"
+                    <Input
                       name="firstName"
+                      id="firstName"
+                      label="First Name*"
+                      type="text"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.firstName}
                       disabled={isSubmitting}
+                      hasError={!!(errors.firstName && touched.firstName)}
+                      errorText={errors.firstName}
                     />
-                    {errors.firstName && touched.firstName && (
-                      <p className="text-xs text-red-600 mt-2">
-                        {errors.firstName}
-                      </p>
-                    )}
                   </div>
                   <div className="flex-1">
-                    <label
-                      className="text-xs text-black mb-2 block"
-                      htmlFor="lastName"
-                    >
-                      Last Name*
-                    </label>
-                    <input
-                      className="border border-gray-200 px-4 py-3 text-xs w-full"
-                      id="lastName"
-                      type="text"
+                    <Input
                       name="lastName"
+                      id="lastName"
+                      label="Last Name*"
+                      type="text"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.lastName}
                       disabled={isSubmitting}
+                      hasError={!!(errors.lastName && touched.lastName)}
+                      errorText={errors.lastName}
                     />
-                    {errors.lastName && touched.lastName && (
-                      <p className="text-xs text-red-600 mt-2">
-                        {errors.lastName}
-                      </p>
-                    )}
                   </div>
                 </div>
                 <div className="flex mb-8">
                   <div className="mr-6 flex-1">
-                    <label
-                      className="text-xs text-black mb-2 block"
-                      htmlFor="email"
-                    >
-                      Email Address*
-                    </label>
-                    <input
-                      className="border border-gray-200 px-4 py-3 text-xs w-full"
-                      id="email"
-                      type="email"
+                    <Input
                       name="email"
+                      id="email"
+                      label="Email Address*"
+                      type="text"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.email}
                       disabled={isSubmitting}
+                      hasError={!!(errors.email && touched.email)}
+                      errorText={errors.email}
                     />
-                    {errors.email && touched.email && (
-                      <p className="text-xs text-red-600 mt-2">
-                        {errors.email}
-                      </p>
-                    )}
                   </div>
                   <div className="flex-1">
-                    <label
-                      className="text-xs text-black mb-2 block"
-                      htmlFor="password"
-                    >
-                      Password*
-                    </label>
-                    <input
-                      className="border border-gray-200 px-4 py-3 text-xs w-full"
-                      id="password"
-                      type="password"
+                    <Input
                       name="password"
+                      id="password"
+                      label="Password*"
+                      type="password"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.password}
                       disabled={isSubmitting}
+                      hasError={!!(errors.password && touched.password)}
+                      errorText={errors.password}
                     />
-                    {errors.password && touched.password && (
-                      <p className="text-xs text-red-600 mt-2">
-                        {errors.password}
-                      </p>
-                    )}
                   </div>
                 </div>
 
