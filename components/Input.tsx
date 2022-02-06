@@ -5,7 +5,7 @@ type InputProps = {
   name: string;
   id: string;
   value: string;
-  type?: string;
+  type?: "text" | "email" | "password";
   disabled?: boolean;
   hasError?: boolean;
   errorText?: string;
