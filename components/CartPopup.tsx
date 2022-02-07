@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import CartItem from "./CartItem";
 import Button from "./Button";
 import { numberToCurrency } from "../helpers/formatter";
+import { getSubtotal } from "../helpers/math";
 
 type CartPopupProps = {
   isOpen?: boolean;
@@ -70,11 +71,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
     []
   );
 
-  const subtotal = useMemo(() => {
-    return items.reduce((acc, item) => {
-      return acc + item.price * item.quantity;
-    }, 0);
-  }, [items]);
+  const subtotal = useMemo(() => getSubtotal(items), [items]);
 
   useEffect(() => {
     const showCart = () => {
@@ -154,7 +151,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
                         name={item.name}
                         quantity={item.quantity}
                         price={item.price}
-                        image="https://via.placeholder.com/128x128"
+                        image={item.image}
                         isRemovable
                       />
                       {!isLast && (

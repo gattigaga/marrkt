@@ -11,6 +11,7 @@ import Steps from "../../components/Steps";
 import Input from "../../components/Input";
 import CartItem from "../../components/CartItem";
 import { numberToCurrency } from "../../helpers/formatter";
+import { getSubtotal } from "../../helpers/math";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First name is required"),
@@ -52,11 +53,7 @@ const CheckoutShippingPage: NextPage = () => {
     []
   );
 
-  const subtotal = useMemo(() => {
-    return items.reduce((acc, item) => {
-      return acc + item.price * item.quantity;
-    }, 0);
-  }, [items]);
+  const subtotal = useMemo(() => getSubtotal(items), [items]);
 
   return (
     <div>
@@ -262,7 +259,7 @@ const CheckoutShippingPage: NextPage = () => {
                     name={item.name}
                     quantity={item.quantity}
                     price={item.price}
-                    image="https://via.placeholder.com/128x128"
+                    image={item.image}
                   />
                   {!isLast && (
                     <div className="w-full border-t border-gray-200" />
