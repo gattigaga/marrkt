@@ -163,6 +163,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
                 })}
               </div>
               <CartInfo label="Subtotal" value={numberToCurrency(subtotal)} />
+              <div className="border-b border-gray-200" />
               <div className="flex flex-col items-end mt-4">
                 <Button label="Checkout" />
               </div>

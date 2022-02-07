@@ -270,6 +270,7 @@ const CheckoutShippingPage: NextPage = () => {
             })}
           </div>
           <CartInfo label="Subtotal" value={numberToCurrency(subtotal)} />
+          <div className="border-b border-gray-200" />
         </div>
       </main>
     </div>
