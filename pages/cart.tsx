@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useMemo } from "react";
 import Button from "../components/Button";
+import Counter from "../components/Counter";
 
 import Menu from "../components/Menu";
 import { numberToCurrency } from "../helpers/formatter";
@@ -116,9 +117,13 @@ const CartPage: NextPage = () => {
                       </div>
                     </td>
                     <td>
-                      <p className="text-xs text-black text-center">
-                        x{item.quantity}
-                      </p>
+                      <div className="flex justify-center items-center">
+                        <Counter
+                          value={item.quantity}
+                          onClickIncrease={() => {}}
+                          onClickDecrease={() => {}}
+                        />
+                      </div>
                     </td>
                     <td>
                       <p className="text-xs text-black text-center">
