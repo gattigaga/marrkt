@@ -8,12 +8,12 @@ const AccountMenu: React.FC<AccountMenuProps> = ({}) => {
     {
       id: 1,
       label: "Profile",
-      url: "#",
+      url: "/account",
     },
     {
       id: 2,
       label: "Orders",
-      url: "#",
+      url: "/account/orders",
     },
     {
       id: 3,
