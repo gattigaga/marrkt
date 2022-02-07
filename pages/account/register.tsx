@@ -133,7 +133,7 @@ const RegisterPage: NextPage = () => {
                   </Link>
                   <Button
                     type="submit"
-                    label="Login"
+                    label="Register"
                     isLoading={isSubmitting}
                   />
                 </div>
