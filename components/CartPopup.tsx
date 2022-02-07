@@ -5,12 +5,12 @@ import CartItem from "./CartItem";
 import Button from "./Button";
 import { numberToCurrency } from "../helpers/formatter";
 
-type CartProps = {
+type CartPopupProps = {
   isOpen?: boolean;
   onClickBackdrop?: () => void;
 };
 
-const Cart: React.FC<CartProps> = ({ isOpen, onClickBackdrop }) => {
+const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
   const refBackdrop = useRef<HTMLElement>();
   const refCart = useRef<HTMLElement>();
   const refCartContent = useRef<HTMLElement>();
@@ -189,4 +189,4 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClickBackdrop }) => {
   );
 };
 
-export default Cart;
+export default CartPopup;
