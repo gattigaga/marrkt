@@ -21,7 +21,7 @@ const ProductsPage: NextPage = () => {
 
       <Menu />
       <main className="px-4 pt-28 pb-24 md:px-8">
-        <h2 className="text-sm font-medium mb-4">All Products (50)</h2>
+        <h2 className="text-md font-medium mb-4">All Products (50)</h2>
         <div className="grid grid-cols-2 gap-4 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
           {products.map((product) => {
             return (
