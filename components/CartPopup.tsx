@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { gsap } from "gsap";
+import { useRouter } from "next/router";
 
 import CartItem from "./CartItem";
 import Button from "./Button";
@@ -16,6 +17,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
   const refBackdrop = useRef<HTMLElement>();
   const refCart = useRef<HTMLElement>();
   const refCartContent = useRef<HTMLElement>();
+  const router = useRouter();
 
   const items = useMemo(
     () => [
@@ -165,7 +167,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
               <CartInfo label="Subtotal" value={numberToCurrency(subtotal)} />
               <div className="border-b border-gray-200" />
               <div className="flex flex-col items-end mt-4">
-                <Button label="Checkout" />
+                <Button label="Checkout" onClick={() => router.push("/cart")} />
               </div>
               <div className="h-6" />
             </>
