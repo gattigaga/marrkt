@@ -155,6 +155,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
                         quantity={item.quantity}
                         price={item.price}
                         image="https://via.placeholder.com/128x128"
+                        isRemovable
                       />
                       {!isLast && (
                         <div className="w-full border-t border-gray-200" />
