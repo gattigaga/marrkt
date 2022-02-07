@@ -3,7 +3,7 @@ import Link from "next/link";
 import { gsap } from "gsap";
 
 import Logo from "./Logo";
-import Cart from "./Cart";
+import CartPopup from "./CartPopup";
 
 type MenuProps = {};
 
@@ -179,7 +179,10 @@ const Menu: React.FC<MenuProps> = ({}) => {
           </button>
         </nav>
       </div>
-      <Cart onClickBackdrop={() => setIsCartOpen(false)} isOpen={isCartOpen} />
+      <CartPopup
+        onClickBackdrop={() => setIsCartOpen(false)}
+        isOpen={isCartOpen}
+      />
     </header>
   );
 };
