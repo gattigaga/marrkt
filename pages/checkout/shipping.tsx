@@ -9,10 +9,8 @@ import Menu from "../../components/Menu";
 import Button from "../../components/Button";
 import Steps from "../../components/Steps";
 import Input from "../../components/Input";
-import CartItem from "../../components/CartItem";
-import { numberToCurrency } from "../../helpers/formatter";
 import { getSubtotal } from "../../helpers/math";
-import CartInfo from "../../components/CartInfo";
+import CartSummary from "../../components/CartSummary";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First name is required"),
@@ -250,27 +248,7 @@ const CheckoutShippingPage: NextPage = () => {
           </Formik>
         </div>
         <div className="w-1/3 pt-28 pb-24">
-          <div>
-            {items.map((item, index) => {
-              const isLast = index === items.length - 1;
-
-              return (
-                <div key={item.id}>
-                  <CartItem
-                    name={item.name}
-                    quantity={item.quantity}
-                    price={item.price}
-                    image={item.image}
-                  />
-                  {!isLast && (
-                    <div className="w-full border-t border-gray-200" />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-          <CartInfo label="Subtotal" value={numberToCurrency(subtotal)} />
-          <div className="border-b border-gray-200" />
+          <CartSummary />
         </div>
       </main>
     </div>
