@@ -36,7 +36,7 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
-      className="bg-white px-8 h-10 flex items-center justify-center border-2 border-black relative min-w-[160px]"
+      className="bg-white w-[128px] h-10 flex items-center justify-center border-2 border-black relative box-content"
       type={type}
       onClick={isLoading ? undefined : onClick}
       onMouseEnter={() => {
@@ -50,7 +50,7 @@ const Button: React.FC<ButtonProps> = ({
     >
       <div
         ref={refSlide}
-        className="w-full h-full bg-black absolute top-0 left-0"
+        className="w-[128px] h-10 bg-black absolute top-0 left-0"
       />
       {!isLoading && (
         <span
