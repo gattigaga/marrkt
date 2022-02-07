@@ -12,6 +12,7 @@ import Input from "../../components/Input";
 import CartItem from "../../components/CartItem";
 import { numberToCurrency } from "../../helpers/formatter";
 import { getSubtotal } from "../../helpers/math";
+import CartInfo from "../../components/CartInfo";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First name is required"),
@@ -268,10 +269,7 @@ const CheckoutShippingPage: NextPage = () => {
               );
             })}
           </div>
-          <div className="flex items-center justify-between py-4 border-t border-b border-gray-200">
-            <p className="text-xs text-black">Subtotal</p>
-            <p className="text-xs text-black">{numberToCurrency(subtotal)}</p>
-          </div>
+          <CartInfo label="Subtotal" value={numberToCurrency(subtotal)} />
         </div>
       </main>
     </div>

@@ -5,6 +5,7 @@ import CartItem from "./CartItem";
 import Button from "./Button";
 import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
+import CartInfo from "./CartInfo";
 
 type CartPopupProps = {
   isOpen?: boolean;
@@ -161,12 +162,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
                   );
                 })}
               </div>
-              <div className="flex items-center justify-between py-4 border-t border-b border-gray-200">
-                <p className="text-xs text-black">Subtotal</p>
-                <p className="text-xs text-black">
-                  {numberToCurrency(subtotal)}
-                </p>
-              </div>
+              <CartInfo label="Subtotal" value={numberToCurrency(subtotal)} />
               <div className="flex flex-col items-end mt-4">
                 <Button label="Checkout" />
               </div>
