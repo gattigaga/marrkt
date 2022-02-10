@@ -26,7 +26,7 @@ const ProductsPage: NextPage = () => {
         <h2 className="text-md font-medium mb-4">All Products (50)</h2>
         <div className="flex">
           <div className="mr-12">
-            <div className="grid grid-cols-2 gap-4 mb-16 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
+            <div className="grid grid-cols-2 gap-4 mb-8 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
               {products.map((product) => {
                 return (
                   <Product
@@ -39,7 +39,9 @@ const ProductsPage: NextPage = () => {
                 );
               })}
             </div>
-            <Pagination initialPage={0} totalPages={10} />
+            <div className="flex justify-center">
+              <Pagination initialPage={0} totalPages={10} />
+            </div>
           </div>
           <div className="w-1/3">
             <Filter />
