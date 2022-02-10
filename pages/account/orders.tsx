@@ -6,6 +6,7 @@ import AccountMenu from "../../components/AccountMenu";
 
 import Menu from "../../components/Menu";
 import OrderItem from "../../components/OrderItem";
+import Pagination from "../../components/Pagination";
 
 const OrdersPage: NextPage = () => {
   const items = useMemo(() => {
@@ -35,7 +36,7 @@ const OrdersPage: NextPage = () => {
         </div>
         <div className="w-3/4 ml-auto">
           <h1 className="text-md font-medium text-black mb-8">Orders</h1>
-          <div>
+          <div className="mb-8">
             {items.map((item) => {
               return (
                 <OrderItem
@@ -49,6 +50,9 @@ const OrdersPage: NextPage = () => {
                 />
               );
             })}
+          </div>
+          <div className="flex justify-center">
+            <Pagination initialPage={0} totalPages={10} />
           </div>
         </div>
       </main>
