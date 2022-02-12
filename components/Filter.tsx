@@ -1,23 +1,27 @@
 import React from "react";
 import { Formik } from "formik";
+import CheckBox from "./CheckBox";
 
-type FilterProps = {};
+type FilterProps = {
+  categories: {
+    name: string;
+    slug: string;
+  }[];
+};
 
-const Filter: React.FC<FilterProps> = ({}) => {
+const Filter: React.FC<FilterProps> = ({ categories }) => {
   return (
     <Formik
       initialValues={{
         keyword: "",
+        categories: [],
         price: {
           min: "",
           max: "",
         },
       }}
       onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 5000);
+        alert(JSON.stringify(values, null, 2));
       }}
     >
       {({
@@ -62,6 +66,42 @@ const Filter: React.FC<FilterProps> = ({}) => {
                 }}
                 value={values.keyword}
               />
+            </div>
+            <div className="mb-10">
+              <p className="text-xs text-black font-medium mb-4">Categories</p>
+              {categories.map((category, index) => {
+                const isLast = index === categories.length - 1;
+                const isChecked = values.categories.includes(category.slug);
+
+                return (
+                  <div key={category.slug} className={isLast ? "" : "mb-3"}>
+                    <CheckBox
+                      id={`category-${category.slug}`}
+                      label={category.name}
+                      name={category.slug}
+                      value={category.slug}
+                      onChange={(event) => {
+                        const value = (() => {
+                          const isChecked = event.target.checked;
+                          const value = event.target.value;
+
+                          if (isChecked) {
+                            return [...values.categories, event.target.value];
+                          }
+
+                          return values.categories.filter(
+                            (category) => category !== value
+                          );
+                        })();
+
+                        setFieldValue("categories", value);
+                        handleSubmit();
+                      }}
+                      isChecked={isChecked}
+                    />
+                  </div>
+                );
+              })}
             </div>
             <div>
               <p className="text-xs text-black font-medium mb-4">Price Range</p>
