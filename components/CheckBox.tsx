@@ -5,8 +5,8 @@ type CheckBoxProps = {
   name: string;
   id: string;
   value: string;
+  isChecked?: boolean;
   onChange?: (event: ChangeEvent<any>) => void;
-  onBlur?: (event: FocusEvent<any, Element>) => void;
 };
 
 const CheckBox: React.FC<CheckBoxProps> = ({
@@ -14,8 +14,8 @@ const CheckBox: React.FC<CheckBoxProps> = ({
   name,
   id,
   value,
+  isChecked,
   onChange,
-  onBlur,
 }) => {
   return (
     <div className="flex items-center">
@@ -25,8 +25,8 @@ const CheckBox: React.FC<CheckBoxProps> = ({
         type="checkbox"
         name={name}
         onChange={onChange}
-        onBlur={onBlur}
         value={value}
+        checked={isChecked}
       />
       <label className="text-xs text-black" htmlFor={id}>
         {label}
