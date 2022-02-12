@@ -6,7 +6,25 @@ import Menu from "../../components/Menu";
 import Pagination from "../../components/Pagination";
 import Product from "../../components/Product";
 
-const ProductsPage: NextPage = () => {
+export async function getServerSideProps() {
+  const categories = await (async () => {
+    const res = await fetch(
+      "https://marrkt-916b3-default-rtdb.asia-southeast1.firebasedatabase.app/categories.json"
+    );
+
+    const data = await res.json();
+
+    return data;
+  })();
+
+  return {
+    props: {
+      categories,
+    },
+  };
+}
+
+const ProductsPage: NextPage = ({ categories }) => {
   const products = [...Array(10)].map((_, index) => ({
     id: index,
     image: "https://via.placeholder.com/320x320",
@@ -44,7 +62,7 @@ const ProductsPage: NextPage = () => {
             </div>
           </div>
           <div className="w-1/3">
-            <Filter />
+            <Filter categories={categories} />
           </div>
         </div>
       </main>
