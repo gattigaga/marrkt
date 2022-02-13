@@ -20,7 +20,7 @@ const CheckBox: React.FC<CheckBoxProps> = ({
   return (
     <div className="flex items-center">
       <input
-        className="mr-3 text-black focus:ring-black"
+        className="mr-3 border-gray-200  text-black focus:ring-black focus:ring-offset-0"
         id={id}
         type="checkbox"
         name={name}
