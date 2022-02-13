@@ -1,4 +1,6 @@
 import React from "react";
+import { useRouter } from "next/router";
+import queryString from "query-string";
 import { Formik } from "formik";
 import CheckBox from "./CheckBox";
 
@@ -11,28 +13,30 @@ type FilterProps = {
 };
 
 const Filter: React.FC<FilterProps> = ({ categories }) => {
+  const router = useRouter();
+  const { keyword } = router.query;
+
   return (
     <Formik
       initialValues={{
-        keyword: "",
+        keyword: keyword || "",
         categories: [] as string[],
         price: {
           min: "",
           max: "",
         },
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        alert(JSON.stringify(values, null, 2));
+      onSubmit={(values) => {
+        const params = {
+          keyword: values.keyword,
+        };
+
+        const stringifiedParams = queryString.stringify(params);
+
+        router.push(`/products?${stringifiedParams}`);
       }}
     >
-      {({
-        values,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        setFieldValue,
-        isSubmitting,
-      }) => {
+      {({ values, handleChange, handleBlur, handleSubmit, setFieldValue }) => {
         const minPrice = (() => {
           if (typeof values.price.min === "number") {
             return new Intl.NumberFormat().format(values.price.min);
@@ -57,7 +61,7 @@ const Filter: React.FC<FilterProps> = ({ categories }) => {
                 className="border border-gray-200 px-4 py-3 text-xs w-full focus:ring-black focus:border-black"
                 type="text"
                 name="keyword"
-                placeholder="Search"
+                placeholder="Please type product name (case-sensitive)"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 onKeyPress={(event) => {

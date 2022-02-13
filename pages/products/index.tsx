@@ -1,15 +1,14 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import Filter from "../../components/Filter";
+import queryString from "query-string";
 
+import Filter from "../../components/Filter";
 import Menu from "../../components/Menu";
-import Pagination from "../../components/Pagination";
 import Product from "../../components/Product";
 import { apiUrl } from "../../config/app";
 import { collectionToArray } from "../../helpers/adapter";
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ query }) {
   const categories = await (async () => {
     const res = await fetch(`${apiUrl}/categories.json`);
     const data = await res.json();
@@ -23,14 +22,16 @@ export async function getServerSideProps() {
   })();
 
   const products = await (async () => {
+    const { keyword } = query;
+
     const params = {
       orderBy: `"name"`,
+      startAt: keyword && `"${keyword}"`,
+      endAt: keyword && `"${keyword}\uf8ff"`,
     };
 
-    const res = await fetch(
-      `${apiUrl}/products.json?${new URLSearchParams(params).toString()}`
-    );
-
+    const stringifiedParams = queryString.stringify(params);
+    const res = await fetch(`${apiUrl}/products.json?${stringifiedParams}`);
     const data = await res.json();
 
     const result = collectionToArray<{
