@@ -4,6 +4,7 @@ import CheckBox from "./CheckBox";
 
 type FilterProps = {
   categories: {
+    id: string;
     name: string;
     slug: string;
   }[];
@@ -14,7 +15,7 @@ const Filter: React.FC<FilterProps> = ({ categories }) => {
     <Formik
       initialValues={{
         keyword: "",
-        categories: [],
+        categories: [] as string[],
         price: {
           min: "",
           max: "",
@@ -74,7 +75,7 @@ const Filter: React.FC<FilterProps> = ({ categories }) => {
                 const isChecked = values.categories.includes(category.slug);
 
                 return (
-                  <div key={category.slug} className={isLast ? "" : "mb-3"}>
+                  <div key={category.id} className={isLast ? "" : "mb-3"}>
                     <CheckBox
                       id={`category-${category.slug}`}
                       label={category.name}
