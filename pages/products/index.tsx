@@ -1,47 +1,78 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import queryString from "query-string";
+import {
+  collection,
+  query,
+  orderBy,
+  getDocs,
+  startAt,
+  endAt,
+} from "firebase/firestore";
 
 import Filter from "../../components/Filter";
 import Menu from "../../components/Menu";
 import Product from "../../components/Product";
-import { apiUrl } from "../../config/app";
-import { collectionToArray } from "../../helpers/adapter";
+import { firebaseDB } from "../../helpers/firebase";
 
-export async function getServerSideProps({ query }) {
+export const getServerSideProps = async ({ query: urlQuery }) => {
   const categories = await (async () => {
-    const res = await fetch(`${apiUrl}/categories.json`);
-    const data = await res.json();
+    const categoriesRef = collection(firebaseDB, "categories");
+    const querySnapshot = await getDocs(query(categoriesRef, orderBy("name")));
 
-    const result = collectionToArray<{
+    const result: {
+      id: string;
       name: string;
       slug: string;
-    }>(data);
+    }[] = [];
+
+    querySnapshot.forEach((doc) => {
+      result.push({
+        id: doc.id,
+        ...(doc.data() as {
+          name: string;
+          slug: string;
+        }),
+      });
+    });
 
     return result;
   })();
 
   const products = await (async () => {
-    const { keyword } = query;
+    const { keyword } = urlQuery;
+    const productsRef = collection(firebaseDB, "products");
+    const queryParams = [orderBy("name")];
 
-    const params = {
-      orderBy: `"name"`,
-      startAt: keyword && `"${keyword}"`,
-      endAt: keyword && `"${keyword}\uf8ff"`,
-    };
+    if (keyword) {
+      queryParams.push(startAt(keyword));
+      queryParams.push(endAt(`${keyword}\uf8ff`));
+    }
 
-    const stringifiedParams = queryString.stringify(params);
-    const res = await fetch(`${apiUrl}/products.json?${stringifiedParams}`);
-    const data = await res.json();
+    const querySnapshot = await getDocs(query(productsRef, ...queryParams));
 
-    const result = collectionToArray<{
+    const result: {
+      id: string;
       name: string;
       slug: string;
       images: string[];
       price: number;
       description: string;
       categoryId: string;
-    }>(data);
+    }[] = [];
+
+    querySnapshot.forEach((doc) => {
+      result.push({
+        id: doc.id,
+        ...(doc.data() as {
+          name: string;
+          slug: string;
+          images: string[];
+          price: number;
+          description: string;
+          categoryId: string;
+        }),
+      });
+    });
 
     return result;
   })();
@@ -52,7 +83,7 @@ export async function getServerSideProps({ query }) {
       products,
     },
   };
-}
+};
 
 const ProductsPage: NextPage = ({ categories, products }) => {
   return (
