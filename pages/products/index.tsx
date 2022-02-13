@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import Filter from "../../components/Filter";
 
 import Menu from "../../components/Menu";
@@ -21,22 +22,38 @@ export async function getServerSideProps() {
     return result;
   })();
 
+  const products = await (async () => {
+    const params = {
+      orderBy: `"name"`,
+    };
+
+    const res = await fetch(
+      `${apiUrl}/products.json?${new URLSearchParams(params).toString()}`
+    );
+
+    const data = await res.json();
+
+    const result = collectionToArray<{
+      name: string;
+      slug: string;
+      images: string[];
+      price: number;
+      description: string;
+      categoryId: string;
+    }>(data);
+
+    return result;
+  })();
+
   return {
     props: {
       categories,
+      products,
     },
   };
 }
 
-const ProductsPage: NextPage = ({ categories }) => {
-  const products = [...Array(10)].map((_, index) => ({
-    id: index,
-    image: "https://via.placeholder.com/320x320",
-    name: "CB 01 Black",
-    price: 189,
-    url: "/products/cb-01-black",
-  }));
-
+const ProductsPage: NextPage = ({ categories, products }) => {
   return (
     <div>
       <Head>
@@ -55,16 +72,13 @@ const ProductsPage: NextPage = ({ categories }) => {
                 return (
                   <Product
                     key={product.id}
-                    image={product.image}
+                    image={product.images[0]}
                     name={product.name}
                     price={product.price}
-                    url={product.url}
+                    url={`/products/${product.slug}`}
                   />
                 );
               })}
-            </div>
-            <div className="flex justify-center">
-              <Pagination initialPage={0} totalPages={2} />
             </div>
           </div>
           <div className="w-1/3">
