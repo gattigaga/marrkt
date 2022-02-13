@@ -63,26 +63,30 @@ const ProductsPage: NextPage = ({ categories, products }) => {
 
       <Menu />
       <main className="px-4 pt-28 pb-24 md:px-8">
-        <h2 className="text-md font-medium mb-4">
-          All Products ({products.length})
-        </h2>
         <div className="flex">
-          <div className="mr-12">
-            <div className="grid grid-cols-2 gap-4 mb-8 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
-              {products.map((product) => {
-                return (
-                  <Product
-                    key={product.id}
-                    image={product.images[0]}
-                    name={product.name}
-                    price={product.price}
-                    url={`/products/${product.slug}`}
-                  />
-                );
-              })}
-            </div>
+          <div className="flex-1 mr-12">
+            {!!products.length && (
+              <div className="grid grid-cols-2 gap-4 mb-8 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
+                {products.map((product) => {
+                  return (
+                    <Product
+                      key={product.id}
+                      image={product.images[0]}
+                      name={product.name}
+                      price={product.price}
+                      url={`/products/${product.slug}`}
+                    />
+                  );
+                })}
+              </div>
+            )}
+            {!products.length && (
+              <p className="text-xs text-black text-center mt-8">
+                There&lsquo;s no products found.
+              </p>
+            )}
           </div>
-          <div className="w-1/3">
+          <div className="w-64">
             <Filter categories={categories} />
           </div>
         </div>
