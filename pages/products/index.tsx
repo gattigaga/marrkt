@@ -5,16 +5,20 @@ import Filter from "../../components/Filter";
 import Menu from "../../components/Menu";
 import Pagination from "../../components/Pagination";
 import Product from "../../components/Product";
+import { apiUrl } from "../../config/app";
+import { collectionToArray } from "../../helpers/adapter";
 
 export async function getServerSideProps() {
   const categories = await (async () => {
-    const res = await fetch(
-      "https://marrkt-916b3-default-rtdb.asia-southeast1.firebasedatabase.app/categories.json"
-    );
-
+    const res = await fetch(`${apiUrl}/categories.json`);
     const data = await res.json();
 
-    return data;
+    const result = collectionToArray<{
+      name: string;
+      slug: string;
+    }>(data);
+
+    return result;
   })();
 
   return {
@@ -41,7 +45,9 @@ const ProductsPage: NextPage = ({ categories }) => {
 
       <Menu />
       <main className="px-4 pt-28 pb-24 md:px-8">
-        <h2 className="text-md font-medium mb-4">All Products (50)</h2>
+        <h2 className="text-md font-medium mb-4">
+          All Products ({products.length})
+        </h2>
         <div className="flex">
           <div className="mr-12">
             <div className="grid grid-cols-2 gap-4 mb-8 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
@@ -58,7 +64,7 @@ const ProductsPage: NextPage = ({ categories }) => {
               })}
             </div>
             <div className="flex justify-center">
-              <Pagination initialPage={0} totalPages={10} />
+              <Pagination initialPage={0} totalPages={2} />
             </div>
           </div>
           <div className="w-1/3">
