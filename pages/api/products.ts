@@ -14,6 +14,10 @@ type Product = {
 type Data = {
   data?: Product[] | null;
   message?: string;
+  metadata?: {
+    page: number;
+    totalPages: number;
+  };
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
@@ -22,42 +26,81 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     return;
   }
 
-  const { keyword, categories, min_price, max_price, page } = req.query as {
+  const {
+    keyword,
+    categories,
+    min_price,
+    max_price,
+    page = "1",
+  } = req.query as {
     [key: string]: string;
   };
 
-  const query = supabase
-    .from("products")
-    .select("*, product_categories!inner(*)")
-    .order("name");
+  const totalItemsPerPage = 12;
 
-  if (keyword) {
-    query.ilike("name", `%${keyword}%`);
-  }
+  const { data: products } = await (() => {
+    const query = supabase
+      .from("products")
+      .select("*, product_categories!inner(*)")
+      .order("name");
 
-  if (categories) {
-    query.in("product_categories.slug", categories.split(","));
-  }
+    if (keyword) {
+      query.ilike("name", `%${keyword}%`);
+    }
 
-  if (min_price) {
-    query.gte("price", min_price);
-  }
+    if (categories) {
+      query.in("product_categories.slug", categories.split(","));
+    }
 
-  if (max_price) {
-    query.lte("price", max_price);
-  }
+    if (min_price) {
+      query.gte("price", min_price);
+    }
 
-  if (page) {
-    const totalItemsPerPage = 12;
+    if (max_price) {
+      query.lte("price", max_price);
+    }
+
     const min = totalItemsPerPage * (Number(page) - 1);
     const max = totalItemsPerPage * Number(page) - 1;
 
     query.range(min, max);
-  }
 
-  const { data: products } = await query;
+    return query;
+  })();
 
-  res.status(200).json({ data: products });
+  const totalPages = await (async () => {
+    const query = supabase
+      .from("products")
+      .select("*", { count: "exact", head: true });
+
+    if (keyword) {
+      query.ilike("name", `%${keyword}%`);
+    }
+
+    if (categories) {
+      query.in("product_categories.slug", categories.split(","));
+    }
+
+    if (min_price) {
+      query.gte("price", min_price);
+    }
+
+    if (max_price) {
+      query.lte("price", max_price);
+    }
+
+    const { count } = await query;
+
+    return Math.ceil(Number(count) / totalItemsPerPage);
+  })();
+
+  res.status(200).json({
+    data: products,
+    metadata: {
+      page: Number(page),
+      totalPages,
+    },
+  });
 };
 
 export default handler;
