@@ -48,7 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   }
 
   if (page) {
-    const totalItemsPerPage = 4;
+    const totalItemsPerPage = 12;
     const min = totalItemsPerPage * (Number(page) - 1);
     const max = totalItemsPerPage * Number(page) - 1;
 
