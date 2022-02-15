@@ -33,6 +33,7 @@ const Pagination: React.FC<PaginationProps> = ({
         activeLinkClassName="bg-black text-white"
         disabledLinkClassName="text-gray-500"
         onPageChange={onPageChange}
+        disableInitialCallback
       />
     </div>
   );
