@@ -14,21 +14,26 @@ type FilterProps = {
 
 const Filter: React.FC<FilterProps> = ({ categories }) => {
   const router = useRouter();
-  const { keyword } = router.query;
+  const query = router.query as { [key: string]: string };
 
   return (
     <Formik
       initialValues={{
-        keyword: keyword || "",
-        categories: [] as string[],
+        keyword: query?.keyword || "",
+        categories: query?.categories
+          ? query?.categories?.split(",")
+          : ([] as string[]),
         price: {
-          min: "",
-          max: "",
+          min: query?.min_price || "",
+          max: query?.max_price || "",
         },
       }}
       onSubmit={(values) => {
         const params = {
           keyword: values.keyword,
+          categories: values.categories.join(","),
+          min_price: values.price.min,
+          max_price: values.price.max,
         };
 
         const stringifiedParams = queryString.stringify(params);
