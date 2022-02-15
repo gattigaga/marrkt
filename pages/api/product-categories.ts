@@ -14,7 +14,7 @@ type Data = {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   if (req.method !== "GET") {
-    res.status(405).json({ message: "Method not allowed" });
+    res.status(405).json({ message: "Method not allowed." });
     return;
   }
 
