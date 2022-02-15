@@ -1,91 +1,48 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import {
-  collection,
-  query,
-  orderBy,
-  getDocs,
-  startAt,
-  endAt,
-} from "firebase/firestore";
+import { useRouter } from "next/router";
+import queryString from "query-string";
 
 import Filter from "../../components/Filter";
 import Menu from "../../components/Menu";
+import Pagination from "../../components/Pagination";
 import Product from "../../components/Product";
-import { firebaseDB } from "../../helpers/firebase";
+import { supabase } from "../../helpers/supabase";
 
 export const getServerSideProps = async ({ query: urlQuery }) => {
   const categories = await (async () => {
-    const categoriesRef = collection(firebaseDB, "categories");
-    const querySnapshot = await getDocs(query(categoriesRef, orderBy("name")));
+    const res = await fetch("http://localhost:3000/api/product-categories");
+    const { data } = await res.json();
 
-    const result: {
-      id: string;
-      name: string;
-      slug: string;
-    }[] = [];
-
-    querySnapshot.forEach((doc) => {
-      result.push({
-        id: doc.id,
-        ...(doc.data() as {
-          name: string;
-          slug: string;
-        }),
-      });
-    });
-
-    return result;
+    return data;
   })();
 
-  const products = await (async () => {
-    const { keyword } = urlQuery;
-    const productsRef = collection(firebaseDB, "products");
-    const queryParams = [orderBy("name")];
-
-    if (keyword) {
-      queryParams.push(startAt(keyword));
-      queryParams.push(endAt(`${keyword}\uf8ff`));
-    }
-
-    const querySnapshot = await getDocs(query(productsRef, ...queryParams));
-
-    const result: {
-      id: string;
-      name: string;
-      slug: string;
-      images: string[];
-      price: number;
-      description: string;
-      categoryId: string;
-    }[] = [];
-
-    querySnapshot.forEach((doc) => {
-      result.push({
-        id: doc.id,
-        ...(doc.data() as {
-          name: string;
-          slug: string;
-          images: string[];
-          price: number;
-          description: string;
-          categoryId: string;
-        }),
-      });
+  const { products, totalPages } = await (async () => {
+    const query = queryString.stringify({
+      ...urlQuery,
+      page: urlQuery?.page || 1,
     });
 
-    return result;
+    const res = await fetch(`http://localhost:3000/api/products?${query}`);
+    const { data: products, metadata } = await res.json();
+
+    return { products, totalPages: metadata.totalPages };
   })();
 
   return {
     props: {
       categories,
       products,
+      totalPages,
     },
   };
 };
 
-const ProductsPage: NextPage = ({ categories, products }) => {
+const ProductsPage: NextPage = ({ categories, products, totalPages }) => {
+  const router = useRouter();
+
+  const currentPage = Number(router.query.page as string) || 1;
+
   return (
     <div>
       <Head>
@@ -97,19 +54,39 @@ const ProductsPage: NextPage = ({ categories, products }) => {
         <div className="flex">
           <div className="flex-1 mr-12">
             {!!products.length && (
-              <div className="grid grid-cols-2 gap-4 mb-8 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
-                {products.map((product) => {
-                  return (
-                    <Product
-                      key={product.id}
-                      image={product.images[0]}
-                      name={product.name}
-                      price={product.price}
-                      url={`/products/${product.slug}`}
-                    />
-                  );
-                })}
-              </div>
+              <>
+                <div className="grid grid-cols-2 gap-4 mb-8 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
+                  {products.map((product) => {
+                    const { publicURL: imageURL } = supabase.storage
+                      .from("general")
+                      .getPublicUrl(`products/${product.thumbnail}`);
+
+                    return (
+                      <Product
+                        key={product.id}
+                        image={imageURL as string}
+                        name={product.name}
+                        price={product.price}
+                        url={`/products/${product.slug}`}
+                      />
+                    );
+                  })}
+                </div>
+                <div className="flex justify-center">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(pageIndex) => {
+                      const query = queryString.stringify({
+                        ...router.query,
+                        page: pageIndex,
+                      });
+
+                      router.push(`/products?${query}`);
+                    }}
+                  />
+                </div>
+              </>
             )}
             {!products.length && (
               <p className="text-xs text-black text-center mt-8">
