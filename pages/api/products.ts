@@ -48,9 +48,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   }
 
   if (page) {
-    const totalItemsPerPage = 12;
+    const totalItemsPerPage = 4;
+    const min = totalItemsPerPage * (Number(page) - 1);
+    const max = totalItemsPerPage * Number(page) - 1;
 
-    query.range(Number(page) - 1, totalItemsPerPage * Number(page));
+    query.range(min, max);
   }
 
   const { data: products } = await query;
