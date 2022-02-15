@@ -2,13 +2,13 @@ import React from "react";
 import Paginate from "react-paginate";
 
 type PaginationProps = {
-  initialPage?: number;
+  currentPage: number;
   totalPages: number;
-  onPageChange?: (selectedItem: { selected: number }) => void;
+  onPageChange: (pageIndex: number) => void;
 };
 
 const Pagination: React.FC<PaginationProps> = ({
-  initialPage,
+  currentPage,
   totalPages,
   onPageChange,
 }) => {
@@ -19,7 +19,7 @@ const Pagination: React.FC<PaginationProps> = ({
         nextLabel=">"
         previousLabel="<"
         pageRangeDisplayed={5}
-        initialPage={initialPage}
+        forcePage={currentPage - 1}
         pageCount={totalPages}
         renderOnZeroPageCount={null}
         pageClassName="inline"
@@ -32,7 +32,7 @@ const Pagination: React.FC<PaginationProps> = ({
         nextLinkClassName="text-sm text-black pl-3 py-1"
         activeLinkClassName="bg-black text-white"
         disabledLinkClassName="text-gray-500"
-        onPageChange={onPageChange}
+        onPageChange={({ selected }) => onPageChange(selected + 1)}
         disableInitialCallback
       />
     </div>
