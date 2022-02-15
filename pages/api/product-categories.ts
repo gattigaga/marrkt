@@ -8,10 +8,16 @@ type Category = {
 };
 
 type Data = {
-  data: Category[] | null;
+  data?: Category[] | null;
+  message?: string;
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+  if (req.method !== "GET") {
+    res.status(405).json({ message: "Method not allowed" });
+    return;
+  }
+
   const { data: categories } = await supabase
     .from("product_categories")
     .select("*");
