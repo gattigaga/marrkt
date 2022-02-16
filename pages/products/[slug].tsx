@@ -32,6 +32,10 @@ const ProductDetailPage: NextPage = ({ product }) => {
     url: "/products/cb-01-black",
   }));
 
+  const { publicURL: thumbnailURL } = supabase.storage
+    .from("general")
+    .getPublicUrl(`products/${product.thumbnail}`);
+
   return (
     <div>
       <Head>
@@ -43,6 +47,13 @@ const ProductDetailPage: NextPage = ({ product }) => {
         <div className="flex mb-24">
           {/* Left side */}
           <div className="flex-1 grid grid-cols-2 gap-2">
+            <div>
+              <img
+                className="w-full h-full object-cover"
+                src={thumbnailURL as string}
+                alt={`${product.name} Thumbnail`}
+              />
+            </div>
             {product.product_images.map((image, index) => {
               const { publicURL: imageURL } = supabase.storage
                 .from("general")
