@@ -1,14 +1,17 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import React, { useMemo } from "react";
-import AccountMenu from "../../components/AccountMenu";
+import React, { useEffect, useMemo } from "react";
+import { useRouter } from "next/router";
 
 import Menu from "../../components/Menu";
 import OrderItem from "../../components/OrderItem";
 import Pagination from "../../components/Pagination";
+import { supabase } from "../../helpers/supabase";
+import AccountMenu from "../../components/AccountMenu";
 
 const OrdersPage: NextPage = () => {
+  const router = useRouter();
+
   const items = useMemo(() => {
     return [...Array(5)].map((_, index) => {
       return {
@@ -22,6 +25,16 @@ const OrdersPage: NextPage = () => {
       };
     });
   }, []);
+
+  const user = supabase.auth.user();
+
+  useEffect(() => {
+    if (!user) {
+      router.replace("/account/login");
+    }
+  }, []);
+
+  if (!user) return null;
 
   return (
     <div>

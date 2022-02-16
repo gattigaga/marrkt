@@ -32,7 +32,7 @@ const ProfilePage: NextPage = () => {
 
   useEffect(() => {
     if (!user) {
-      router.push("/account/login");
+      router.replace("/account/login");
     }
   }, []);
 
