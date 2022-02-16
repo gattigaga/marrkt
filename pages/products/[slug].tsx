@@ -1,9 +1,10 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Button from "../../components/Button";
+import queryString from "query-string";
 
 import Menu from "../../components/Menu";
 import Product from "../../components/Product";
+import Button from "../../components/Button";
 import { numberToCurrency } from "../../helpers/formatter";
 import { supabase } from "../../helpers/supabase";
 
@@ -16,22 +17,27 @@ export const getServerSideProps = async ({ query: urlQuery }) => {
     return data;
   })();
 
+  const { relatedProducts } = await (async () => {
+    const query = queryString.stringify({
+      categories: product.product_categories.slug,
+      page: 1,
+    });
+
+    const res = await fetch(`http://localhost:3000/api/products?${query}`);
+    const { data: products } = await res.json();
+
+    return { relatedProducts: products.slice(0, 4) };
+  })();
+
   return {
     props: {
       product,
+      relatedProducts,
     },
   };
 };
 
-const ProductDetailPage: NextPage = ({ product }) => {
-  const relatedProducts = [...Array(4)].map((_, index) => ({
-    id: index,
-    image: "https://via.placeholder.com/320x320",
-    name: "CB 01 Black",
-    price: 189,
-    url: "/products/cb-01-black",
-  }));
-
+const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
   const { publicURL: thumbnailURL } = supabase.storage
     .from("general")
     .getPublicUrl(`products/${product.thumbnail}`);
@@ -83,13 +89,17 @@ const ProductDetailPage: NextPage = ({ product }) => {
           <h2 className="mb-10 text-2xl text-black">You might also like</h2>
           <div className="grid grid-cols-2 gap-4 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
             {relatedProducts.map((product) => {
+              const { publicURL: imageURL } = supabase.storage
+                .from("general")
+                .getPublicUrl(`products/${product.thumbnail}`);
+
               return (
                 <Product
                   key={product.id}
-                  image={product.image}
+                  image={imageURL as string}
                   name={product.name}
                   price={product.price}
-                  url={product.url}
+                  url={`/products/${product.slug}`}
                 />
               );
             })}
