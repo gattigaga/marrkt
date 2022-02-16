@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import React, { useMemo } from "react";
+import React, { useEffect } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useRouter } from "next/router";
 
 import AccountMenu from "../../components/AccountMenu";
 import Button from "../../components/Button";
@@ -26,7 +26,17 @@ const validationSchema = Yup.object({
 });
 
 const ProfilePage: NextPage = () => {
+  const router = useRouter();
+
   const user = supabase.auth.user();
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/account/login");
+    }
+  }, []);
+
+  if (!user) return null;
 
   return (
     <div>
