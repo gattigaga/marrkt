@@ -1,9 +1,13 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
+import { supabase } from "../helpers/supabase";
 
 type AccountMenuProps = {};
 
 const AccountMenu: React.FC<AccountMenuProps> = ({}) => {
+  const router = useRouter();
+
   const menus = [
     {
       id: 1,
@@ -15,12 +19,20 @@ const AccountMenu: React.FC<AccountMenuProps> = ({}) => {
       label: "Orders",
       url: "/account/orders",
     },
-    {
-      id: 3,
-      label: "Logout",
-      url: "#",
-    },
   ];
+
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) throw error;
+
+      router.push("/account/login");
+    } catch (error) {
+      console.log(error);
+      alert(error?.message || "Failed to logout.");
+    }
+  };
 
   return (
     <div>
@@ -36,6 +48,13 @@ const AccountMenu: React.FC<AccountMenuProps> = ({}) => {
           </Link>
         );
       })}
+      <button
+        type="button"
+        className="w-full border-b border-gray-200 py-3 text-xs text-red-500"
+        onClick={logout}
+      >
+        <p className="text-left">Logout</p>
+      </button>
     </div>
   );
 };
