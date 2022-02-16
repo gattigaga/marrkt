@@ -3,12 +3,12 @@ import Head from "next/head";
 import Link from "next/link";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useRouter } from "next/router";
 
 import Menu from "../../components/Menu";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import { supabase } from "../../helpers/supabase";
-import { useRouter } from "next/router";
 
 const validationSchema = Yup.object({
   firstName: Yup.string()

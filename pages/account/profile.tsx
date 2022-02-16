@@ -9,6 +9,7 @@ import AccountMenu from "../../components/AccountMenu";
 import Button from "../../components/Button";
 import Menu from "../../components/Menu";
 import Input from "../../components/Input";
+import { supabase } from "../../helpers/supabase";
 
 const validationSchema = Yup.object({
   firstName: Yup.string()
@@ -24,20 +25,8 @@ const validationSchema = Yup.object({
     .required("Email is required"),
 });
 
-const AccountPage: NextPage = () => {
-  const items = useMemo(() => {
-    return [...Array(5)].map((_, index) => {
-      return {
-        id: index + 1,
-        thumbnail: "/images/person.jpg",
-        code: "INV/230895",
-        totalItems: 3,
-        amount: 5000,
-        date: "2021-05-21 08:30:00",
-        url: "/",
-      };
-    });
-  }, []);
+const ProfilePage: NextPage = () => {
+  const user = supabase.auth.user();
 
   return (
     <div>
@@ -55,16 +44,34 @@ const AccountPage: NextPage = () => {
           <div>
             <Formik
               initialValues={{
-                firstName: "Gattigaga",
-                lastName: "Hayyuta",
-                email: "gattigaga@gmail.com",
+                firstName: user?.user_metadata.first_name,
+                lastName: user?.user_metadata.last_name,
+                email: user?.email,
               }}
               validationSchema={validationSchema}
-              onSubmit={(values, { setSubmitting }) => {
-                setTimeout(() => {
-                  alert(JSON.stringify(values, null, 2));
+              onSubmit={async (values, { setSubmitting }) => {
+                try {
+                  setSubmitting(true);
+
+                  const { firstName, lastName, email } = values;
+
+                  const { error } = await supabase.auth.update({
+                    email,
+                    data: {
+                      first_name: firstName,
+                      last_name: lastName,
+                    },
+                  });
+
+                  if (error) throw error;
+
+                  alert("Profile successfully update.");
+                } catch (error) {
+                  console.log(error);
+                  alert(error?.message || "Failed to update profile.");
+                } finally {
                   setSubmitting(false);
-                }, 5000);
+                }
               }}
             >
               {({
@@ -139,4 +146,4 @@ const AccountPage: NextPage = () => {
   );
 };
 
-export default AccountPage;
+export default ProfilePage;
