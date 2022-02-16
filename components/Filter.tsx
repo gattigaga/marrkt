@@ -66,7 +66,7 @@ const Filter: React.FC<FilterProps> = ({ categories }) => {
                 className="border border-gray-200 px-4 py-3 text-xs w-full focus:ring-black focus:border-black"
                 type="text"
                 name="keyword"
-                placeholder="i.e Refined Hats (case-sensitive)"
+                placeholder="What do you want to find ?"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 onKeyPress={(event) => {
