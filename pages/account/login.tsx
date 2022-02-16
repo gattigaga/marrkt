@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 import Menu from "../../components/Menu";
 import Button from "../../components/Button";
@@ -19,6 +20,16 @@ const validationSchema = Yup.object({
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
+
+  const user = supabase.auth.user();
+
+  useEffect(() => {
+    if (user) {
+      router.replace("/account/profile");
+    }
+  }, []);
+
+  if (user) return null;
 
   return (
     <div>
