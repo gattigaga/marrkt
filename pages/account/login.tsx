@@ -3,10 +3,12 @@ import Head from "next/head";
 import Link from "next/link";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useRouter } from "next/router";
 
 import Menu from "../../components/Menu";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
+import { supabase } from "../../helpers/supabase";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -16,6 +18,8 @@ const validationSchema = Yup.object({
 });
 
 const LoginPage: NextPage = () => {
+  const router = useRouter();
+
   return (
     <div>
       <Head>
@@ -32,11 +36,26 @@ const LoginPage: NextPage = () => {
               password: "",
             }}
             validationSchema={validationSchema}
-            onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                alert(JSON.stringify(values, null, 2));
+            onSubmit={async (values, { setSubmitting }) => {
+              try {
+                setSubmitting(true);
+
+                const { email, password } = values;
+
+                const { error } = await supabase.auth.signIn({
+                  email,
+                  password,
+                });
+
+                if (error) throw error;
+
+                router.push("/account/profile");
+              } catch (error) {
+                console.log(error);
+                alert(error?.message || "Failed to login into your account.");
+              } finally {
                 setSubmitting(false);
-              }, 5000);
+              }
             }}
           >
             {({
