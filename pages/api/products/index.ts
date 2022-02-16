@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { supabase } from "../../helpers/supabase";
+import { supabase } from "../../../helpers/supabase";
 
 type Product = {
   id: number;
