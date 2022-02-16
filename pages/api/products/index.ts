@@ -71,7 +71,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const totalPages = await (async () => {
     const query = supabase
       .from("products")
-      .select("*", { count: "exact", head: true });
+      .select("*, product_categories!inner(*)", {
+        count: "exact",
+        head: true,
+      });
 
     if (keyword) {
       query.ilike("name", `%${keyword}%`);
