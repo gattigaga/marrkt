@@ -7,11 +7,12 @@ import Filter from "../../components/Filter";
 import Menu from "../../components/Menu";
 import Pagination from "../../components/Pagination";
 import Product from "../../components/Product";
+import { apiURL } from "../../config/app";
 import { supabase } from "../../helpers/supabase";
 
 export const getServerSideProps = async ({ query: urlQuery }) => {
   const categories = await (async () => {
-    const res = await fetch("http://localhost:3000/api/product-categories");
+    const res = await fetch(`${apiURL}/product-categories`);
     const { data } = await res.json();
 
     return data;
@@ -23,7 +24,7 @@ export const getServerSideProps = async ({ query: urlQuery }) => {
       page: urlQuery?.page || 1,
     });
 
-    const res = await fetch(`http://localhost:3000/api/products?${query}`);
+    const res = await fetch(`${apiURL}/products?${query}`);
     const { data: products, metadata } = await res.json();
 
     return { products, totalPages: metadata.totalPages };

@@ -1,2 +1,1 @@
-export const apiUrl =
-  "https://marrkt-916b3-default-rtdb.asia-southeast1.firebasedatabase.app";
+export const apiURL = "http://localhost:3000/api";

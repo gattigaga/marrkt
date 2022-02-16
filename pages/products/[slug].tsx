@@ -7,11 +7,12 @@ import Product from "../../components/Product";
 import Button from "../../components/Button";
 import { numberToCurrency } from "../../helpers/formatter";
 import { supabase } from "../../helpers/supabase";
+import { apiURL } from "../../config/app";
 
 export const getServerSideProps = async ({ query: urlQuery }) => {
   const product = await (async () => {
     const { slug } = urlQuery;
-    const res = await fetch(`http://localhost:3000/api/products/${slug}`);
+    const res = await fetch(`${apiURL}/products/${slug}`);
     const { data } = await res.json();
 
     return data;
@@ -23,7 +24,7 @@ export const getServerSideProps = async ({ query: urlQuery }) => {
       page: 1,
     });
 
-    const res = await fetch(`http://localhost:3000/api/products?${query}`);
+    const res = await fetch(`${apiURL}/products?${query}`);
     const { data: products } = await res.json();
 
     return { relatedProducts: products.slice(0, 4) };
