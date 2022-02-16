@@ -5,38 +5,25 @@ import Button from "../../components/Button";
 import Menu from "../../components/Menu";
 import Product from "../../components/Product";
 import { numberToCurrency } from "../../helpers/formatter";
+import { supabase } from "../../helpers/supabase";
 
-const ProductDetailPage: NextPage = () => {
-  const product = {
-    id: 1,
-    images: [
-      {
-        id: 1,
-        url: "https://via.placeholder.com/320x320",
-      },
-      {
-        id: 2,
-        url: "https://via.placeholder.com/320x320",
-      },
-      {
-        id: 3,
-        url: "https://via.placeholder.com/320x320",
-      },
-      {
-        id: 4,
-        url: "https://via.placeholder.com/320x320",
-      },
-      {
-        id: 5,
-        url: "https://via.placeholder.com/320x320",
-      },
-    ],
-    name: "CB 01 Black",
-    price: 189,
-    description:
-      "Our HT 01 (High top 01) silhouette was inspired by classic basketball trainers. With a premium suede outer and reinforced insoles will add some serious comfort to your step. This reinterpretation of a classic speaks for itself. Game on.",
+export const getServerSideProps = async ({ query: urlQuery }) => {
+  const product = await (async () => {
+    const { slug } = urlQuery;
+    const res = await fetch(`http://localhost:3000/api/products/${slug}`);
+    const { data } = await res.json();
+
+    return data;
+  })();
+
+  return {
+    props: {
+      product,
+    },
   };
+};
 
+const ProductDetailPage: NextPage = ({ product }) => {
   const relatedProducts = [...Array(4)].map((_, index) => ({
     id: index,
     image: "https://via.placeholder.com/320x320",
@@ -56,13 +43,17 @@ const ProductDetailPage: NextPage = () => {
         <div className="flex mb-24">
           {/* Left side */}
           <div className="flex-1 grid grid-cols-2 gap-2">
-            {product.images.map((image) => {
+            {product.product_images.map((image, index) => {
+              const { publicURL: imageURL } = supabase.storage
+                .from("general")
+                .getPublicUrl(`products/${product.thumbnail}`);
+
               return (
                 <div key={image.id}>
                   <img
                     className="w-full h-full object-cover"
-                    src={image.url}
-                    alt={`${product.name} 1`}
+                    src={imageURL as string}
+                    alt={`${product.name} ${index + 1}`}
                   />
                 </div>
               );
