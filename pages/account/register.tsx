@@ -7,6 +7,8 @@ import * as Yup from "yup";
 import Menu from "../../components/Menu";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
+import { supabase } from "../../helpers/supabase";
+import { useRouter } from "next/router";
 
 const validationSchema = Yup.object({
   firstName: Yup.string()
@@ -27,6 +29,8 @@ const validationSchema = Yup.object({
 });
 
 const RegisterPage: NextPage = () => {
+  const router = useRouter();
+
   return (
     <div>
       <Head>
@@ -45,11 +49,35 @@ const RegisterPage: NextPage = () => {
               password: "",
             }}
             validationSchema={validationSchema}
-            onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                alert(JSON.stringify(values, null, 2));
+            onSubmit={async (values, { setSubmitting }) => {
+              try {
+                setSubmitting(true);
+
+                const { firstName, lastName, email, password } = values;
+
+                const { error } = await supabase.auth.signUp(
+                  {
+                    email,
+                    password,
+                  },
+                  {
+                    data: {
+                      first_name: firstName,
+                      last_name: lastName,
+                    },
+                  }
+                );
+
+                if (error) throw error;
+
+                alert("You are successfully registered.");
+                router.push("/account/login");
+              } catch (error) {
+                console.log(error);
+                alert(error?.message || "Failed to register your account.");
+              } finally {
                 setSubmitting(false);
-              }, 5000);
+              }
             }}
           >
             {({
