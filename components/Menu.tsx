@@ -108,15 +108,15 @@ const Menu: React.FC<MenuProps> = ({}) => {
               }}
             >
               <Link href="/">
-                <div className="flex flex-col">
-                  <a className="text-xs" href="#">
-                    Home
-                  </a>
-                  <div
-                    ref={refLine1}
-                    className="w-0 border-t border-black mt-1"
-                  />
-                </div>
+                <a>
+                  <div className="flex flex-col">
+                    <span className="text-xs">Home</span>
+                    <div
+                      ref={refLine1}
+                      className="w-0 border-t border-black mt-1"
+                    />
+                  </div>
+                </a>
               </Link>
             </li>
             <li
@@ -133,15 +133,15 @@ const Menu: React.FC<MenuProps> = ({}) => {
               }}
             >
               <Link href="/products">
-                <div className="flex flex-col">
-                  <a className="text-xs" href="#">
-                    Products
-                  </a>
-                  <div
-                    ref={refLine2}
-                    className="w-0 border-t border-black mt-1"
-                  />
-                </div>
+                <a>
+                  <div className="flex flex-col">
+                    <span className="text-xs">Products</span>
+                    <div
+                      ref={refLine2}
+                      className="w-0 border-t border-black mt-1"
+                    />
+                  </div>
+                </a>
               </Link>
             </li>
             <li
@@ -158,15 +158,15 @@ const Menu: React.FC<MenuProps> = ({}) => {
               }}
             >
               <Link href="/account/login">
-                <div className="flex flex-col">
-                  <a className="text-xs" href="#">
-                    My Account
-                  </a>
-                  <div
-                    ref={refLine3}
-                    className="w-0 border-t border-black mt-1"
-                  />
-                </div>
+                <a>
+                  <div className="flex flex-col">
+                    <span className="text-xs">My Account</span>
+                    <div
+                      ref={refLine3}
+                      className="w-0 border-t border-black mt-1"
+                    />
+                  </div>
+                </a>
               </Link>
             </li>
           </ul>
