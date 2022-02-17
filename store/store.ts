@@ -16,6 +16,10 @@ type CartItem = {
 
 type State = {
   cartItems: CartItem[];
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (itemId: string) => void;
+  increaseItemQty: (itemId: string) => void;
+  decreaseItemQty: (itemId: string) => void;
 };
 
 export const useStore = create<State>((set) => ({
