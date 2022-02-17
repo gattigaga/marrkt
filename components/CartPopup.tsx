@@ -7,6 +7,8 @@ import Button from "./Button";
 import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
 import CartInfo from "./CartInfo";
+import { supabase } from "../helpers/supabase";
+import { useStore } from "../store/store";
 
 type CartPopupProps = {
   isOpen?: boolean;
@@ -18,63 +20,17 @@ const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
   const refCart = useRef<HTMLElement>();
   const refCartContent = useRef<HTMLElement>();
   const router = useRouter();
+  const cartItems = useStore((state) => state.cartItems);
+  const removeFromCart = useStore((state) => state.removeFromCart);
 
-  const items = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-      {
-        id: 2,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-      {
-        id: 3,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-      {
-        id: 4,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-      {
-        id: 5,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-      {
-        id: 6,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-      {
-        id: 7,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-    ],
-    []
-  );
+  const subtotal = useMemo(() => {
+    const items = cartItems.map((item) => ({
+      price: item.product.price,
+      quantity: item.quantity,
+    }));
 
-  const subtotal = useMemo(() => getSubtotal(items), [items]);
+    return getSubtotal(items);
+  }, [cartItems]);
 
   useEffect(() => {
     const showCart = () => {
@@ -142,19 +98,24 @@ const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
       >
         <div ref={refCartContent} className="h-full flex flex-col opacity-0">
           <div className="h-32" />
-          {!!items.length && (
+          {!!cartItems.length && (
             <>
               <div className="max-h-full overflow-y-scroll">
-                {items.map((item, index) => {
-                  const isLast = index === items.length - 1;
+                {cartItems.map((item, index) => {
+                  const isLast = index === cartItems.length - 1;
+
+                  const { publicURL: thumbnailURL } = supabase.storage
+                    .from("general")
+                    .getPublicUrl(`products/${item.product.thumbnail}`);
 
                   return (
                     <div key={item.id}>
                       <CartItem
-                        name={item.name}
+                        name={item.product.name}
                         quantity={item.quantity}
-                        price={item.price}
-                        image={item.image}
+                        price={item.product.price}
+                        image={thumbnailURL as string}
+                        onClickRemove={() => removeFromCart(item.id)}
                         isRemovable
                       />
                       {!isLast && (
@@ -172,7 +133,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
               <div className="h-6" />
             </>
           )}
-          {!items.length && (
+          {!cartItems.length && (
             <>
               <p className="text-xs text-center">
                 There&lsquo;s no items in the cart.
