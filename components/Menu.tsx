@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 
 import Logo from "./Logo";
 import CartPopup from "./CartPopup";
+import { useStore } from "../store/store";
 
 type MenuProps = {};
 
@@ -13,8 +14,7 @@ const Menu: React.FC<MenuProps> = ({}) => {
   const refLine1 = useRef();
   const refLine2 = useRef();
   const refLine3 = useRef();
-
-  const totalCartItems = 3;
+  const cartItems = useStore((state) => state.cartItems);
 
   const showLine = (element: gsap.TweenTarget) => {
     gsap
@@ -175,7 +175,7 @@ const Menu: React.FC<MenuProps> = ({}) => {
             type="button"
             onClick={() => setIsCartOpen(true)}
           >
-            <span className="text-xs text-white">{totalCartItems}</span>
+            <span className="text-xs text-white">{cartItems.length}</span>
           </button>
         </nav>
       </div>
