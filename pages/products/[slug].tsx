@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import queryString from "query-string";
+import { v4 as uuid } from "uuid";
 
 import Menu from "../../components/Menu";
 import Product from "../../components/Product";
@@ -8,6 +9,7 @@ import Button from "../../components/Button";
 import { numberToCurrency } from "../../helpers/formatter";
 import { supabase } from "../../helpers/supabase";
 import { apiURL } from "../../config/app";
+import { useStore } from "../../store/store";
 
 export const getServerSideProps = async ({ query: urlQuery }) => {
   const product = await (async () => {
@@ -39,9 +41,21 @@ export const getServerSideProps = async ({ query: urlQuery }) => {
 };
 
 const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
+  const addToCart = useStore((state) => state.addToCart);
+
   const { publicURL: thumbnailURL } = supabase.storage
     .from("general")
     .getPublicUrl(`products/${product.thumbnail}`);
+
+  const add = () => {
+    const item = {
+      id: uuid(),
+      quantity: 1,
+      product,
+    };
+
+    addToCart(item);
+  };
 
   return (
     <div>
@@ -83,7 +97,7 @@ const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
             <p className="text-md mb-8">{numberToCurrency(product.price)}</p>
             <p className="text-xs mb-8">{product.description}</p>
-            <Button label="Add to cart" />
+            <Button label="Add to cart" onClick={add} />
           </div>
         </div>
         <div className="px-8">
