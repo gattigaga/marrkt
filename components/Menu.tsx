@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 
@@ -15,6 +15,10 @@ const Menu: React.FC<MenuProps> = ({}) => {
   const refLine2 = useRef();
   const refLine3 = useRef();
   const cartItems = useStore((state) => state.cartItems);
+
+  const totalItems = useMemo(() => {
+    return cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  }, [cartItems]);
 
   const showLine = (element: gsap.TweenTarget) => {
     gsap
@@ -175,7 +179,7 @@ const Menu: React.FC<MenuProps> = ({}) => {
             type="button"
             onClick={() => setIsCartOpen(true)}
           >
-            <span className="text-xs text-white">{cartItems.length}</span>
+            <span className="text-xs text-white">{totalItems}</span>
           </button>
         </nav>
       </div>
