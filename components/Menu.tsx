@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import Logo from "./Logo";
 import CartPopup from "./CartPopup";
 import { useStore } from "../store/store";
+import { supabase } from "../helpers/supabase";
 
 type MenuProps = {};
 
@@ -19,6 +20,8 @@ const Menu: React.FC<MenuProps> = ({}) => {
   const totalItems = useMemo(() => {
     return cartItems.reduce((acc, item) => acc + item.quantity, 0);
   }, [cartItems]);
+
+  const user = supabase.auth.user();
 
   const showLine = (element: gsap.TweenTarget) => {
     gsap
@@ -161,10 +164,12 @@ const Menu: React.FC<MenuProps> = ({}) => {
                 }
               }}
             >
-              <Link href="/account/login">
+              <Link href={user ? "/account/profile" : "/account/login"}>
                 <a>
                   <div className="flex flex-col">
-                    <span className="text-xs">My Account</span>
+                    <span className="text-xs">
+                      {user ? "My Account" : "Login"}
+                    </span>
                     <div
                       ref={refLine3}
                       className="w-0 border-t border-black mt-1"
