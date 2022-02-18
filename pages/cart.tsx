@@ -31,7 +31,10 @@ const CartPage: NextPage = () => {
   };
 
   const decrease = (itemId: string) => {
-    refMenu.current?.runTotalItemsAnimation(() => decreaseItemQty(itemId));
+    refMenu.current?.runTotalItemsAnimation(
+      () => decreaseItemQty(itemId),
+      true
+    );
   };
 
   return (

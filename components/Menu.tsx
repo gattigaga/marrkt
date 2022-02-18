@@ -46,18 +46,18 @@ const Menu = forwardRef<any, MenuProps>(({}, ref) => {
   };
 
   useImperativeHandle(ref, () => ({
-    runTotalItemsAnimation: (onAnimationRun: () => void) => {
+    runTotalItemsAnimation: (onAnimationRun: () => void, isReverse = false) => {
       if (refTotalItems.current) {
         gsap
           .timeline()
           .to(refTotalItems.current, {
-            y: -20,
+            y: isReverse ? 20 : -20,
             duration: 0.3,
             ease: Power2.easeIn,
           })
           .call(onAnimationRun)
           .set(refTotalItems.current, {
-            y: 20,
+            y: isReverse ? -20 : 20,
           })
           .to(refTotalItems.current, {
             y: 0,
