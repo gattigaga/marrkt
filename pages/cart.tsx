@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 
 import Menu from "../components/Menu";
 import Button from "../components/Button";
@@ -11,6 +11,7 @@ import { useStore } from "../store/store";
 import { supabase } from "../helpers/supabase";
 
 const CartPage: NextPage = () => {
+  const refMenu = useRef(null);
   const cartItems = useStore((state) => state.cartItems);
   const increaseItemQty = useStore((state) => state.increaseItemQty);
   const decreaseItemQty = useStore((state) => state.decreaseItemQty);
@@ -25,13 +26,21 @@ const CartPage: NextPage = () => {
     return getSubtotal(items);
   }, [cartItems]);
 
+  const increase = (itemId: string) => {
+    refMenu.current?.runTotalItemsAnimation(() => increaseItemQty(itemId));
+  };
+
+  const decrease = (itemId: string) => {
+    refMenu.current?.runTotalItemsAnimation(() => decreaseItemQty(itemId));
+  };
+
   return (
     <div>
       <Head>
         <title>Marrkt | The World #1 Marketplace</title>
       </Head>
 
-      <Menu />
+      <Menu ref={refMenu} />
       <main className="min-h-screen flex flex-col items-center">
         <div className="w-2/3 pt-28 pb-24">
           <h1 className="text-md font-medium text-black mt-4 mb-8">My Cart</h1>
@@ -84,8 +93,8 @@ const CartPage: NextPage = () => {
                         <div className="flex justify-center items-center">
                           <Counter
                             value={item.quantity}
-                            onClickIncrease={() => increaseItemQty(item.id)}
-                            onClickDecrease={() => decreaseItemQty(item.id)}
+                            onClickIncrease={() => increase(item.id)}
+                            onClickDecrease={() => decrease(item.id)}
                           />
                         </div>
                       </td>
