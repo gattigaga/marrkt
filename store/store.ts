@@ -79,7 +79,7 @@ export const useStore = create(
 
           if (item?.quantity === 1) {
             return {
-              cartItems: state.cartItems.filter((item) => item.id === itemId),
+              cartItems: state.cartItems.filter((item) => item.id !== itemId),
             };
           }
 
