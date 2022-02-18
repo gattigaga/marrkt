@@ -1,6 +1,13 @@
-import React, { useRef, useState, useEffect, useMemo } from "react";
+import React, {
+  forwardRef,
+  useRef,
+  useState,
+  useEffect,
+  useMemo,
+  useImperativeHandle,
+} from "react";
 import Link from "next/link";
-import { gsap } from "gsap";
+import { gsap, Power2 } from "gsap";
 
 import Logo from "./Logo";
 import CartPopup from "./CartPopup";
@@ -9,12 +16,13 @@ import { supabase } from "../helpers/supabase";
 
 type MenuProps = {};
 
-const Menu: React.FC<MenuProps> = ({}) => {
+const Menu = forwardRef<any, MenuProps>(({}, ref) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const refContainer = useRef();
-  const refLine1 = useRef();
-  const refLine2 = useRef();
-  const refLine3 = useRef();
+  const refContainer = useRef(null);
+  const refLine1 = useRef(null);
+  const refLine2 = useRef(null);
+  const refLine3 = useRef(null);
+  const refTotalItems = useRef(null);
   const cartItems = useStore((state) => state.cartItems);
 
   const totalItems = useMemo(() => {
@@ -36,6 +44,29 @@ const Menu: React.FC<MenuProps> = ({}) => {
       .set(element, { alignSelf: "flex-end" })
       .to(element, { width: "0%" });
   };
+
+  useImperativeHandle(ref, () => ({
+    runTotalItemsAnimation: (onAnimationRun: () => void) => {
+      if (refTotalItems.current) {
+        gsap
+          .timeline()
+          .to(refTotalItems.current, {
+            y: -20,
+            duration: 0.3,
+            ease: Power2.easeIn,
+          })
+          .call(onAnimationRun)
+          .set(refTotalItems.current, {
+            y: 20,
+          })
+          .to(refTotalItems.current, {
+            y: 0,
+            duration: 0.3,
+            ease: Power2.easeOut,
+          });
+      }
+    },
+  }));
 
   useEffect(() => {
     const animation = () => {
@@ -184,7 +215,9 @@ const Menu: React.FC<MenuProps> = ({}) => {
             type="button"
             onClick={() => setIsCartOpen(true)}
           >
-            <span className="text-xs text-white">{totalItems}</span>
+            <span ref={refTotalItems} className="text-xs text-white">
+              {totalItems}
+            </span>
           </button>
         </nav>
       </div>
@@ -194,6 +227,8 @@ const Menu: React.FC<MenuProps> = ({}) => {
       />
     </header>
   );
-};
+});
+
+Menu.displayName = "Menu";
 
 export default Menu;
