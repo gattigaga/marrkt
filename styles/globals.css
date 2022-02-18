@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .Toastify__progress-bar-theme--light {
-  background: #6b7280;
+  background: #6b7280; /* bg-gray-500 */
 }
