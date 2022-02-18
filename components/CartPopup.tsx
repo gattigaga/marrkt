@@ -97,10 +97,10 @@ const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
         onClick={(event) => event.stopPropagation()}
       >
         <div ref={refCartContent} className="h-full flex flex-col opacity-0">
-          <div className="h-32" />
+          <div className="h-24" />
           {!!cartItems.length && (
             <>
-              <div className="max-h-full overflow-y-scroll">
+              <div className="max-h-full overflow-y-auto">
                 {cartItems.map((item, index) => {
                   const isLast = index === cartItems.length - 1;
 
