@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { supabase } from "../helpers/supabase";
+import { toast } from "react-toastify";
 
 type AccountMenuProps = {};
 
@@ -30,7 +31,7 @@ const AccountMenu: React.FC<AccountMenuProps> = ({}) => {
       router.push("/account/login");
     } catch (error) {
       console.log(error);
-      alert(error?.message || "Failed to logout.");
+      toast(error?.message || "Failed to logout.");
     }
   };
 

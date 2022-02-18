@@ -5,6 +5,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 import Menu from "../../components/Menu";
 import Button from "../../components/Button";
@@ -63,7 +64,7 @@ const LoginPage: NextPage = () => {
                 router.push("/account/profile");
               } catch (error) {
                 console.log(error);
-                alert(error?.message || "Failed to login into your account.");
+                toast(error?.message || "Failed to login into your account.");
               } finally {
                 setSubmitting(false);
               }

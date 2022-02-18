@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 import AccountMenu from "../../components/AccountMenu";
 import Button from "../../components/Button";
@@ -75,10 +76,10 @@ const ProfilePage: NextPage = () => {
 
                   if (error) throw error;
 
-                  alert("Profile successfully update.");
+                  toast("Profile successfully update.");
                 } catch (error) {
                   console.log(error);
-                  alert(error?.message || "Failed to update profile.");
+                  toast(error?.message || "Failed to update profile.");
                 } finally {
                   setSubmitting(false);
                 }

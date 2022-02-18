@@ -5,6 +5,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 import Menu from "../../components/Menu";
 import Button from "../../components/Button";
@@ -81,11 +82,11 @@ const RegisterPage: NextPage = () => {
 
                 if (error) throw error;
 
-                alert("You are successfully registered.");
+                toast("You are successfully registered.");
                 router.push("/account/login");
               } catch (error) {
                 console.log(error);
-                alert(error?.message || "Failed to register your account.");
+                toast(error?.message || "Failed to register your account.");
               } finally {
                 setSubmitting(false);
               }
