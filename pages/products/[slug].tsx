@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import queryString from "query-string";
 import { v4 as uuid } from "uuid";
+import { useRouter } from "next/router";
 
 import Menu from "../../components/Menu";
 import Product from "../../components/Product";
@@ -41,13 +42,21 @@ export const getServerSideProps = async ({ query: urlQuery }) => {
 };
 
 const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
+  const router = useRouter();
   const addToCart = useStore((state) => state.addToCart);
+
+  const user = supabase.auth.user();
 
   const { publicURL: thumbnailURL } = supabase.storage
     .from("general")
     .getPublicUrl(`products/${product.thumbnail}`);
 
   const add = () => {
+    if (!user) {
+      router.push("/account/login");
+      return;
+    }
+
     const item = {
       id: uuid(),
       quantity: 1,
