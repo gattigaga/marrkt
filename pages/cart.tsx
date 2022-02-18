@@ -1,70 +1,29 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useMemo } from "react";
-import Button from "../components/Button";
-import Counter from "../components/Counter";
 
 import Menu from "../components/Menu";
+import Button from "../components/Button";
+import Counter from "../components/Counter";
 import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
+import { useStore } from "../store/store";
+import { supabase } from "../helpers/supabase";
 
 const CartPage: NextPage = () => {
-  const items = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-      {
-        id: 2,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-      {
-        id: 3,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-      {
-        id: 4,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-      {
-        id: 5,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-      {
-        id: 6,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-      {
-        id: 7,
-        name: "LT 01 Alloy",
-        price: 2456,
-        quantity: 2,
-        image: "https://via.placeholder.com/128x128",
-      },
-    ],
-    []
-  );
+  const cartItems = useStore((state) => state.cartItems);
+  const increaseItemQty = useStore((state) => state.increaseItemQty);
+  const decreaseItemQty = useStore((state) => state.decreaseItemQty);
+  const removeFromCart = useStore((state) => state.removeFromCart);
 
-  const subtotal = useMemo(() => getSubtotal(items), [items]);
+  const subtotal = useMemo(() => {
+    const items = cartItems.map((item) => ({
+      price: item.product.price,
+      quantity: item.quantity,
+    }));
+
+    return getSubtotal(items);
+  }, [cartItems]);
 
   return (
     <div>
@@ -96,22 +55,26 @@ const CartPage: NextPage = () => {
               </th>
             </thead>
             <tbody>
-              {items.map((item) => {
+              {cartItems.map((item) => {
+                const { publicURL: thumbnailURL } = supabase.storage
+                  .from("general")
+                  .getPublicUrl(`products/${item.product.thumbnail}`);
+
                 return (
                   <tr key={item.id} className="border-b border-gray-200">
                     <td className="py-4">
                       <div className="flex">
                         <img
                           className="w-16 h-16 mr-6 object-cover"
-                          src={item.image}
-                          alt={item.name}
+                          src={thumbnailURL as string}
+                          alt={item.product.name}
                         />
                         <div className="w-40 mr-auto py-2">
                           <p className="text-black text-xs font-medium truncate text-ellipsis overflow-hidden mb-1">
-                            {item.name}
+                            {item.product.name}
                           </p>
                           <p className="text-gray-500 text-xs">
-                            {numberToCurrency(item.price)}
+                            {numberToCurrency(item.product.price)}
                           </p>
                         </div>
                       </div>
@@ -120,19 +83,22 @@ const CartPage: NextPage = () => {
                       <div className="flex justify-center items-center">
                         <Counter
                           value={item.quantity}
-                          onClickIncrease={() => {}}
-                          onClickDecrease={() => {}}
+                          onClickIncrease={() => increaseItemQty(item.id)}
+                          onClickDecrease={() => decreaseItemQty(item.id)}
                         />
                       </div>
                     </td>
                     <td>
                       <p className="text-xs text-black text-center">
-                        {numberToCurrency(item.price * item.quantity)}
+                        {numberToCurrency(item.product.price * item.quantity)}
                       </p>
                     </td>
                     <td>
                       <div className="flex justify-end">
-                        <button type="button" onClick={() => {}}>
+                        <button
+                          type="button"
+                          onClick={() => removeFromCart(item.id)}
+                        >
                           <p className="text-black text-xs underline">Remove</p>
                         </button>
                       </div>
