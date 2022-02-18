@@ -26,15 +26,19 @@ const CartPage: NextPage = () => {
     return getSubtotal(items);
   }, [cartItems]);
 
-  const increase = (itemId: string) => {
+  const increaseQty = (itemId: string) => {
     refMenu.current?.runTotalItemsAnimation(() => increaseItemQty(itemId));
   };
 
-  const decrease = (itemId: string) => {
+  const decreaseQty = (itemId: string) => {
     refMenu.current?.runTotalItemsAnimation(
       () => decreaseItemQty(itemId),
       true
     );
+  };
+
+  const removeItem = (itemId: string) => {
+    refMenu.current?.runTotalItemsAnimation(() => removeFromCart(itemId), true);
   };
 
   return (
@@ -96,8 +100,8 @@ const CartPage: NextPage = () => {
                         <div className="flex justify-center items-center">
                           <Counter
                             value={item.quantity}
-                            onClickIncrease={() => increase(item.id)}
-                            onClickDecrease={() => decrease(item.id)}
+                            onClickIncrease={() => increaseQty(item.id)}
+                            onClickDecrease={() => decreaseQty(item.id)}
                           />
                         </div>
                       </td>
@@ -110,7 +114,7 @@ const CartPage: NextPage = () => {
                         <div className="flex justify-end">
                           <button
                             type="button"
-                            onClick={() => removeFromCart(item.id)}
+                            onClick={() => removeItem(item.id)}
                           >
                             <p className="text-black text-xs underline">
                               Remove
