@@ -47,6 +47,14 @@ const Button: React.FC<ButtonProps> = ({
         if (isLoading) return;
         slideOut(false);
       }}
+      onFocus={() => {
+        if (isLoading) return;
+        slideOut(true);
+      }}
+      onBlur={() => {
+        if (isLoading) return;
+        slideOut(false);
+      }}
     >
       <div
         ref={refSlide}
