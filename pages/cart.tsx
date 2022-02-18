@@ -54,71 +54,88 @@ const CartPage: NextPage = () => {
                 </p>
               </th>
             </thead>
-            <tbody>
-              {cartItems.map((item) => {
-                const { publicURL: thumbnailURL } = supabase.storage
-                  .from("general")
-                  .getPublicUrl(`products/${item.product.thumbnail}`);
+            {!!cartItems.length && (
+              <tbody>
+                {cartItems.map((item) => {
+                  const { publicURL: thumbnailURL } = supabase.storage
+                    .from("general")
+                    .getPublicUrl(`products/${item.product.thumbnail}`);
 
-                return (
-                  <tr key={item.id} className="border-b border-gray-200">
-                    <td className="py-4">
-                      <div className="flex">
-                        <img
-                          className="w-16 h-16 mr-6 object-cover"
-                          src={thumbnailURL as string}
-                          alt={item.product.name}
-                        />
-                        <div className="w-40 mr-auto py-2">
-                          <p className="text-black text-xs font-medium truncate text-ellipsis overflow-hidden mb-1">
-                            {item.product.name}
-                          </p>
-                          <p className="text-gray-500 text-xs">
-                            {numberToCurrency(item.product.price)}
-                          </p>
+                  return (
+                    <tr key={item.id} className="border-b border-gray-200">
+                      <td className="py-4">
+                        <div className="flex">
+                          <img
+                            className="w-16 h-16 mr-6 object-cover"
+                            src={thumbnailURL as string}
+                            alt={item.product.name}
+                          />
+                          <div className="w-40 mr-auto py-2">
+                            <p className="text-black text-xs font-medium truncate text-ellipsis overflow-hidden mb-1">
+                              {item.product.name}
+                            </p>
+                            <p className="text-gray-500 text-xs">
+                              {numberToCurrency(item.product.price)}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="flex justify-center items-center">
-                        <Counter
-                          value={item.quantity}
-                          onClickIncrease={() => increaseItemQty(item.id)}
-                          onClickDecrease={() => decreaseItemQty(item.id)}
-                        />
-                      </div>
-                    </td>
-                    <td>
-                      <p className="text-xs text-black text-center">
-                        {numberToCurrency(item.product.price * item.quantity)}
-                      </p>
-                    </td>
-                    <td>
-                      <div className="flex justify-end">
-                        <button
-                          type="button"
-                          onClick={() => removeFromCart(item.id)}
-                        >
-                          <p className="text-black text-xs underline">Remove</p>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
+                      </td>
+                      <td>
+                        <div className="flex justify-center items-center">
+                          <Counter
+                            value={item.quantity}
+                            onClickIncrease={() => increaseItemQty(item.id)}
+                            onClickDecrease={() => decreaseItemQty(item.id)}
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        <p className="text-xs text-black text-center">
+                          {numberToCurrency(item.product.price * item.quantity)}
+                        </p>
+                      </td>
+                      <td>
+                        <div className="flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() => removeFromCart(item.id)}
+                          >
+                            <p className="text-black text-xs underline">
+                              Remove
+                            </p>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            )}
+            {!cartItems.length && (
+              <tbody>
+                <tr>
+                  <td colSpan={4}>
+                    <p className="text-center text-xs mt-6">
+                      There&lsquo;s no items in the cart.
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            )}
           </table>
-          <div className="flex">
-            <div className="w-64 ml-auto flex flex-col items-end">
-              <div className="w-full flex justify-between py-4 mb-8">
-                <p className="text-xs font-medium text-black">Subtotal</p>
-                <p className="text-xs text-black">
-                  {numberToCurrency(subtotal)}
-                </p>
+          {!!cartItems.length && (
+            <div className="flex">
+              <div className="w-64 ml-auto flex flex-col items-end">
+                <div className="w-full flex justify-between py-4 mb-8">
+                  <p className="text-xs font-medium text-black">Subtotal</p>
+                  <p className="text-xs text-black">
+                    {numberToCurrency(subtotal)}
+                  </p>
+                </div>
+                <Button label="Checkout" />
               </div>
-              <Button label="Checkout" />
             </div>
-          </div>
+          )}
         </div>
       </main>
     </div>
