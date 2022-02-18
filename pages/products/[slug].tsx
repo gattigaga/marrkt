@@ -11,6 +11,7 @@ import { numberToCurrency } from "../../helpers/formatter";
 import { supabase } from "../../helpers/supabase";
 import { apiURL } from "../../config/app";
 import { useStore } from "../../store/store";
+import { useRef } from "react";
 
 export const getServerSideProps = async ({ query: urlQuery }) => {
   const product = await (async () => {
@@ -43,6 +44,7 @@ export const getServerSideProps = async ({ query: urlQuery }) => {
 
 const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
   const router = useRouter();
+  const refMenu = useRef();
   const addToCart = useStore((state) => state.addToCart);
 
   const user = supabase.auth.user();
@@ -63,7 +65,7 @@ const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
       product,
     };
 
-    addToCart(item);
+    refMenu.current?.runTotalItemsAnimation(() => addToCart(item));
   };
 
   return (
@@ -72,7 +74,7 @@ const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
         <title>Marrkt | The World #1 Marketplace</title>
       </Head>
 
-      <Menu />
+      <Menu ref={refMenu} />
       <main className="pb-24">
         <div className="flex mb-24">
           {/* Left side */}
