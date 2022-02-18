@@ -24,6 +24,7 @@ const Menu = forwardRef<any, MenuProps>(({}, ref) => {
   const refLine3 = useRef(null);
   const refTotalItems = useRef(null);
   const cartItems = useStore((state) => state.cartItems);
+  const removeFromCart = useStore((state) => state.removeFromCart);
 
   const totalItems = useMemo(() => {
     return cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -45,27 +46,36 @@ const Menu = forwardRef<any, MenuProps>(({}, ref) => {
       .to(element, { width: "0%" });
   };
 
+  const runTotalItemsAnimation = (
+    onAnimationRun: () => void,
+    isReverse = false
+  ) => {
+    if (refTotalItems.current) {
+      gsap
+        .timeline()
+        .to(refTotalItems.current, {
+          y: isReverse ? 20 : -20,
+          duration: 0.3,
+          ease: Power2.easeIn,
+        })
+        .call(onAnimationRun)
+        .set(refTotalItems.current, {
+          y: isReverse ? -20 : 20,
+        })
+        .to(refTotalItems.current, {
+          y: 0,
+          duration: 0.3,
+          ease: Power2.easeOut,
+        });
+    }
+  };
+
+  const removeItem = (itemId: string) => {
+    runTotalItemsAnimation(() => removeFromCart(itemId), true);
+  };
+
   useImperativeHandle(ref, () => ({
-    runTotalItemsAnimation: (onAnimationRun: () => void, isReverse = false) => {
-      if (refTotalItems.current) {
-        gsap
-          .timeline()
-          .to(refTotalItems.current, {
-            y: isReverse ? 20 : -20,
-            duration: 0.3,
-            ease: Power2.easeIn,
-          })
-          .call(onAnimationRun)
-          .set(refTotalItems.current, {
-            y: isReverse ? -20 : 20,
-          })
-          .to(refTotalItems.current, {
-            y: 0,
-            duration: 0.3,
-            ease: Power2.easeOut,
-          });
-      }
-    },
+    runTotalItemsAnimation,
   }));
 
   useEffect(() => {
@@ -223,6 +233,7 @@ const Menu = forwardRef<any, MenuProps>(({}, ref) => {
       </div>
       <CartPopup
         onClickBackdrop={() => setIsCartOpen(false)}
+        onClickRemoveItem={removeItem}
         isOpen={isCartOpen}
       />
     </header>

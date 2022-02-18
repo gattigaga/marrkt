@@ -12,10 +12,15 @@ import { useStore } from "../store/store";
 
 type CartPopupProps = {
   isOpen?: boolean;
+  onClickRemoveItem: (itemId: string) => void;
   onClickBackdrop?: () => void;
 };
 
-const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
+const CartPopup: React.FC<CartPopupProps> = ({
+  isOpen,
+  onClickRemoveItem,
+  onClickBackdrop,
+}) => {
   const refBackdrop = useRef<HTMLElement>();
   const refCart = useRef<HTMLElement>();
   const refCartContent = useRef<HTMLElement>();
@@ -115,7 +120,7 @@ const CartPopup: React.FC<CartPopupProps> = ({ isOpen, onClickBackdrop }) => {
                         quantity={item.quantity}
                         price={item.product.price}
                         image={thumbnailURL as string}
-                        onClickRemove={() => removeFromCart(item.id)}
+                        onClickRemove={() => onClickRemoveItem(item.id)}
                         isRemovable
                       />
                       {!isLast && (
