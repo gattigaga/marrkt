@@ -3,12 +3,15 @@ import "@fontsource/poppins/500.css";
 import "@fontsource/poppins/700.css";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/globals.css";
+
 import type { AppProps } from "next/app";
 import { ToastContainer } from "react-toastify";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import paypalConfig from "../config/paypal";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <>
+    <PayPalScriptProvider options={paypalConfig}>
       <Component {...pageProps} />
       <ToastContainer
         toastClassName={() =>
@@ -18,7 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         position="bottom-right"
         autoClose={2000}
       />
-    </>
+    </PayPalScriptProvider>
   );
 }
 

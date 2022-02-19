@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useRef } from "react";
+import { PayPalButtons } from "@paypal/react-paypal-js";
 
 import Menu from "../components/Menu";
-import Button from "../components/Button";
 import Counter from "../components/Counter";
 import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
@@ -148,7 +148,17 @@ const CartPage: NextPage = () => {
                     {numberToCurrency(subtotal)}
                   </p>
                 </div>
-                <Button label="Checkout" />
+                <PayPalButtons
+                  className="rounded-none w-full"
+                  style={{
+                    color: "black",
+                    layout: "horizontal",
+                    height: 40,
+                    shape: "rect",
+                    label: "checkout",
+                    tagline: false,
+                  }}
+                />
               </div>
             </div>
           )}
