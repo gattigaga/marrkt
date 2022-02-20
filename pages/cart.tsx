@@ -53,22 +53,24 @@ const CartPage: NextPage = () => {
           <h1 className="text-md font-medium text-black mt-4 mb-8">My Cart</h1>
           <table className="w-full">
             <thead className="border-b-2 border-black">
-              <th className="py-4">
-                <p className="text-xs font-medium text-black text-left">
-                  Product
-                </p>
-              </th>
-              <th className="py-4">
-                <p className="text-xs font-medium text-black">QTY</p>
-              </th>
-              <th className="py-4">
-                <p className="text-xs font-medium text-black">Subtotal</p>
-              </th>
-              <th className="py-4">
-                <p className="text-xs font-medium text-black text-right">
-                  Remove
-                </p>
-              </th>
+              <tr>
+                <th className="py-4">
+                  <p className="text-xs font-medium text-black text-left">
+                    Product
+                  </p>
+                </th>
+                <th className="py-4">
+                  <p className="text-xs font-medium text-black">QTY</p>
+                </th>
+                <th className="py-4">
+                  <p className="text-xs font-medium text-black">Subtotal</p>
+                </th>
+                <th className="py-4">
+                  <p className="text-xs font-medium text-black text-right">
+                    Remove
+                  </p>
+                </th>
+              </tr>
             </thead>
             {!!cartItems.length && (
               <tbody>
