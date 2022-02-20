@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useRef } from "react";
 import { PayPalButtons } from "@paypal/react-paypal-js";
+import { toast } from "react-toastify";
 
 import Menu from "../components/Menu";
 import Counter from "../components/Counter";
@@ -13,6 +14,7 @@ import { supabase } from "../helpers/supabase";
 const CartPage: NextPage = () => {
   const refMenu = useRef(null);
   const cartItems = useStore((state) => state.cartItems);
+  const clearCart = useStore((state) => state.clearCart);
   const increaseItemQty = useStore((state) => state.increaseItemQty);
   const decreaseItemQty = useStore((state) => state.decreaseItemQty);
   const removeFromCart = useStore((state) => state.removeFromCart);
@@ -159,6 +161,43 @@ const CartPage: NextPage = () => {
                     shape: "rect",
                     label: "checkout",
                     tagline: false,
+                  }}
+                  createOrder={(data, actions) => {
+                    return actions.order.create({
+                      purchase_units: [
+                        {
+                          items: cartItems.map((item) => {
+                            return {
+                              name: item.product.name,
+                              quantity: `${item.quantity}`,
+                              category: "PHYSICAL_GOODS",
+                              unit_amount: {
+                                currency_code: "USD",
+                                value: `${item.product.price}`,
+                              },
+                            };
+                          }),
+                          amount: {
+                            breakdown: {
+                              item_total: {
+                                currency_code: "USD",
+                                value: `${subtotal}`,
+                              },
+                            },
+                            value: `${subtotal}`,
+                          },
+                        },
+                      ],
+                    });
+                  }}
+                  onApprove={(data, actions) => {
+                    return actions.order.capture().then((details) => {
+                      clearCart();
+                      toast("Transaction completed !");
+                    });
+                  }}
+                  onError={() => {
+                    toast("Failed to checkout !");
                   }}
                 />
               </div>
