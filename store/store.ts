@@ -17,6 +17,7 @@ type CartItem = {
 
 type State = {
   cartItems: CartItem[];
+  clearCart: () => void;
   addToCart: (item: CartItem) => void;
   removeFromCart: (itemId: string) => void;
   increaseItemQty: (itemId: string) => void;
@@ -27,6 +28,9 @@ export const useStore = create(
   persist<State>(
     (set) => ({
       cartItems: [],
+      clearCart: () => {
+        set({ cartItems: [] });
+      },
       addToCart: (item: CartItem) => {
         set((state) => {
           const isItemAlreadyExists = state.cartItems.find((cartItem) => {
