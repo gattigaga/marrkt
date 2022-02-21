@@ -26,7 +26,7 @@ type Order = {
   items_count: number;
   total: number;
   created_at: string;
-  cart_items: CartItem[];
+  items: CartItem[];
 };
 
 type Data = {
@@ -54,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const { data: orders, error: ordersError } = await (() => {
       const query = supabase
         .from("orders")
-        .select("*, cart_items(*, product:products(*))")
+        .select("*, items:cart_items(*, product:products(*))")
         .order("created_at", { ascending: false })
         .eq("user_id", user_id);
 
