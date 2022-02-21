@@ -18,11 +18,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     return;
   }
 
-  const { data: categories } = await supabase
-    .from("product_categories")
-    .select("*");
+  try {
+    const { data: categories, error } = await supabase
+      .from("product_categories")
+      .select("*");
 
-  res.status(200).json({ data: categories });
+    if (error) {
+      throw error;
+    }
+
+    res.status(200).json({ data: categories });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default handler;
