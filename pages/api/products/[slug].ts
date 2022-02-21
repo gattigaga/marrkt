@@ -1,6 +1,18 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabase } from "../../../helpers/supabase";
 
+type Category = {
+  id: number;
+  name: string;
+  slug: string;
+};
+
+type Image = {
+  id: number;
+  product_id: number;
+  image: string;
+};
+
 type Product = {
   id: number;
   name: string;
@@ -9,6 +21,8 @@ type Product = {
   description: string;
   product_category_id: number;
   thumbnail: string;
+  category: Category;
+  images: Image[];
 };
 
 type Data = {
@@ -22,22 +36,30 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     return;
   }
 
-  const { slug } = req.query as {
-    [key: string]: string;
-  };
+  try {
+    const { slug } = req.query as {
+      [key: string]: string;
+    };
 
-  const { data: product } = await (() => {
-    const query = supabase
-      .from("products")
-      .select("*, product_categories(*), product_images(*)")
-      .eq("slug", slug)
-      .limit(1)
-      .single();
+    const { data: product, error } = await (() => {
+      const query = supabase
+        .from("products")
+        .select("*, categories:product_categories(*), images:product_images(*)")
+        .eq("slug", slug)
+        .limit(1)
+        .single();
 
-    return query;
-  })();
+      return query;
+    })();
 
-  res.status(200).json({ data: product });
+    if (error) {
+      throw error;
+    }
+
+    res.status(200).json({ data: product });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default handler;
