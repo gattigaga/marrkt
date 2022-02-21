@@ -44,7 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const { data: product, error } = await (() => {
       const query = supabase
         .from("products")
-        .select("*, categories:product_categories(*), images:product_images(*)")
+        .select("*, category:product_categories(*), images:product_images(*)")
         .eq("slug", slug)
         .limit(1)
         .single();
