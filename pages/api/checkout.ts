@@ -3,7 +3,7 @@ import { supabase } from "../../helpers/supabase";
 
 type Shipping = {
   id: number;
-  order_id: string;
+  order_id: number;
   person_name: string;
   address_1: string;
   address_2: string;
@@ -27,8 +27,8 @@ type Order = {
   items_count: number;
   total: number;
   created_at: string;
-  shipping_items: Shipping;
-  cart_items: CartItem;
+  shipping: Shipping;
+  items: CartItem[];
 };
 
 type Data = {
@@ -61,14 +61,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       }[];
     };
 
-    const { data: products } = await (() => {
+    const { data: products, error: productsError } = await (() => {
       const productIds = body.items.map((item) => item.product_id);
       const query = supabase.from("products").select("*").in("id", productIds);
 
       return query;
     })();
 
-    const { data: order } = await (() => {
+    if (productsError) {
+      throw productsError;
+    }
+
+    const { data: order, error: orderError } = await (() => {
       const query = supabase
         .from("orders")
         .insert([
@@ -91,7 +95,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       return query;
     })();
 
-    await (() => {
+    if (orderError) {
+      throw orderError;
+    }
+
+    const { error: shippingError } = await (() => {
       const query = supabase.from("shipping_items").insert([
         {
           order_id: order.id,
@@ -108,7 +116,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       return query;
     })();
 
-    await (() => {
+    if (shippingError) {
+      throw shippingError;
+    }
+
+    const { error: cartItemsError } = await (() => {
       const cartItems = body.items.map((item) => {
         const product = products?.find(
           (product) => product.id === item.product_id
@@ -127,16 +139,26 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       return query;
     })();
 
-    const { data: result } = await (() => {
+    if (cartItemsError) {
+      throw cartItemsError;
+    }
+
+    const { data: result, error: resultError } = await (() => {
       const query = supabase
         .from("orders")
-        .select("*, cart_items(*, product(*)), shipping_items(*)")
+        .select(
+          "*, items:cart_items(*, product(*)), shipping:shipping_items(*)"
+        )
         .eq("id", order.id)
         .limit(1)
         .single();
 
       return query;
     })();
+
+    if (resultError) {
+      throw resultError;
+    }
 
     res.status(200).json({ data: result });
   } catch (error) {
