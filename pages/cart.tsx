@@ -10,6 +10,7 @@ import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
 import { useStore } from "../store/store";
 import { supabase } from "../helpers/supabase";
+import { apiURL } from "../config/app";
 
 const CartPage: NextPage = () => {
   const refMenu = useRef(null);
@@ -18,6 +19,9 @@ const CartPage: NextPage = () => {
   const increaseItemQty = useStore((state) => state.increaseItemQty);
   const decreaseItemQty = useStore((state) => state.decreaseItemQty);
   const removeFromCart = useStore((state) => state.removeFromCart);
+  const invoiceCode = useMemo(() => `INV/${Date.now()}`, []);
+
+  const user = supabase.auth.user();
 
   const subtotal = useMemo(() => {
     const items = cartItems.map((item) => ({
@@ -41,6 +45,49 @@ const CartPage: NextPage = () => {
 
   const removeItem = (itemId: string) => {
     refMenu.current?.runTotalItemsAnimation(() => removeFromCart(itemId), true);
+  };
+
+  const checkout = async (shipping: {
+    person_name: string;
+    address_1?: string;
+    address_2?: string;
+    admin_area_1?: string;
+    admin_area_2?: string;
+    postal_code?: string;
+    country_code: string;
+  }) => {
+    if (!user) return;
+
+    try {
+      const body = JSON.stringify({
+        user_id: user.id,
+        invoice_code: invoiceCode,
+        shipping: {
+          person_name: shipping.person_name,
+          address_1: shipping.address_1,
+          address_2: shipping.address_2,
+          admin_area_1: shipping.admin_area_1,
+          admin_area_2: shipping.admin_area_2,
+          postal_code: shipping.postal_code,
+          country_code: shipping.country_code,
+        },
+        items: cartItems.map((item) => ({
+          product_id: item.product.id,
+          quantity: item.quantity,
+        })),
+      });
+
+      await fetch(`${apiURL}/checkout`, {
+        method: "POST",
+        body,
+      });
+
+      clearCart();
+      toast("Transaction completed !");
+    } catch (error) {
+      console.log(error);
+      toast("Failed to submit checkout data !");
+    }
   };
 
   return (
@@ -166,6 +213,7 @@ const CartPage: NextPage = () => {
                     return actions.order.create({
                       purchase_units: [
                         {
+                          invoice_id: invoiceCode,
                           items: cartItems.map((item) => {
                             return {
                               name: item.product.name,
@@ -192,8 +240,22 @@ const CartPage: NextPage = () => {
                   }}
                   onApprove={(data, actions) => {
                     return actions.order.capture().then((details) => {
-                      clearCart();
-                      toast("Transaction completed !");
+                      const shipping = details.purchase_units[0].shipping;
+
+                      if (!shipping) {
+                        toast("Failed to get shipping data !");
+                        return;
+                      }
+
+                      checkout({
+                        person_name: shipping.name.full_name,
+                        address_1: shipping.address.address_line_1,
+                        address_2: shipping.address.address_line_2,
+                        admin_area_1: shipping.address.admin_area_1,
+                        admin_area_2: shipping.address.admin_area_2,
+                        postal_code: shipping.address.postal_code,
+                        country_code: shipping.address.country_code,
+                      });
                     });
                   }}
                   onError={() => {
