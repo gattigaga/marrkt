@@ -24,7 +24,7 @@ export const getServerSideProps = async ({ query: urlQuery }) => {
 
   const { relatedProducts } = await (async () => {
     const query = queryString.stringify({
-      categories: product.product_categories.slug,
+      categories: product.category.slug,
       page: 1,
     });
 
@@ -86,7 +86,7 @@ const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
                 alt={`${product.name} Thumbnail`}
               />
             </div>
-            {product.product_images.map((image, index) => {
+            {product.images.map((image, index) => {
               const { publicURL: imageURL } = supabase.storage
                 .from("general")
                 .getPublicUrl(`products/${product.thumbnail}`);
