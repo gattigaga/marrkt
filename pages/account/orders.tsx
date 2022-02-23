@@ -2,31 +2,46 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
+import queryString from "query-string";
 
 import Menu from "../../components/Menu";
 import OrderItem from "../../components/OrderItem";
 import Pagination from "../../components/Pagination";
 import { supabase } from "../../helpers/supabase";
 import AccountMenu from "../../components/AccountMenu";
+import { apiURL } from "../../config/app";
 
-const OrdersPage: NextPage = () => {
+export const getServerSideProps = async ({ req, query: urlQuery }) => {
+  const { user } = await supabase.auth.api.getUserByCookie(req);
+
+  const { orders, totalPages } = await (async () => {
+    const query = queryString.stringify({
+      user_id: user?.id,
+      page: urlQuery?.page || 1,
+    });
+
+    const res = await fetch(`${apiURL}/orders?${query}`);
+    const { data: orders, metadata } = await res.json();
+
+    return {
+      orders,
+      totalPages: metadata.totalPages,
+    };
+  })();
+
+  return {
+    props: {
+      orders,
+      totalPages,
+    },
+  };
+};
+
+const OrdersPage: NextPage = ({ orders, totalPages }) => {
   const router = useRouter();
 
-  const items = useMemo(() => {
-    return [...Array(5)].map((_, index) => {
-      return {
-        id: index + 1,
-        thumbnail: "/images/person.jpg",
-        code: "INV/230895",
-        totalItems: 3,
-        amount: 5000,
-        date: "2021-05-21 08:30:00",
-        url: "/",
-      };
-    });
-  }, []);
-
   const user = supabase.auth.user();
+  const currentPage = Number(router.query.page as string) || 1;
 
   useEffect(() => {
     if (!user) {
@@ -50,22 +65,37 @@ const OrdersPage: NextPage = () => {
         <div className="w-3/4 ml-auto">
           <h1 className="text-md font-medium text-black mb-8">Orders</h1>
           <div className="mb-8">
-            {items.map((item) => {
+            {orders.map((order) => {
+              const { publicURL: thumbnailURL } = supabase.storage
+                .from("general")
+                .getPublicUrl(`products/${order.items[0].product.thumbnail}`);
+
               return (
                 <OrderItem
-                  key={item.id}
-                  code={item.code}
-                  thumbnail={item.thumbnail}
-                  totalItems={item.totalItems}
-                  amount={item.amount}
-                  date={item.date}
-                  url={item.url}
+                  key={order.id}
+                  code={order.invoice_code}
+                  thumbnail={thumbnailURL as string}
+                  totalItems={order.items_count}
+                  amount={order.total}
+                  date={order.created_at}
+                  url="/"
                 />
               );
             })}
           </div>
           <div className="flex justify-center">
-            <Pagination initialPage={0} totalPages={10} />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(pageIndex) => {
+                const query = queryString.stringify({
+                  ...router.query,
+                  page: pageIndex,
+                });
+
+                router.push(`/products?${query}`);
+              }}
+            />
           </div>
         </div>
       </main>
