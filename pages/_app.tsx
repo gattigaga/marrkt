@@ -8,11 +8,17 @@ import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+
 import paypalConfig from "../config/paypal";
 import { supabase } from "../helpers/supabase";
 import { apiURL } from "../config/app";
+import { useStore } from "../store/store";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const clearCart = useStore((state) => state.clearCart);
+
+  const user = supabase.auth.user();
+
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -30,6 +36,12 @@ function MyApp({ Component, pageProps }: AppProps) {
       authListener?.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (!user) {
+      clearCart();
+    }
+  }, [user]);
 
   return (
     <PayPalScriptProvider options={paypalConfig}>
