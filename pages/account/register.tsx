@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { toast } from "react-toastify";
 
 import Menu from "../../components/Menu";
@@ -30,18 +29,25 @@ const validationSchema = Yup.object({
     .required("Password is required"),
 });
 
+export const getServerSideProps = async ({ req }) => {
+  const { user } = await supabase.auth.api.getUserByCookie(req);
+
+  if (user) {
+    return {
+      redirect: {
+        destination: "/account/profile",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
+
 const RegisterPage: NextPage = () => {
   const router = useRouter();
-
-  const user = supabase.auth.user();
-
-  useEffect(() => {
-    if (user) {
-      router.replace("/account/profile");
-    }
-  }, []);
-
-  if (user) return null;
 
   return (
     <div>
