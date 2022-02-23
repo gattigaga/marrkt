@@ -63,39 +63,52 @@ const OrdersPage: NextPage = ({ orders, totalPages }) => {
         </div>
         <div className="w-3/4 ml-auto">
           <h1 className="text-md font-medium text-black mb-8">Orders</h1>
-          <div className="mb-8">
-            {orders.map((order) => {
-              const { publicURL: thumbnailURL } = supabase.storage
-                .from("general")
-                .getPublicUrl(`products/${order.items[0].product.thumbnail}`);
+          {!!orders.length && (
+            <>
+              <div className="mb-8">
+                {orders.map((order) => {
+                  const { publicURL: thumbnailURL } = supabase.storage
+                    .from("general")
+                    .getPublicUrl(
+                      `products/${order.items[0].product.thumbnail}`
+                    );
 
-              return (
-                <OrderItem
-                  key={order.id}
-                  code={order.invoice_code}
-                  thumbnail={thumbnailURL as string}
-                  totalItems={order.items_count}
-                  amount={order.total}
-                  date={order.created_at}
-                  url="/"
+                  return (
+                    <OrderItem
+                      key={order.id}
+                      code={order.invoice_code}
+                      thumbnail={thumbnailURL as string}
+                      totalItems={order.items_count}
+                      amount={order.total}
+                      date={order.created_at}
+                      url="/"
+                    />
+                  );
+                })}
+              </div>
+              <div className="flex justify-center">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={(pageIndex) => {
+                    const query = queryString.stringify({
+                      ...router.query,
+                      page: pageIndex,
+                    });
+
+                    router.push(`/account/orders?${query}`);
+                  }}
                 />
-              );
-            })}
-          </div>
-          <div className="flex justify-center">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={(pageIndex) => {
-                const query = queryString.stringify({
-                  ...router.query,
-                  page: pageIndex,
-                });
-
-                router.push(`/account/orders?${query}`);
-              }}
-            />
-          </div>
+              </div>
+            </>
+          )}
+          {!orders.length && (
+            <div>
+              <p className="text-xs text-black">
+                There&lsquo;s no orders found.
+              </p>
+            </div>
+          )}
         </div>
       </main>
     </div>
