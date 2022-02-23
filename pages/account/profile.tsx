@@ -1,9 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import React, { useEffect } from "react";
+import React from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
 import AccountMenu from "../../components/AccountMenu";
@@ -26,18 +25,25 @@ const validationSchema = Yup.object({
     .required("Email is required"),
 });
 
+export const getServerSideProps = async ({ req }) => {
+  const { user } = await supabase.auth.api.getUserByCookie(req);
+
+  if (!user) {
+    return {
+      redirect: {
+        destination: "/account/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
+
 const ProfilePage: NextPage = () => {
-  const router = useRouter();
-
   const user = supabase.auth.user();
-
-  useEffect(() => {
-    if (!user) {
-      router.replace("/account/login");
-    }
-  }, []);
-
-  if (!user) return null;
 
   return (
     <div>
