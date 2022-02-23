@@ -15,8 +15,8 @@ const Button: React.FC<ButtonProps> = ({
   isLoading,
   onClick,
 }) => {
-  const refSlide = useRef();
-  const refLabel = useRef();
+  const refSlide = useRef(null);
+  const refLabel = useRef(null);
 
   const slideOut = (isHovered: boolean) => {
     if (!(refSlide.current && refLabel.current)) return;
@@ -58,7 +58,7 @@ const Button: React.FC<ButtonProps> = ({
     >
       <div
         ref={refSlide}
-        className="w-[128px] h-10 bg-black absolute top-0 left-0"
+        className="w-full h-full bg-black absolute top-0 left-0 box-content"
       />
       {!isLoading && (
         <span
