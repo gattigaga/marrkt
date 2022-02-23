@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import queryString from "query-string";
 import { v4 as uuid } from "uuid";
+import Image from "next/image";
 import { useRouter } from "next/router";
 
 import Menu from "../../components/Menu";
@@ -79,26 +80,27 @@ const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
         <div className="flex mb-24">
           {/* Left side */}
           <div className="flex-1 grid grid-cols-2 gap-2">
-            <div>
-              <img
-                className="w-full h-full object-cover"
-                src={thumbnailURL as string}
-                alt={`${product.name} Thumbnail`}
-              />
-            </div>
+            <Image
+              className="w-full h-full object-cover"
+              src={thumbnailURL as string}
+              alt={`${product.name} Thumbnail`}
+              width={480}
+              height={480}
+            />
             {product.images.map((image, index) => {
               const { publicURL: imageURL } = supabase.storage
                 .from("general")
                 .getPublicUrl(`products/${product.thumbnail}`);
 
               return (
-                <div key={image.id}>
-                  <img
-                    className="w-full h-full object-cover"
-                    src={imageURL as string}
-                    alt={`${product.name} ${index + 1}`}
-                  />
-                </div>
+                <Image
+                  key={image.id}
+                  className="w-full h-full object-cover"
+                  src={imageURL as string}
+                  alt={`${product.name} ${index + 1}`}
+                  width={480}
+                  height={480}
+                />
               );
             })}
           </div>
