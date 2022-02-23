@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 import { numberToCurrency } from "../helpers/formatter";
 
@@ -17,10 +18,12 @@ const Product: React.FC<ProductProps> = ({ image, name, price, url }) => {
     <Link href={url}>
       <a>
         <figure>
-          <img
+          <Image
             className="w-full aspect-square mb-2 sm:mb-3"
             src={image}
             alt={name}
+            width={320}
+            height={320}
           />
           <figcaption>
             <p className="text-xs truncate text-ellipsis overflow-hidden font-medium sm:mb-1">
