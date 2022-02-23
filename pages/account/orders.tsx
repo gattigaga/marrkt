@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import React, { useEffect, useMemo } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import queryString from "query-string";
 
@@ -13,6 +13,15 @@ import { apiURL } from "../../config/app";
 
 export const getServerSideProps = async ({ req, query: urlQuery }) => {
   const { user } = await supabase.auth.api.getUserByCookie(req);
+
+  if (!user) {
+    return {
+      redirect: {
+        destination: "/account/login",
+        permanent: false,
+      },
+    };
+  }
 
   const { orders, totalPages } = await (async () => {
     const query = queryString.stringify({
@@ -39,17 +48,7 @@ export const getServerSideProps = async ({ req, query: urlQuery }) => {
 
 const OrdersPage: NextPage = ({ orders, totalPages }) => {
   const router = useRouter();
-
-  const user = supabase.auth.user();
   const currentPage = Number(router.query.page as string) || 1;
-
-  useEffect(() => {
-    if (!user) {
-      router.replace("/account/login");
-    }
-  }, []);
-
-  if (!user) return null;
 
   return (
     <div>
@@ -93,7 +92,7 @@ const OrdersPage: NextPage = ({ orders, totalPages }) => {
                   page: pageIndex,
                 });
 
-                router.push(`/products?${query}`);
+                router.push(`/account/orders?${query}`);
               }}
             />
           </div>
