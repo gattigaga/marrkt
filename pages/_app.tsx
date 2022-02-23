@@ -5,11 +5,32 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styles/globals.css";
 
 import type { AppProps } from "next/app";
+import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import paypalConfig from "../config/paypal";
+import { supabase } from "../helpers/supabase";
+import { apiURL } from "../config/app";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        fetch(`${apiURL}/auth`, {
+          method: "POST",
+          headers: new Headers({
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify({ event, session }),
+        });
+      }
+    );
+
+    return () => {
+      authListener?.unsubscribe();
+    };
+  }, []);
+
   return (
     <PayPalScriptProvider options={paypalConfig}>
       <Component {...pageProps} />
