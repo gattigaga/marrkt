@@ -13,6 +13,23 @@ import { useStore } from "../store/store";
 import { supabase } from "../helpers/supabase";
 import { apiURL } from "../config/app";
 
+export const getServerSideProps = async ({ req }) => {
+  const { user } = await supabase.auth.api.getUserByCookie(req);
+
+  if (!user) {
+    return {
+      redirect: {
+        destination: "/account/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
+
 const CartPage: NextPage = () => {
   const refMenu = useRef(null);
   const cartItems = useStore((state) => state.cartItems);
