@@ -2,8 +2,6 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useMemo, useRef } from "react";
-import { PayPalButtons } from "@paypal/react-paypal-js";
-import { toast } from "react-toastify";
 
 import Menu from "../components/Menu";
 import Counter from "../components/Counter";
@@ -11,7 +9,8 @@ import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
 import { useStore } from "../store/store";
 import { supabase } from "../helpers/supabase";
-import { apiURL } from "../config/app";
+import Button from "../components/Button";
+import { useRouter } from "next/router";
 
 export const getServerSideProps = async ({ req }) => {
   const { user } = await supabase.auth.api.getUserByCookie(req);
@@ -31,13 +30,13 @@ export const getServerSideProps = async ({ req }) => {
 };
 
 const CartPage: NextPage = () => {
+  const router = useRouter();
   const refMenu = useRef(null);
   const cartItems = useStore((state) => state.cartItems);
   const clearCart = useStore((state) => state.clearCart);
   const increaseItemQty = useStore((state) => state.increaseItemQty);
   const decreaseItemQty = useStore((state) => state.decreaseItemQty);
   const removeFromCart = useStore((state) => state.removeFromCart);
-  const invoiceCode = useMemo(() => `INV/${Date.now()}`, []);
 
   const user = supabase.auth.user();
 
@@ -63,52 +62,6 @@ const CartPage: NextPage = () => {
 
   const removeItem = (itemId: string) => {
     refMenu.current?.runTotalItemsAnimation(() => removeFromCart(itemId), true);
-  };
-
-  const checkout = async (shipping: {
-    person_name: string;
-    address_1?: string;
-    address_2?: string;
-    admin_area_1?: string;
-    admin_area_2?: string;
-    postal_code?: string;
-    country_code: string;
-  }) => {
-    if (!user) return;
-
-    try {
-      const body = JSON.stringify({
-        user_id: user.id,
-        invoice_code: invoiceCode,
-        shipping: {
-          person_name: shipping.person_name,
-          address_1: shipping.address_1,
-          address_2: shipping.address_2,
-          admin_area_1: shipping.admin_area_1,
-          admin_area_2: shipping.admin_area_2,
-          postal_code: shipping.postal_code,
-          country_code: shipping.country_code,
-        },
-        items: cartItems.map((item) => ({
-          product_id: item.product.id,
-          quantity: item.quantity,
-        })),
-      });
-
-      await fetch(`${apiURL}/checkout`, {
-        method: "POST",
-        headers: new Headers({
-          "Content-Type": "application/json",
-        }),
-        body,
-      });
-
-      clearCart();
-      toast("Transaction completed !");
-    } catch (error) {
-      console.log(error);
-      toast("Failed to submit checkout data !");
-    }
   };
 
   return (
@@ -222,68 +175,9 @@ const CartPage: NextPage = () => {
                     {numberToCurrency(subtotal)}
                   </p>
                 </div>
-                <PayPalButtons
-                  className="rounded-none w-full"
-                  style={{
-                    color: "black",
-                    layout: "horizontal",
-                    height: 40,
-                    shape: "rect",
-                    label: "checkout",
-                    tagline: false,
-                  }}
-                  createOrder={(data, actions) => {
-                    return actions.order.create({
-                      purchase_units: [
-                        {
-                          invoice_id: invoiceCode,
-                          items: cartItems.map((item) => {
-                            return {
-                              name: item.product.name,
-                              quantity: `${item.quantity}`,
-                              category: "PHYSICAL_GOODS",
-                              unit_amount: {
-                                currency_code: "USD",
-                                value: `${item.product.price}`,
-                              },
-                            };
-                          }),
-                          amount: {
-                            breakdown: {
-                              item_total: {
-                                currency_code: "USD",
-                                value: `${subtotal}`,
-                              },
-                            },
-                            value: `${subtotal}`,
-                          },
-                        },
-                      ],
-                    });
-                  }}
-                  onApprove={(data, actions) => {
-                    return actions.order.capture().then((details) => {
-                      const shipping = details.purchase_units[0].shipping;
-
-                      if (!shipping) {
-                        toast("Failed to get shipping data !");
-                        return;
-                      }
-
-                      checkout({
-                        person_name: shipping.name.full_name,
-                        address_1: shipping.address.address_line_1,
-                        address_2: shipping.address.address_line_2,
-                        admin_area_1: shipping.address.admin_area_1,
-                        admin_area_2: shipping.address.admin_area_2,
-                        postal_code: shipping.address.postal_code,
-                        country_code: shipping.address.country_code,
-                      });
-                    });
-                  }}
-                  onError={() => {
-                    toast("Failed to checkout !");
-                  }}
+                <Button
+                  label="Checkout"
+                  onClick={() => router.push("/checkout")}
                 />
               </div>
             </div>
