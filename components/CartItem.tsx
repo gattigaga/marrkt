@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 import { numberToCurrency } from "../helpers/formatter";
 
@@ -23,8 +24,14 @@ const CartItem: React.FC<CartItemProps> = ({
 
   return (
     <div className="flex py-4">
-      <img className="w-16 h-16 mr-6 object-cover" src={image} alt={name} />
-      <div className="w-40 mr-auto py-2">
+      <Image
+        className="w-16 h-16 object-cover"
+        src={image}
+        alt={name}
+        width={64}
+        height={64}
+      />
+      <div className="w-40 ml-6 mr-auto py-2">
         <p className="text-black text-xs font-medium truncate text-ellipsis overflow-hidden mb-1">
           {name}
         </p>
