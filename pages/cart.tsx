@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import { useMemo, useRef } from "react";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "react-toastify";
@@ -135,12 +136,14 @@ const CartPage: NextPage = () => {
                     <tr key={item.id} className="border-b border-gray-200">
                       <td className="py-4">
                         <div className="flex">
-                          <img
-                            className="w-16 h-16 mr-6 object-cover"
+                          <Image
+                            className="w-16 h-16 object-cover"
                             src={thumbnailURL as string}
                             alt={item.product.name}
+                            width={64}
+                            height={64}
                           />
-                          <div className="w-40 mr-auto py-2">
+                          <div className="w-40 ml-6 mr-auto py-2">
                             <p className="text-black text-xs font-medium truncate text-ellipsis overflow-hidden mb-1">
                               {item.product.name}
                             </p>
