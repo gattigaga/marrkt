@@ -4,12 +4,12 @@ import React from "react";
 import { useRouter } from "next/router";
 import queryString from "query-string";
 
-import Menu from "../../components/Menu";
-import OrderItem from "../../components/OrderItem";
-import Pagination from "../../components/Pagination";
-import { supabase } from "../../helpers/supabase";
-import AccountMenu from "../../components/AccountMenu";
-import { apiURL } from "../../config/app";
+import Menu from "../../../components/Menu";
+import OrderItem from "../../../components/OrderItem";
+import Pagination from "../../../components/Pagination";
+import { supabase } from "../../../helpers/supabase";
+import AccountMenu from "../../../components/AccountMenu";
+import { apiURL } from "../../../config/app";
 
 export const getServerSideProps = async ({ req, query: urlQuery }) => {
   const { user } = await supabase.auth.api.getUserByCookie(req);
