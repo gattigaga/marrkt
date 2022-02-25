@@ -43,7 +43,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   }
 
   try {
-    const body = JSON.parse(req.body) as {
+    const body = req.body as {
       user_id: string;
       invoice_code: string;
       shipping: {
@@ -147,7 +147,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       const query = supabase
         .from("orders")
         .select(
-          "*, items:cart_items(*, product(*)), shipping:shipping_items(*)"
+          "*, items:cart_items(*, product:products(*)), shipping:shipping_items(*)"
         )
         .eq("id", order.id)
         .limit(1)
