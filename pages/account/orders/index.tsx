@@ -81,7 +81,7 @@ const OrdersPage: NextPage = ({ orders, totalPages }) => {
                       totalItems={order.items_count}
                       amount={order.total}
                       date={order.created_at}
-                      url="/"
+                      url={`/account/orders/${order.invoice_code}`}
                     />
                   );
                 })}
