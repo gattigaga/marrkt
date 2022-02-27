@@ -33,8 +33,10 @@ const OrderItem: React.FC<OrderItemProps> = ({
             height={64}
           />
           <div className="flex-1 ml-6">
-            <p className="text-xs text-black mb-2">{code}</p>
-            <p className="text-xs text-gray-500">Total items: {totalItems}</p>
+            <p className="text-xs font-medium text-black mb-2">#{code}</p>
+            <p className="text-xs text-gray-500">
+              Total items: {totalItems} pcs
+            </p>
             <p className="text-xs text-gray-500">
               {format(new Date(date), "EEEE, dd MMM yyyy hh:mm")}
             </p>
