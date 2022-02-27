@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useMemo, useRef } from "react";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "react-toastify";
@@ -17,6 +18,7 @@ const CheckoutPage: NextPage = () => {
   const cartItems = useStore((state) => state.cartItems);
   const clearCart = useStore((state) => state.clearCart);
   const invoiceCode = useMemo(() => `${Date.now()}`, []);
+  const router = useRouter();
 
   const user = supabase.auth.user();
 
@@ -67,6 +69,7 @@ const CheckoutPage: NextPage = () => {
         body,
       });
 
+      router.push(`/account/orders/${invoiceCode}`);
       clearCart();
       toast("Transaction completed !");
     } catch (error) {
@@ -90,7 +93,7 @@ const CheckoutPage: NextPage = () => {
             </h1>
             <p className="text-xs text-gray-500 mb-1">
               Invoice:&nbsp;&nbsp;&nbsp;
-              <span className="text-black font-medium">INV/{invoiceCode}</span>
+              <span className="text-black font-medium">#{invoiceCode}</span>
             </p>
             <p className="text-xs text-gray-500 mb-1">
               Payment Method:&nbsp;&nbsp;&nbsp;
