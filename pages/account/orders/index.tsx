@@ -9,7 +9,7 @@ import OrderItem from "../../../components/OrderItem";
 import Pagination from "../../../components/Pagination";
 import { supabase } from "../../../helpers/supabase";
 import AccountMenu from "../../../components/AccountMenu";
-import { apiURL } from "../../../config/app";
+import axios from "../../../helpers/axios";
 
 export const getServerSideProps = async ({ req, query: urlQuery }) => {
   const { user } = await supabase.auth.api.getUserByCookie(req);
@@ -24,13 +24,13 @@ export const getServerSideProps = async ({ req, query: urlQuery }) => {
   }
 
   const { orders, totalPages } = await (async () => {
-    const query = queryString.stringify({
+    const params = {
       user_id: user?.id,
       page: urlQuery?.page || 1,
-    });
+    };
 
-    const res = await fetch(`${apiURL}/orders?${query}`);
-    const { data: orders, metadata } = await res.json();
+    const res = await axios.get("/orders", { params });
+    const { data: orders, metadata } = res.data;
 
     return {
       orders,
