@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
+import { useRef } from "react";
 import Head from "next/head";
-import queryString from "query-string";
 import { v4 as uuid } from "uuid";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -10,29 +10,28 @@ import Product from "../../components/Product";
 import Button from "../../components/Button";
 import { numberToCurrency } from "../../helpers/formatter";
 import { supabase } from "../../helpers/supabase";
-import { apiURL } from "../../config/app";
 import { useStore } from "../../store/store";
-import { useRef } from "react";
+import axios from "../../helpers/axios";
 
 export const getServerSideProps = async ({ query: urlQuery }) => {
   const product = await (async () => {
     const { slug } = urlQuery;
-    const res = await fetch(`${apiURL}/products/${slug}`);
-    const { data } = await res.json();
+    const res = await axios.get(`/products/${slug}`);
+    const result = await res.data.data;
 
-    return data;
+    return result;
   })();
 
   const { relatedProducts } = await (async () => {
-    const query = queryString.stringify({
+    const params = {
       categories: product.category.slug,
       page: 1,
-    });
+    };
 
-    const res = await fetch(`${apiURL}/products?${query}`);
-    const { data: products } = await res.json();
+    const res = await axios.get(`/products`, { params });
+    const result = res.data.data;
 
-    return { relatedProducts: products.slice(0, 4) };
+    return { relatedProducts: result.slice(0, 4) };
   })();
 
   return {
