@@ -11,7 +11,7 @@ import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
 import { useStore } from "../store/store";
 import { supabase } from "../helpers/supabase";
-import { apiURL } from "../config/app";
+import axios from "../helpers/axios";
 
 const CheckoutPage: NextPage = () => {
   const refMenu = useRef(null);
@@ -43,7 +43,7 @@ const CheckoutPage: NextPage = () => {
     if (!user) return;
 
     try {
-      const body = JSON.stringify({
+      const body = {
         user_id: user.id,
         invoice_code: invoiceCode,
         shipping: {
@@ -59,15 +59,9 @@ const CheckoutPage: NextPage = () => {
           product_id: item.product.id,
           quantity: item.quantity,
         })),
-      });
+      };
 
-      await fetch(`${apiURL}/checkout`, {
-        method: "POST",
-        headers: new Headers({
-          "Content-Type": "application/json",
-        }),
-        body,
-      });
+      await axios.post("/checkout", body);
 
       router.push(`/account/orders/${invoiceCode}`);
       clearCart();
