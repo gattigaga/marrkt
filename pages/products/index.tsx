@@ -7,25 +7,25 @@ import Filter from "../../components/Filter";
 import Menu from "../../components/Menu";
 import Pagination from "../../components/Pagination";
 import Product from "../../components/Product";
-import { apiURL } from "../../config/app";
 import { supabase } from "../../helpers/supabase";
+import axios from "../../helpers/axios";
 
 export const getServerSideProps = async ({ query: urlQuery }) => {
   const categories = await (async () => {
-    const res = await fetch(`${apiURL}/product-categories`);
-    const { data } = await res.json();
+    const res = await axios.get("/product-categories");
+    const result = res.data.data;
 
-    return data;
+    return result;
   })();
 
   const { products, totalPages } = await (async () => {
-    const query = queryString.stringify({
+    const params = {
       ...urlQuery,
       page: urlQuery?.page || 1,
-    });
+    };
 
-    const res = await fetch(`${apiURL}/products?${query}`);
-    const { data: products, metadata } = await res.json();
+    const res = await axios.get("/products", { params });
+    const { data: products, metadata } = res.data;
 
     return { products, totalPages: metadata.totalPages };
   })();
