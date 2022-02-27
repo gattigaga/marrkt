@@ -22,7 +22,9 @@ type CartItem = {
 };
 
 type Order = {
+  id: number;
   user_id: string;
+  shipping_item_id: number;
   invoice_code: string;
   items_count: number;
   total: number;
@@ -72,12 +74,37 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       throw productsError;
     }
 
+    const { data: shipping, error: shippingError } = await (() => {
+      const query = supabase
+        .from("shipping_items")
+        .insert([
+          {
+            person_name: body.shipping.person_name,
+            address_1: body.shipping.address_1,
+            address_2: body.shipping.address_2,
+            admin_area_1: body.shipping.admin_area_1,
+            admin_area_2: body.shipping.admin_area_2,
+            postal_code: body.shipping.postal_code,
+            country_code: body.shipping.country_code,
+          },
+        ])
+        .limit(1)
+        .single();
+
+      return query;
+    })();
+
+    if (shippingError) {
+      throw shippingError;
+    }
+
     const { data: order, error: orderError } = await (() => {
       const query = supabase
         .from("orders")
         .insert([
           {
             user_id: body.user_id,
+            shipping_item_id: shipping.id,
             invoice_code: body.invoice_code,
             items_count: body.items.length,
             total: body.items.reduce((acc, item) => {
@@ -97,27 +124,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     if (orderError) {
       throw orderError;
-    }
-
-    const { error: shippingError } = await (() => {
-      const query = supabase.from("shipping_items").insert([
-        {
-          order_id: order.id,
-          person_name: body.shipping.person_name,
-          address_1: body.shipping.address_1,
-          address_2: body.shipping.address_2,
-          admin_area_1: body.shipping.admin_area_1,
-          admin_area_2: body.shipping.admin_area_2,
-          postal_code: body.shipping.postal_code,
-          country_code: body.shipping.country_code,
-        },
-      ]);
-
-      return query;
-    })();
-
-    if (shippingError) {
-      throw shippingError;
     }
 
     const { error: cartItemsError } = await (() => {
