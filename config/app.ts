@@ -1,1 +1,1 @@
-export const apiURL = "http://localhost:3000/api";
+export const apiURL = process.env.NEXT_PUBLIC_API_URL;
