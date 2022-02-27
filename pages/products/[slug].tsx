@@ -108,7 +108,7 @@ const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
           <div className="w-1/3 pl-14 pr-10 pt-32">
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
             <p className="text-md mb-8">{numberToCurrency(product.price)}</p>
-            <p className="text-xs mb-8">{product.description}</p>
+            <p className="text-xs leading-5 mb-8">{product.description}</p>
             <Button label="Add to cart" onClick={add} />
           </div>
         </div>
