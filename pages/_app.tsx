@@ -11,8 +11,8 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 import paypalConfig from "../config/paypal";
 import { supabase } from "../helpers/supabase";
-import { apiURL } from "../config/app";
 import { useStore } from "../store/store";
+import axios from "../helpers/axios";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const clearCart = useStore((state) => state.clearCart);
@@ -22,12 +22,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        fetch(`${apiURL}/auth`, {
-          method: "POST",
-          headers: new Headers({
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify({ event, session }),
+        axios.post("/auth", {
+          event,
+          session,
         });
       }
     );
