@@ -20,13 +20,27 @@ type CartItem = {
   product: Product;
 };
 
+type Shipping = {
+  id: number;
+  person_name: string;
+  address_1: string;
+  address_2: string;
+  admin_area_1: string;
+  admin_area_2: string;
+  postal_code: string;
+  country_code: string;
+};
+
 type Order = {
+  id: number;
   user_id: string;
+  shipping_item_id: number;
   invoice_code: string;
   items_count: number;
   total: number;
   created_at: string;
   items: CartItem[];
+  shipping: Shipping;
 };
 
 type Data = {
@@ -41,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   }
 
   try {
-    const { id } = req.query as {
+    const { invoice } = req.query as {
       [key: string]: string;
     };
 
@@ -51,7 +65,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         .select(
           "*, items:cart_items(*, product:products(*)), shipping:shipping_items(*)"
         )
-        .eq("id", id)
+        .eq("invoice_code", invoice)
         .limit(1)
         .single();
 
