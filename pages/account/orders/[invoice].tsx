@@ -9,8 +9,8 @@ import Menu from "../../../components/Menu";
 import { supabase } from "../../../helpers/supabase";
 import AccountMenu from "../../../components/AccountMenu";
 import Info from "../../../components/Info";
-import { apiURL } from "../../../config/app";
 import { numberToCurrency } from "../../../helpers/formatter";
+import axios from "../../../helpers/axios";
 
 export const getServerSideProps = async ({ req, query: urlQuery }) => {
   const { user } = await supabase.auth.api.getUserByCookie(req);
@@ -26,10 +26,10 @@ export const getServerSideProps = async ({ req, query: urlQuery }) => {
 
   const order = await (async () => {
     const { invoice } = urlQuery;
-    const res = await fetch(`${apiURL}/orders/${invoice}`);
-    const { data } = await res.json();
+    const res = await axios.get(`/orders/${invoice}`);
+    const result = res.data.data;
 
-    return data;
+    return result;
   })();
 
   return {
