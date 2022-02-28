@@ -1,9 +1,9 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useMemo, useRef } from "react";
 
-import Menu from "../components/Menu";
+import Menu, { Exposed as MenuExposed } from "../components/Menu";
 import Counter from "../components/Counter";
 import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
@@ -12,7 +12,7 @@ import { supabase } from "../helpers/supabase";
 import Button from "../components/Button";
 import { useRouter } from "next/router";
 
-export const getServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const { user } = await supabase.auth.api.getUserByCookie(req);
 
   if (!user) {
@@ -29,16 +29,15 @@ export const getServerSideProps = async ({ req }) => {
   };
 };
 
-const CartPage: NextPage = () => {
+type Props = {};
+
+const CartPage: NextPage<Props> = ({}) => {
   const router = useRouter();
-  const refMenu = useRef(null);
+  const refMenu = useRef<MenuExposed>(null);
   const cartItems = useStore((state) => state.cartItems);
-  const clearCart = useStore((state) => state.clearCart);
   const increaseItemQty = useStore((state) => state.increaseItemQty);
   const decreaseItemQty = useStore((state) => state.decreaseItemQty);
   const removeFromCart = useStore((state) => state.removeFromCart);
-
-  const user = supabase.auth.user();
 
   const subtotal = useMemo(() => {
     const items = cartItems.map((item) => ({
@@ -67,7 +66,7 @@ const CartPage: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Marrkt | The World #1 Marketplace</title>
+        <title>Cart | Marrkt</title>
       </Head>
 
       <Menu ref={refMenu} />
