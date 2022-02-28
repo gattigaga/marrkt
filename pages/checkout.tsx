@@ -139,7 +139,7 @@ const CheckoutPage: NextPage<Props> = ({}) => {
                             <div className="flex">
                               <Image
                                 className="w-16 h-16 object-cover"
-                                src={thumbnailURL as string}
+                                src={thumbnailURL || ""}
                                 alt={item.product.name}
                                 width={64}
                                 height={64}
