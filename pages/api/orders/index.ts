@@ -1,36 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabase } from "../../../helpers/supabase";
+import { CartItem, Order, Product } from "../../../types/models";
 
-type Product = {
-  id: number;
-  name: string;
-  slug: string;
-  price: number;
-  description: string;
-  product_category_id: number;
-  thumbnail: string;
-};
-
-type CartItem = {
-  id: number;
-  order_id: number;
-  product_id: number;
-  quantity: number;
-  total: number;
-  product: Product;
-};
-
-type Order = {
-  user_id: string;
-  invoice_code: string;
-  items_count: number;
-  total: number;
-  created_at: string;
-  items: CartItem[];
+type Item = Order & {
+  items: CartItem & { product: Product }[];
 };
 
 type Data = {
-  data?: Order[] | null;
+  data?: Item[] | null;
   message?: string;
   metadata?: {
     page: number;
@@ -53,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     const { data: orders, error: ordersError } = await (() => {
       const query = supabase
-        .from("orders")
+        .from<Item>("orders")
         .select("*, items:cart_items(*, product:products(*))")
         .order("created_at", { ascending: false })
         .eq("user_id", user_id);
@@ -72,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     const { data: totalPages, error: totalPagesError } = await (async () => {
       const query = supabase
-        .from("orders")
+        .from<Item>("orders")
         .select("*", {
           count: "exact",
           head: true,
@@ -98,8 +75,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         totalPages,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
+
+    if ("code" in error) {
+      res.status(error.code).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Unknown server error" });
+    }
   }
 };
 
