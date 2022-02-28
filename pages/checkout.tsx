@@ -31,6 +31,9 @@ const CheckoutPage: NextPage = () => {
     return getSubtotal(items);
   }, [cartItems]);
 
+  const shippingCost = 0;
+  const total = subtotal + shippingCost;
+
   const checkout = async (shipping: {
     person_name: string;
     address_1?: string;
@@ -170,11 +173,25 @@ const CheckoutPage: NextPage = () => {
             </table>
             {!!cartItems.length && (
               <>
-                <div className="w-full flex justify-between py-4 mb-8">
-                  <p className="text-xs font-medium text-black">Subtotal</p>
-                  <p className="text-lg text-black font-bold">
-                    {numberToCurrency(subtotal)}
-                  </p>
+                <div className="mb-8 mt-2">
+                  <div className="w-full flex justify-between py-2">
+                    <p className="text-xs text-black">Subtotal</p>
+                    <p className="text-xs text-black">
+                      {numberToCurrency(subtotal)}
+                    </p>
+                  </div>
+                  <div className="w-full flex justify-between py-2">
+                    <p className="text-xs text-black">Shipping Cost</p>
+                    <p className="text-xs text-black">
+                      {numberToCurrency(shippingCost)}
+                    </p>
+                  </div>
+                  <div className="w-full flex justify-between py-2">
+                    <p className="text-xs font-bold text-black">Total</p>
+                    <p className="text-lg text-black font-bold">
+                      {numberToCurrency(total)}
+                    </p>
+                  </div>
                 </div>
                 <PayPalButtons
                   className="rounded-none w-full"
