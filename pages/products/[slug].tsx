@@ -1,19 +1,22 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { useRef } from "react";
 import Head from "next/head";
 import { v4 as uuid } from "uuid";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import Menu from "../../components/Menu";
+import Menu, { Exposed as MenuExposed } from "../../components/Menu";
 import Product from "../../components/Product";
 import Button from "../../components/Button";
 import { numberToCurrency } from "../../helpers/formatter";
 import { supabase } from "../../helpers/supabase";
 import { useStore } from "../../store/store";
 import axios from "../../helpers/axios";
+import * as models from "../../types/models";
 
-export const getServerSideProps = async ({ query: urlQuery }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  query: urlQuery,
+}) => {
   const product = await (async () => {
     const { slug } = urlQuery;
     const res = await axios.get(`/products/${slug}`);
@@ -42,9 +45,19 @@ export const getServerSideProps = async ({ query: urlQuery }) => {
   };
 };
 
-const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
+type Props = {
+  product: models.Product & {
+    category: models.ProductCategory;
+    images: models.ProductImage[];
+  };
+  relatedProducts: (models.Product & {
+    category: models.ProductCategory;
+  })[];
+};
+
+const ProductDetailPage: NextPage<Props> = ({ product, relatedProducts }) => {
   const router = useRouter();
-  const refMenu = useRef();
+  const refMenu = useRef<MenuExposed>(null);
   const addToCart = useStore((state) => state.addToCart);
 
   const user = supabase.auth.user();
@@ -81,7 +94,7 @@ const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
           <div className="flex-1 grid grid-cols-2 gap-2">
             <Image
               className="w-full h-full object-cover"
-              src={thumbnailURL as string}
+              src={thumbnailURL || ""}
               alt={`${product.name} Thumbnail`}
               width={480}
               height={480}
@@ -95,7 +108,7 @@ const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
                 <Image
                   key={image.id}
                   className="w-full h-full object-cover"
-                  src={imageURL as string}
+                  src={imageURL || ""}
                   alt={`${product.name} ${index + 1}`}
                   width={480}
                   height={480}
@@ -123,7 +136,7 @@ const ProductDetailPage: NextPage = ({ product, relatedProducts }) => {
               return (
                 <Product
                   key={product.id}
-                  image={imageURL as string}
+                  image={imageURL || ""}
                   name={product.name}
                   price={product.price}
                   url={`/products/${product.slug}`}
