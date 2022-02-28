@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import React from "react";
 import { Formik } from "formik";
@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
     .required("Email is required"),
 });
 
-export const getServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const { user } = await supabase.auth.api.getUserByCookie(req);
 
   if (!user) {
@@ -42,7 +42,9 @@ export const getServerSideProps = async ({ req }) => {
   };
 };
 
-const ProfilePage: NextPage = () => {
+type Props = {};
+
+const ProfilePage: NextPage<Props> = ({}) => {
   const user = supabase.auth.user();
 
   return (
@@ -61,9 +63,9 @@ const ProfilePage: NextPage = () => {
           <div>
             <Formik
               initialValues={{
-                firstName: user?.user_metadata.first_name,
-                lastName: user?.user_metadata.last_name,
-                email: user?.email,
+                firstName: user?.user_metadata.first_name || "",
+                lastName: user?.user_metadata.last_name || "",
+                email: user?.email || "",
               }}
               validationSchema={validationSchema}
               onSubmit={async (values, { setSubmitting }) => {
@@ -83,9 +85,9 @@ const ProfilePage: NextPage = () => {
                   if (error) throw error;
 
                   toast("Profile successfully update.");
-                } catch (error) {
+                } catch (error: any) {
                   console.log(error);
-                  toast(error?.message || "Failed to update profile.");
+                  toast(error.message || "Failed to update profile.");
                 } finally {
                   setSubmitting(false);
                 }
@@ -113,7 +115,7 @@ const ProfilePage: NextPage = () => {
                         value={values.firstName}
                         disabled={isSubmitting}
                         hasError={!!(errors.firstName && touched.firstName)}
-                        errorText={errors.firstName}
+                        errorText={errors.firstName as string}
                       />
                     </div>
                     <div className="flex-1">
@@ -127,7 +129,7 @@ const ProfilePage: NextPage = () => {
                         value={values.lastName}
                         disabled={isSubmitting}
                         hasError={!!(errors.lastName && touched.lastName)}
-                        errorText={errors.lastName}
+                        errorText={errors.lastName as string}
                       />
                     </div>
                   </div>

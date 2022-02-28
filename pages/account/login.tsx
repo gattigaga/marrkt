@@ -35,7 +35,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   };
 };
 
-const LoginPage: NextPage = () => {
+type Props = {};
+
+const LoginPage: NextPage<Props> = ({}) => {
   const router = useRouter();
 
   return (
