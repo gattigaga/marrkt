@@ -1,32 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabase } from "../../../helpers/supabase";
+import { Product, ProductCategory, ProductImage } from "../../../types/models";
 
-type Category = {
-  id: number;
-  name: string;
-  slug: string;
-};
-
-type Image = {
-  id: number;
-  product_id: number;
-  image: string;
-};
-
-type Product = {
-  id: number;
-  name: string;
-  slug: string;
-  price: number;
-  description: string;
-  product_category_id: number;
-  thumbnail: string;
-  category: Category;
-  images: Image[];
+type Item = Product & {
+  category: ProductCategory;
+  images: ProductImage[];
 };
 
 type Data = {
-  data?: Product | null;
+  data?: Item | null;
   message?: string;
 };
 
@@ -43,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     const { data: product, error } = await (() => {
       const query = supabase
-        .from("products")
+        .from<Item>("products")
         .select("*, category:product_categories(*), images:product_images(*)")
         .eq("slug", slug)
         .limit(1)
@@ -57,8 +39,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     }
 
     res.status(200).json({ data: product });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
+
+    if ("code" in error) {
+      res.status(error.code).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Unknown server error" });
+    }
   }
 };
 
