@@ -1,14 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabase } from "../../helpers/supabase";
+import { ProductCategory } from "../../types/models";
 
-type Category = {
-  id: number;
-  name: string;
-  slug: string;
-};
+type Item = ProductCategory;
 
 type Data = {
-  data?: Category[] | null;
+  data?: Item[] | null;
   message?: string;
 };
 
@@ -20,7 +17,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
   try {
     const { data: categories, error } = await supabase
-      .from("product_categories")
+      .from<Item>("product_categories")
       .select("*");
 
     if (error) {
@@ -28,8 +25,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     }
 
     res.status(200).json({ data: categories });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
+
+    if ("code" in error) {
+      res.status(error.code).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Unknown server error" });
+    }
   }
 };
 
