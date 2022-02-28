@@ -21,7 +21,6 @@ const Pagination: React.FC<PaginationProps> = ({
         pageRangeDisplayed={5}
         forcePage={currentPage - 1}
         pageCount={totalPages}
-        renderOnZeroPageCount={null}
         pageClassName="inline"
         breakClassName="inline"
         previousClassName="inline"
