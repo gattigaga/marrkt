@@ -1,13 +1,13 @@
 import React from "react";
 import Paginate from "react-paginate";
 
-type PaginationProps = {
+type Props = {
   currentPage: number;
   totalPages: number;
   onPageChange: (pageIndex: number) => void;
 };
 
-const Pagination: React.FC<PaginationProps> = ({
+const Pagination: React.FC<Props> = ({
   currentPage,
   totalPages,
   onPageChange,

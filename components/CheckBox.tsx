@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from "react";
 
-type CheckBoxProps = {
+type Props = {
   label: string;
   name: string;
   id: string;
@@ -9,7 +9,7 @@ type CheckBoxProps = {
   onChange?: (event: ChangeEvent<any>) => void;
 };
 
-const CheckBox: React.FC<CheckBoxProps> = ({
+const CheckBox: React.FC<Props> = ({
   label,
   name,
   id,

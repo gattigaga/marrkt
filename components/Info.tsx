@@ -1,11 +1,11 @@
 import React from "react";
 
-type InfoProps = {
+type Props = {
   label: string;
   value: string;
 };
 
-const Info: React.FC<InfoProps> = ({ label, value }) => {
+const Info: React.FC<Props> = ({ label, value }) => {
   return (
     <div>
       <p className="text-xs text-gray-500 mb-1">{label}</p>

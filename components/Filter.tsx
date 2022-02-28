@@ -4,7 +4,7 @@ import queryString from "query-string";
 import { Formik } from "formik";
 import CheckBox from "./CheckBox";
 
-type FilterProps = {
+type Props = {
   categories: {
     id: string;
     name: string;
@@ -12,7 +12,7 @@ type FilterProps = {
   }[];
 };
 
-const Filter: React.FC<FilterProps> = ({ categories }) => {
+const Filter: React.FC<Props> = ({ categories }) => {
   const router = useRouter();
   const query = router.query as { [key: string]: string };
 

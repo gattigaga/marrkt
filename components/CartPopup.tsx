@@ -10,13 +10,13 @@ import CartInfo from "./CartInfo";
 import { supabase } from "../helpers/supabase";
 import { useStore } from "../store/store";
 
-type CartPopupProps = {
+type Props = {
   isOpen?: boolean;
   onClickRemoveItem: (itemId: string) => void;
   onClickBackdrop?: () => void;
 };
 
-const CartPopup: React.FC<CartPopupProps> = ({
+const CartPopup: React.FC<Props> = ({
   isOpen,
   onClickRemoveItem,
   onClickBackdrop,

@@ -14,9 +14,16 @@ import CartPopup from "./CartPopup";
 import { useStore } from "../store/store";
 import { supabase } from "../helpers/supabase";
 
-type MenuProps = {};
+export type Exposed = {
+  runTotalItemsAnimation: (
+    onAnimationRun: () => void,
+    isReverse?: boolean
+  ) => void;
+};
 
-const Menu = forwardRef<any, MenuProps>(({}, ref) => {
+type Props = {};
+
+const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const refContainer = useRef(null);
   const refLine1 = useRef(null);
@@ -238,8 +245,6 @@ const Menu = forwardRef<any, MenuProps>(({}, ref) => {
       />
     </header>
   );
-});
+};
 
-Menu.displayName = "Menu";
-
-export default Menu;
+export default forwardRef(Menu);

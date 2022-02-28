@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FocusEvent } from "react";
 
-type InputProps = {
+type Props = {
   label: string;
   name: string;
   id: string;
@@ -13,7 +13,7 @@ type InputProps = {
   onBlur?: (event: FocusEvent<any, Element>) => void;
 };
 
-const Input: React.FC<InputProps> = ({
+const Input: React.FC<Props> = ({
   label,
   name,
   id,

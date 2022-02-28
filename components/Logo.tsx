@@ -1,10 +1,10 @@
 import React from "react";
 
-type LogoProps = {
+type Props = {
   scale?: number;
 };
 
-const Logo: React.FC<LogoProps> = ({ scale = 1 }) => {
+const Logo: React.FC<Props> = ({ scale = 1 }) => {
   const width = 214;
   const height = 43;
 

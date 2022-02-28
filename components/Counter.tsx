@@ -1,12 +1,12 @@
 import React from "react";
 
-type CounterProps = {
+type Props = {
   value: number;
   onClickIncrease: (value: number) => void;
   onClickDecrease: (value: number) => void;
 };
 
-const Counter: React.FC<CounterProps> = ({
+const Counter: React.FC<Props> = ({
   value,
   onClickIncrease,
   onClickDecrease,

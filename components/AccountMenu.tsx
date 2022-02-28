@@ -4,9 +4,9 @@ import React from "react";
 import { supabase } from "../helpers/supabase";
 import { toast } from "react-toastify";
 
-type AccountMenuProps = {};
+type Props = {};
 
-const AccountMenu: React.FC<AccountMenuProps> = ({}) => {
+const AccountMenu: React.FC<Props> = ({}) => {
   const router = useRouter();
 
   const menus = [

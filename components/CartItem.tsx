@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import { numberToCurrency } from "../helpers/formatter";
 
-type CartItemProps = {
+type Props = {
   name: string;
   quantity: number;
   price: number;
@@ -12,7 +12,7 @@ type CartItemProps = {
   onClickRemove?: () => void;
 };
 
-const CartItem: React.FC<CartItemProps> = ({
+const CartItem: React.FC<Props> = ({
   name,
   quantity,
   price,

@@ -2,14 +2,14 @@ import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import BeatLoader from "react-spinners/BeatLoader";
 
-type ButtonProps = {
+type Props = {
   label: string;
   type?: "submit" | "button";
   isLoading?: boolean;
   onClick?: () => void;
 };
 
-const Button: React.FC<ButtonProps> = ({
+const Button: React.FC<Props> = ({
   label,
   type = "button",
   isLoading,

@@ -4,7 +4,7 @@ import Image from "next/image";
 import React from "react";
 import { numberToCurrency } from "../helpers/formatter";
 
-type OrderItemProps = {
+type Props = {
   code: string;
   thumbnail: string;
   totalItems: number;
@@ -13,7 +13,7 @@ type OrderItemProps = {
   url: string;
 };
 
-const OrderItem: React.FC<OrderItemProps> = ({
+const OrderItem: React.FC<Props> = ({
   code,
   thumbnail,
   totalItems,
