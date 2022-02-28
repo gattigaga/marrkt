@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import React from "react";
 import { useRouter } from "next/router";
@@ -10,8 +10,12 @@ import Pagination from "../../../components/Pagination";
 import { supabase } from "../../../helpers/supabase";
 import AccountMenu from "../../../components/AccountMenu";
 import axios from "../../../helpers/axios";
+import * as models from "../../../types/models";
 
-export const getServerSideProps = async ({ req, query: urlQuery }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query: urlQuery,
+}) => {
   const { user } = await supabase.auth.api.getUserByCookie(req);
 
   if (!user) {
@@ -46,14 +50,21 @@ export const getServerSideProps = async ({ req, query: urlQuery }) => {
   };
 };
 
-const OrdersPage: NextPage = ({ orders, totalPages }) => {
+type Props = {
+  orders: (models.Order & {
+    items: (models.CartItem & { product: models.Product })[];
+  })[];
+  totalPages: number;
+};
+
+const OrdersPage: NextPage<Props> = ({ orders, totalPages }) => {
   const router = useRouter();
   const currentPage = Number(router.query.page as string) || 1;
 
   return (
     <div>
       <Head>
-        <title>Marrkt | The World #1 Marketplace</title>
+        <title>Orders | Marrkt</title>
       </Head>
 
       <Menu />
@@ -76,11 +87,11 @@ const OrdersPage: NextPage = ({ orders, totalPages }) => {
                   return (
                     <OrderItem
                       key={order.id}
-                      code={order.invoice_code}
-                      thumbnail={thumbnailURL as string}
-                      totalItems={order.items_count}
-                      amount={order.total}
-                      date={order.created_at}
+                      code={order.invoice_code || ""}
+                      thumbnail={thumbnailURL || ""}
+                      totalItems={order.items_count || 0}
+                      amount={order.total || 0}
+                      date={order.created_at || ""}
                       url={`/account/orders/${order.invoice_code}`}
                     />
                   );
