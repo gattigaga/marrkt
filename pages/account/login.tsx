@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { Formik } from "formik";
@@ -18,7 +18,7 @@ const validationSchema = Yup.object({
   password: Yup.string().required("Password is required"),
 });
 
-export const getServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const { user } = await supabase.auth.api.getUserByCookie(req);
 
   if (user) {
@@ -68,9 +68,9 @@ const LoginPage: NextPage = () => {
                 if (error) throw error;
 
                 router.push("/account/profile");
-              } catch (error) {
+              } catch (error: any) {
                 console.log(error);
-                toast(error?.message || "Failed to login into your account.");
+                toast(error.message || "Failed to login into your account.");
               } finally {
                 setSubmitting(false);
               }
