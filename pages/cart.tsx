@@ -168,9 +168,9 @@ const CartPage: NextPage = () => {
           </table>
           {!!cartItems.length && (
             <div className="flex">
-              <div className="w-64 ml-auto flex flex-col items-end">
-                <div className="w-full flex justify-between py-4 mb-8">
-                  <p className="text-xs font-medium text-black">Subtotal</p>
+              <div className="w-72 mt-6 ml-auto flex flex-col items-end">
+                <div className="w-full flex justify-between py-2 mb-8">
+                  <p className="text-xs text-black">Subtotal</p>
                   <p className="text-xs text-black">
                     {numberToCurrency(subtotal)}
                   </p>
