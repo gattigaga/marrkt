@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import React from "react";
@@ -11,8 +11,12 @@ import AccountMenu from "../../../components/AccountMenu";
 import Info from "../../../components/Info";
 import { numberToCurrency } from "../../../helpers/formatter";
 import axios from "../../../helpers/axios";
+import * as models from "../../../types/models";
 
-export const getServerSideProps = async ({ req, query: urlQuery }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query: urlQuery,
+}) => {
   const { user } = await supabase.auth.api.getUserByCookie(req);
 
   if (!user) {
@@ -39,17 +43,24 @@ export const getServerSideProps = async ({ req, query: urlQuery }) => {
   };
 };
 
-const OrderDetailPage: NextPage = ({ order }) => {
+type Props = {
+  order: models.Order & {
+    items: (models.CartItem & { product: models.Product })[];
+    shipping: models.ShippingItem;
+  };
+};
+
+const OrderDetailPage: NextPage<Props> = ({ order }) => {
   const router = useRouter();
 
-  const subtotal = order.total;
+  const subtotal = order.total || 0;
   const shippingCost = 0;
   const total = subtotal + shippingCost;
 
   return (
     <div>
       <Head>
-        <title>Marrkt | The World #1 Marketplace</title>
+        <title>Order #{router.query.invoice} | The World #1 Marketplace</title>
       </Head>
 
       <Menu />
@@ -71,7 +82,7 @@ const OrderDetailPage: NextPage = ({ order }) => {
                 <Info
                   label="Date"
                   value={format(
-                    new Date(order.created_at),
+                    new Date(order.created_at || ""),
                     "EEEE, dd MMM yyyy HH:mm"
                   )}
                 />
@@ -81,15 +92,18 @@ const OrderDetailPage: NextPage = ({ order }) => {
             <div>
               <h2 className="text-sm font-medium text-black mb-6">Shipping</h2>
               <div className="grid grid-cols-4 gap-4">
-                <Info label="Person Name" value={order.shipping.person_name} />
+                <Info
+                  label="Person Name"
+                  value={order.shipping.person_name || "-"}
+                />
                 <Info
                   label="Country Code"
-                  value={order.shipping.country_code}
+                  value={order.shipping.country_code || "-"}
                 />
                 <div className="col-span-2">
                   <Info
                     label="Postal Code"
-                    value={order.shipping.postal_code}
+                    value={order.shipping.postal_code || "-"}
                   />
                 </div>
                 <Info
@@ -135,13 +149,16 @@ const OrderDetailPage: NextPage = ({ order }) => {
                     .from("general")
                     .getPublicUrl(`products/${item.product.thumbnail}`);
 
+                  const subtotal =
+                    Number(item.product.price) * Number(item.quantity);
+
                   return (
                     <tr key={item.id} className="border-b border-gray-200">
                       <td className="py-4">
                         <div className="flex">
                           <Image
                             className="w-16 h-16 object-cover"
-                            src={thumbnailURL as string}
+                            src={thumbnailURL || ""}
                             alt={item.product.name}
                             width={64}
                             height={64}
@@ -151,7 +168,7 @@ const OrderDetailPage: NextPage = ({ order }) => {
                               {item.product.name}
                             </p>
                             <p className="text-gray-500 text-xs">
-                              {numberToCurrency(item.product.price)}
+                              {numberToCurrency(item.product.price || 0)}
                             </p>
                           </div>
                         </div>
@@ -163,7 +180,7 @@ const OrderDetailPage: NextPage = ({ order }) => {
                       </td>
                       <td>
                         <p className="text-xs text-black text-right">
-                          {numberToCurrency(item.product.price * item.quantity)}
+                          {numberToCurrency(subtotal)}
                         </p>
                       </td>
                     </tr>
