@@ -87,11 +87,11 @@ const OrdersPage: NextPage<Props> = ({ orders, totalPages }) => {
                   return (
                     <OrderItem
                       key={order.id}
-                      code={order.invoice_code || ""}
+                      code={order.invoice_code}
                       thumbnail={thumbnailURL || ""}
-                      totalItems={order.items_count || 0}
-                      amount={order.total || 0}
-                      date={order.created_at || ""}
+                      totalItems={order.items_count}
+                      amount={order.total}
+                      date={order.created_at}
                       url={`/account/orders/${order.invoice_code}`}
                     />
                   );

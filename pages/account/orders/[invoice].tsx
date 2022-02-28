@@ -53,7 +53,7 @@ type Props = {
 const OrderDetailPage: NextPage<Props> = ({ order }) => {
   const router = useRouter();
 
-  const subtotal = order.total || 0;
+  const subtotal = order.total;
   const shippingCost = 0;
   const total = subtotal + shippingCost;
 
@@ -82,7 +82,7 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
                 <Info
                   label="Date"
                   value={format(
-                    new Date(order.created_at || ""),
+                    new Date(order.created_at),
                     "EEEE, dd MMM yyyy HH:mm"
                   )}
                 />
@@ -92,13 +92,10 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
             <div>
               <h2 className="text-sm font-medium text-black mb-6">Shipping</h2>
               <div className="grid grid-cols-4 gap-4">
-                <Info
-                  label="Person Name"
-                  value={order.shipping.person_name || "-"}
-                />
+                <Info label="Person Name" value={order.shipping.person_name} />
                 <Info
                   label="Country Code"
-                  value={order.shipping.country_code || "-"}
+                  value={order.shipping.country_code}
                 />
                 <div className="col-span-2">
                   <Info
@@ -106,17 +103,14 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
                     value={order.shipping.postal_code || "-"}
                   />
                 </div>
-                <Info
-                  label="Address Line 1"
-                  value={order.shipping.address_1 || "-"}
-                />
+                <Info label="Address Line 1" value={order.shipping.address_1} />
                 <Info
                   label="Address Line 2"
                   value={order.shipping.address_2 || "-"}
                 />
                 <Info
                   label="Admin Area 1"
-                  value={order.shipping.admin_area_1 || "-"}
+                  value={order.shipping.admin_area_1}
                 />
                 <Info
                   label="Admin Area 2"
@@ -168,7 +162,7 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
                               {item.product.name}
                             </p>
                             <p className="text-gray-500 text-xs">
-                              {numberToCurrency(item.product.price || 0)}
+                              {numberToCurrency(item.product.price)}
                             </p>
                           </div>
                         </div>
