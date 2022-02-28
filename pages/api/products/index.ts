@@ -1,25 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabase } from "../../../helpers/supabase";
+import { Product, ProductCategory } from "../../../types/models";
 
-type Category = {
-  id: number;
-  name: string;
-  slug: string;
-};
-
-type Product = {
-  id: number;
-  name: string;
-  slug: string;
-  price: number;
-  description: string;
-  product_category_id: number;
-  thumbnail: string;
-  category: Category;
+type Item = Product & {
+  category: ProductCategory;
 };
 
 type Data = {
-  data?: Product[] | null;
+  data?: Item[] | null;
   message?: string;
   metadata?: {
     page: number;
@@ -48,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     const { data: products, error: productsError } = await (() => {
       const query = supabase
-        .from("products")
+        .from<Item>("products")
         .select("*, category:product_categories!inner(*)")
         .order("name");
 
@@ -57,6 +45,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       }
 
       if (categories) {
+        // @ts-ignore
         query.in("category.slug", categories.split(","));
       }
 
@@ -82,7 +71,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     const { data: totalPages, error: totalPagesError } = await (async () => {
       const query = supabase
-        .from("products")
+        .from<Item>("products")
         .select("*, category:product_categories!inner(*)", {
           count: "exact",
           head: true,
@@ -93,6 +82,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       }
 
       if (categories) {
+        // @ts-ignore
         query.in("category.slug", categories.split(","));
       }
 
@@ -123,8 +113,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         totalPages,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
+
+    if ("code" in error) {
+      res.status(error.code).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Unknown server error" });
+    }
   }
 };
 
