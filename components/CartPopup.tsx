@@ -21,12 +21,11 @@ const CartPopup: React.FC<CartPopupProps> = ({
   onClickRemoveItem,
   onClickBackdrop,
 }) => {
-  const refBackdrop = useRef<HTMLElement>();
-  const refCart = useRef<HTMLElement>();
-  const refCartContent = useRef<HTMLElement>();
+  const refBackdrop = useRef(null);
+  const refCart = useRef(null);
+  const refCartContent = useRef(null);
   const router = useRouter();
   const cartItems = useStore((state) => state.cartItems);
-  const removeFromCart = useStore((state) => state.removeFromCart);
 
   const subtotal = useMemo(() => {
     const items = cartItems.map((item) => ({
