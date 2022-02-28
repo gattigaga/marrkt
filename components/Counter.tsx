@@ -11,24 +11,12 @@ const Counter: React.FC<CounterProps> = ({
   onClickIncrease,
   onClickDecrease,
 }) => {
-  const isDecreasable = value > 0;
-  const decreaseBackgroundColor = isDecreasable ? "bg-black" : "bg-gray-200";
-  const decreaseTextColor = isDecreasable ? "text-white" : "text-gray-500";
-
-  const decreaseCursor = isDecreasable
-    ? "cursor-pointer"
-    : "cursor-not-allowed";
-
   return (
     <div className="w-18 flex items-center">
       <button
-        className={`w-6 h-6 ${decreaseBackgroundColor} ${decreaseTextColor} ${decreaseCursor}`}
+        className="w-6 h-6 bg-black text-white cursor-pointer"
         type="button"
-        onClick={() => {
-          if (isDecreasable) {
-            onClickDecrease(value - 1);
-          }
-        }}
+        onClick={() => onClickDecrease(value - 1)}
       >
         -
       </button>
