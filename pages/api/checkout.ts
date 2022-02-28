@@ -1,40 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabase } from "../../helpers/supabase";
+import { CartItem, Order, Product, ShippingItem } from "../../types/models";
 
-type Shipping = {
-  id: number;
-  order_id: number;
-  person_name: string;
-  address_1: string;
-  address_2: string;
-  admin_area_1: string;
-  admin_area_2: string;
-  postal_code: string;
-  country_code: string;
-};
-
-type CartItem = {
-  id: number;
-  order_id: number;
-  product_id: number;
-  quantity: number;
-  total: number;
-};
-
-type Order = {
-  id: number;
-  user_id: string;
-  shipping_item_id: number;
-  invoice_code: string;
-  items_count: number;
-  total: number;
-  created_at: string;
-  shipping: Shipping;
-  items: CartItem[];
+type Item = Order & {
+  items: (CartItem & { product: Product })[];
+  shipping: ShippingItem;
 };
 
 type Data = {
-  data?: Order | null;
+  data?: Item | null;
   message?: string;
 };
 
@@ -65,7 +39,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     const { data: products, error: productsError } = await (() => {
       const productIds = body.items.map((item) => item.product_id);
-      const query = supabase.from("products").select("*").in("id", productIds);
+
+      const query = supabase
+        .from<Product>("products")
+        .select("*")
+        .in("id", productIds);
 
       return query;
     })();
@@ -76,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     const { data: shipping, error: shippingError } = await (() => {
       const query = supabase
-        .from("shipping_items")
+        .from<ShippingItem>("shipping_items")
         .insert([
           {
             person_name: body.shipping.person_name,
@@ -100,11 +78,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     const { data: order, error: orderError } = await (() => {
       const query = supabase
-        .from("orders")
+        .from<Order>("orders")
         .insert([
           {
             user_id: body.user_id,
-            shipping_item_id: shipping.id,
+            shipping_item_id: shipping!.id,
             invoice_code: body.invoice_code,
             items_count: body.items.length,
             total: body.items.reduce((acc, item) => {
@@ -133,14 +111,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         );
 
         return {
-          order_id: order.id,
+          order_id: order!.id,
           product_id: item.product_id,
           quantity: item.quantity,
           total: Number(product?.price) * item.quantity,
         };
       });
 
-      const query = supabase.from("cart_items").insert(cartItems);
+      const query = supabase.from<CartItem>("cart_items").insert(cartItems);
 
       return query;
     })();
@@ -151,11 +129,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     const { data: result, error: resultError } = await (() => {
       const query = supabase
-        .from("orders")
+        .from<Item>("orders")
         .select(
           "*, items:cart_items(*, product:products(*)), shipping:shipping_items(*)"
         )
-        .eq("id", order.id)
+        .eq("id", order!.id)
         .limit(1)
         .single();
 
@@ -167,8 +145,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     }
 
     res.status(200).json({ data: result });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
+
+    if ("code" in error) {
+      res.status(error.code).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Unknown server error" });
+    }
   }
 };
 
