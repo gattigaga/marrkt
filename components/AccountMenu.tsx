@@ -31,7 +31,10 @@ const AccountMenu: React.FC<AccountMenuProps> = ({}) => {
       router.push("/account/login");
     } catch (error) {
       console.log(error);
-      toast(error?.message || "Failed to logout.");
+
+      if (error instanceof Error) {
+        toast(error?.message || "Failed to logout.");
+      }
     }
   };
 
