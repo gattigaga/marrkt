@@ -29,12 +29,9 @@ const AccountMenu: React.FC<Props> = ({}) => {
       if (error) throw error;
 
       router.push("/account/login");
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-
-      if (error instanceof Error) {
-        toast(error?.message || "Failed to logout.");
-      }
+      toast(error.message || "Failed to logout.");
     }
   };
 
