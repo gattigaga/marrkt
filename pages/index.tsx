@@ -6,7 +6,9 @@ import { useRouter } from "next/router";
 import Button from "../components/Button";
 import Menu from "../components/Menu";
 
-const HomePage: NextPage = () => {
+type Props = {};
+
+const HomePage: NextPage<Props> = ({}) => {
   const router = useRouter();
 
   return (

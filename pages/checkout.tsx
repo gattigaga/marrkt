@@ -14,7 +14,9 @@ import { useStore } from "../store/store";
 import { supabase } from "../helpers/supabase";
 import axios from "../helpers/axios";
 
-const CheckoutPage: NextPage = () => {
+type Props = {};
+
+const CheckoutPage: NextPage<Props> = ({}) => {
   const refMenu = useRef(null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const cartItems = useStore((state) => state.cartItems);
