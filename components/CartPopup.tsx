@@ -118,7 +118,7 @@ const CartPopup: React.FC<Props> = ({
                         name={item.product.name}
                         quantity={item.quantity}
                         price={item.product.price}
-                        image={thumbnailURL as string}
+                        image={thumbnailURL || ""}
                         onClickRemove={() => onClickRemoveItem(item.id)}
                         isRemovable
                       />
