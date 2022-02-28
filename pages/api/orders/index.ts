@@ -3,7 +3,7 @@ import { supabase } from "../../../helpers/supabase";
 import { CartItem, Order, Product } from "../../../types/models";
 
 type Item = Order & {
-  items: CartItem & { product: Product }[];
+  items: (CartItem & { product: Product })[];
 };
 
 type Data = {
