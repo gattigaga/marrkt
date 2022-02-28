@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import queryString from "query-string";
@@ -9,8 +9,11 @@ import Pagination from "../../components/Pagination";
 import Product from "../../components/Product";
 import { supabase } from "../../helpers/supabase";
 import axios from "../../helpers/axios";
+import * as models from "../../types/models";
 
-export const getServerSideProps = async ({ query: urlQuery }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  query: urlQuery,
+}) => {
   const categories = await (async () => {
     const res = await axios.get("/product-categories");
     const result = res.data.data;
@@ -39,7 +42,19 @@ export const getServerSideProps = async ({ query: urlQuery }) => {
   };
 };
 
-const ProductsPage: NextPage = ({ categories, products, totalPages }) => {
+type Props = {
+  categories: models.ProductCategory[];
+  products: (models.Product & {
+    category: models.ProductCategory;
+  })[];
+  totalPages: number;
+};
+
+const ProductsPage: NextPage<Props> = ({
+  categories,
+  products,
+  totalPages,
+}) => {
   const router = useRouter();
 
   const currentPage = Number(router.query.page as string) || 1;
@@ -65,7 +80,7 @@ const ProductsPage: NextPage = ({ categories, products, totalPages }) => {
                     return (
                       <Product
                         key={product.id}
-                        image={imageURL as string}
+                        image={imageURL || ""}
                         name={product.name}
                         price={product.price}
                         url={`/products/${product.slug}`}
