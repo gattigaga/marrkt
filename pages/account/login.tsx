@@ -43,7 +43,7 @@ const LoginPage: NextPage<Props> = ({}) => {
   return (
     <div>
       <Head>
-        <title>Marrkt | The World #1 Marketplace</title>
+        <title>Login | Marrkt</title>
       </Head>
 
       <Menu />

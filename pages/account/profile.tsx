@@ -50,7 +50,7 @@ const ProfilePage: NextPage<Props> = ({}) => {
   return (
     <div>
       <Head>
-        <title>Marrkt | The World #1 Marketplace</title>
+        <title>Profile | Marrkt</title>
       </Head>
 
       <Menu />

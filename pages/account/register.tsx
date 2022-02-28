@@ -54,7 +54,7 @@ const RegisterPage: NextPage<Props> = ({}) => {
   return (
     <div>
       <Head>
-        <title>Marrkt | The World #1 Marketplace</title>
+        <title>Register | Marrkt</title>
       </Head>
 
       <Menu />
