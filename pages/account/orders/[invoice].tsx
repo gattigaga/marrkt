@@ -42,7 +42,9 @@ export const getServerSideProps = async ({ req, query: urlQuery }) => {
 const OrderDetailPage: NextPage = ({ order }) => {
   const router = useRouter();
 
-  console.log(order);
+  const subtotal = order.total;
+  const shippingCost = 0;
+  const total = subtotal + shippingCost;
 
   return (
     <div>
@@ -169,11 +171,25 @@ const OrderDetailPage: NextPage = ({ order }) => {
                 })}
               </tbody>
             </table>
-            <div className="w-full flex justify-between py-4 mb-8">
-              <p className="text-xs font-medium text-black">Subtotal</p>
-              <p className="text-lg text-black font-bold">
-                {numberToCurrency(order.total)}
-              </p>
+            <div className="w-72 mt-6 ml-auto flex flex-col items-end">
+              <div className="w-full flex justify-between py-2">
+                <p className="text-xs text-black">Subtotal</p>
+                <p className="text-xs text-black">
+                  {numberToCurrency(subtotal)}
+                </p>
+              </div>
+              <div className="w-full flex justify-between py-2">
+                <p className="text-xs text-black">Shipping Cost</p>
+                <p className="text-xs text-black">
+                  {numberToCurrency(shippingCost)}
+                </p>
+              </div>
+              <div className="w-full flex justify-between py-2">
+                <p className="text-xs font-bold text-black">Total</p>
+                <p className="text-lg font-bold text-black">
+                  {numberToCurrency(total)}
+                </p>
+              </div>
             </div>
           </div>
         </div>

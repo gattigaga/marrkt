@@ -173,7 +173,7 @@ const CheckoutPage: NextPage = () => {
             </table>
             {!!cartItems.length && (
               <>
-                <div className="mb-8 mt-2">
+                <div className="mb-8 mt-6">
                   <div className="w-full flex justify-between py-2">
                     <p className="text-xs text-black">Subtotal</p>
                     <p className="text-xs text-black">
