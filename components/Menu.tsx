@@ -155,7 +155,10 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
           <button
             className="mr-6"
             type="button"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={() => {
+              setIsCartOpen(false);
+              setIsMenuOpen(!isMenuOpen);
+            }}
           >
             <span className="text-xs text-black">
               {isMenuOpen ? "Close" : "Menu"}
@@ -164,7 +167,10 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
           <button
             className="w-6 h-6 rounded-full bg-black flex justify-center items-center"
             type="button"
-            onClick={() => setIsCartOpen(true)}
+            onClick={() => {
+              setIsMenuOpen(false);
+              setIsCartOpen(!isCartOpen);
+            }}
           >
             <span ref={refTotalItems} className="text-xs text-white">
               {totalItems}
