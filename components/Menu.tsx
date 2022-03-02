@@ -10,6 +10,7 @@ import Link from "next/link";
 import { gsap, Power2 } from "gsap";
 
 import Logo from "./Logo";
+import MenuPopup from "./MenuPopup";
 import CartPopup from "./CartPopup";
 import { useStore } from "../store/store";
 import { supabase } from "../helpers/supabase";
@@ -25,6 +26,7 @@ type Props = {};
 
 const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const refContainer = useRef(null);
   const refLine1 = useRef(null);
   const refLine2 = useRef(null);
@@ -143,11 +145,35 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
         className={`flex items-center justify-between px-4 py-6 border border-gray-200/[0] md:px-6`}
       >
         <Link href="/">
-          <a>
+          <a className="relative z-10">
             <Logo scale={0.4} />
           </a>
         </Link>
-        <nav className="flex relative z-10">
+
+        {/* For smaller screen */}
+        <nav className="flex relative z-10 md:hidden">
+          <button
+            className="mr-6"
+            type="button"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <span className="text-xs text-black">
+              {isMenuOpen ? "Close" : "Menu"}
+            </span>
+          </button>
+          <button
+            className="w-6 h-6 rounded-full bg-black flex justify-center items-center"
+            type="button"
+            onClick={() => setIsCartOpen(true)}
+          >
+            <span ref={refTotalItems} className="text-xs text-white">
+              {totalItems}
+            </span>
+          </button>
+        </nav>
+
+        {/* For bigger screen */}
+        <nav className="hidden relative z-10 md:flex">
           <ul className="mr-8">
             <li
               className="inline-block"
@@ -230,7 +256,7 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
           <button
             className="w-6 h-6 rounded-full bg-black flex justify-center items-center cursor-pointer"
             type="button"
-            onClick={() => setIsCartOpen(true)}
+            onClick={() => setIsCartOpen(!isCartOpen)}
           >
             <span ref={refTotalItems} className="text-xs text-white">
               {totalItems}
@@ -238,6 +264,10 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
           </button>
         </nav>
       </div>
+      <MenuPopup
+        onClickBackdrop={() => setIsMenuOpen(false)}
+        isOpen={isMenuOpen}
+      />
       <CartPopup
         onClickBackdrop={() => setIsCartOpen(false)}
         onClickRemoveItem={removeItem}
