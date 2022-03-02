@@ -22,8 +22,8 @@ const CartPopup: React.FC<Props> = ({
   onClickBackdrop,
 }) => {
   const refBackdrop = useRef(null);
-  const refCart = useRef(null);
-  const refCartContent = useRef(null);
+  const refPopup = useRef(null);
+  const refPopupContent = useRef(null);
   const router = useRouter();
   const cartItems = useStore((state) => state.cartItems);
 
@@ -38,7 +38,7 @@ const CartPopup: React.FC<Props> = ({
 
   useEffect(() => {
     const showCart = () => {
-      if (refBackdrop.current && refCart.current && refCartContent.current) {
+      if (refBackdrop.current && refPopup.current && refPopupContent.current) {
         gsap
           .timeline()
           .set(refBackdrop.current, {
@@ -48,11 +48,11 @@ const CartPopup: React.FC<Props> = ({
             opacity: 1,
             duration: 0.2,
           })
-          .to(refCart.current, {
+          .to(refPopup.current, {
             height: "auto",
             duration: 0.3,
           })
-          .to(refCartContent.current, {
+          .to(refPopupContent.current, {
             opacity: 1,
             duration: 0.5,
           });
@@ -60,14 +60,14 @@ const CartPopup: React.FC<Props> = ({
     };
 
     const hideCart = () => {
-      if (refBackdrop.current && refCart.current && refCartContent.current) {
+      if (refBackdrop.current && refPopup.current && refPopupContent.current) {
         gsap
           .timeline()
-          .to(refCartContent.current, {
+          .to(refPopupContent.current, {
             opacity: 0,
             duration: 0.5,
           })
-          .to(refCart.current, {
+          .to(refPopup.current, {
             height: 0,
             duration: 0.3,
           })
@@ -95,12 +95,11 @@ const CartPopup: React.FC<Props> = ({
       onClick={onClickBackdrop}
     >
       <div
-        ref={refCart}
-        style={{ width: 400 }}
-        className="bg-white self-end max-h-full h-0 px-6"
+        ref={refPopup}
+        className="w-full bg-white self-end max-h-full h-0 px-4 md:px-6 md:w-[400px]"
         onClick={(event) => event.stopPropagation()}
       >
-        <div ref={refCartContent} className="h-full flex flex-col opacity-0">
+        <div ref={refPopupContent} className="h-full flex flex-col opacity-0">
           <div className="h-24" />
           {!!cartItems.length && (
             <>
