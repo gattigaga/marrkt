@@ -66,7 +66,7 @@ const ProductsPage: NextPage<Props> = ({
       </Head>
 
       <Menu />
-      <main className="px-4 pt-28 pb-24 md:px-8">
+      <main className="px-6 pt-28 pb-24 md:px-8">
         <div className="flex flex-col md:flex-row">
           <div className="flex-1 mb-16 md:mr-12">
             {!!products.length && (
