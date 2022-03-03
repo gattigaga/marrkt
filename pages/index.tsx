@@ -20,7 +20,7 @@ const HomePage: NextPage<Props> = ({}) => {
 
       <Menu />
       <main className="min-h-screen">
-        <div className="pt-24 pb-48 px-8">
+        <div className="pt-24 pb-48 px-6 md:px-8">
           <Image
             className="object-cover"
             src="/images/fashion.jpg"
@@ -28,12 +28,14 @@ const HomePage: NextPage<Props> = ({}) => {
             width={1366}
             height={480}
           />
-          <p className="font-bold text-8xl text-black tracking-tighter">
+          <p className="font-bold text-3xl text-black tracking-tighter md:text-8xl">
             #BEFASHIONABLE
           </p>
-          <p className="text-2xl font-medium mb-48">EMBRACE YOUR APPEARANCE</p>
-          <div className="w-2/3 mx-auto mb-48">
-            <p className="text-center text-2xl">
+          <p className="text-md font-medium mb-24 md:mb-48 md:text-2xl">
+            EMBRACE YOUR APPEARANCE
+          </p>
+          <div className="mx-auto mb-24 md:w-2/3 md:mb-48">
+            <p className="text-center text-md md:text-2xl">
               We only sell best quality of fashion clothes and has modern styles
               &mdash; make you confident when you meet up with your friends
               &mdash; and make you looks standout.
@@ -41,14 +43,14 @@ const HomePage: NextPage<Props> = ({}) => {
           </div>
 
           {/* Shop value list */}
-          <div className="mb-48">
+          <div className="mb-24 md:mb-48">
             <ShopValue
               index={0}
               title="WELL DESIGNED"
               description="All clothes are designed by experienced fashion designer. So this means the clothes makes you looks fashionable and standout in your meet up."
               image="/images/clothes.jpg"
             />
-            <div className="h-32" />
+            <div className="h-20 md:h-32" />
             <ShopValue
               index={1}
               title="HIGH QUALITY MATERIALS"
@@ -56,7 +58,7 @@ const HomePage: NextPage<Props> = ({}) => {
               image="/images/textile.jpg"
               align="right"
             />
-            <div className="h-32" />
+            <div className="h-20 md:h-32" />
             <ShopValue
               index={2}
               title="AFFORDABLE PRICE"
@@ -65,7 +67,7 @@ const HomePage: NextPage<Props> = ({}) => {
             />
           </div>
 
-          <p className="text-center font-bold text-9xl tracking-tighter leading-[0.8] mb-16">
+          <p className="text-center font-bold text-5xl tracking-tighter mb-8 md:mb-16 md:text-9xl">
             WHAT ARE YOU WAITING FOR?
           </p>
           <div className="flex justify-center">
