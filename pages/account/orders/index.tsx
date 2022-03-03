@@ -68,11 +68,11 @@ const OrdersPage: NextPage<Props> = ({ orders, totalPages }) => {
       </Head>
 
       <Menu />
-      <main className="min-h-screen flex px-4 pt-28 pb-24 md:px-8">
-        <div className="flex-1 mr-16">
+      <main className="min-h-screen flex flex-col-reverse px-4 pt-28 pb-24 md:flex-row md:px-8">
+        <div className="flex-1 mt-16 md:mt-0 md:mr-16">
           <AccountMenu />
         </div>
-        <div className="w-3/4 ml-auto">
+        <div className="md:w-3/4">
           <h1 className="text-md font-medium text-black mb-8">Orders</h1>
           {!!orders.length && (
             <>
