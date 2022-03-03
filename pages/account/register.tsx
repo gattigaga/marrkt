@@ -59,7 +59,7 @@ const RegisterPage: NextPage<Props> = ({}) => {
 
       <Menu />
       <main className="min-h-screen flex flex-col items-center">
-        <div className="w-2/3 pt-28 pb-24">
+        <div className="w-full pt-28 pb-24 px-6 md:px-0 md:w-96">
           <h1 className="text-md font-medium text-black mb-16">Register</h1>
           <Formik
             initialValues={{
@@ -110,65 +110,61 @@ const RegisterPage: NextPage<Props> = ({}) => {
               isSubmitting,
             }) => (
               <form onSubmit={handleSubmit}>
-                <div className="flex mb-6">
-                  <div className="mr-6 flex-1">
-                    <Input
-                      name="firstName"
-                      id="firstName"
-                      label="First Name*"
-                      type="text"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.firstName}
-                      disabled={isSubmitting}
-                      hasError={!!(errors.firstName && touched.firstName)}
-                      errorText={errors.firstName}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <Input
-                      name="lastName"
-                      id="lastName"
-                      label="Last Name*"
-                      type="text"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.lastName}
-                      disabled={isSubmitting}
-                      hasError={!!(errors.lastName && touched.lastName)}
-                      errorText={errors.lastName}
-                    />
-                  </div>
+                <div className="mb-6">
+                  <Input
+                    name="firstName"
+                    id="firstName"
+                    label="First Name*"
+                    type="text"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.firstName}
+                    disabled={isSubmitting}
+                    hasError={!!(errors.firstName && touched.firstName)}
+                    errorText={errors.firstName}
+                  />
                 </div>
-                <div className="flex mb-8">
-                  <div className="mr-6 flex-1">
-                    <Input
-                      name="email"
-                      id="email"
-                      label="Email Address*"
-                      type="text"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      disabled={isSubmitting}
-                      hasError={!!(errors.email && touched.email)}
-                      errorText={errors.email}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <Input
-                      name="password"
-                      id="password"
-                      label="Password*"
-                      type="password"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.password}
-                      disabled={isSubmitting}
-                      hasError={!!(errors.password && touched.password)}
-                      errorText={errors.password}
-                    />
-                  </div>
+                <div className="mb-6">
+                  <Input
+                    name="lastName"
+                    id="lastName"
+                    label="Last Name*"
+                    type="text"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.lastName}
+                    disabled={isSubmitting}
+                    hasError={!!(errors.lastName && touched.lastName)}
+                    errorText={errors.lastName}
+                  />
+                </div>
+                <div className="mb-6">
+                  <Input
+                    name="email"
+                    id="email"
+                    label="Email Address*"
+                    type="text"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.email}
+                    disabled={isSubmitting}
+                    hasError={!!(errors.email && touched.email)}
+                    errorText={errors.email}
+                  />
+                </div>
+                <div className="mb-8">
+                  <Input
+                    name="password"
+                    id="password"
+                    label="Password*"
+                    type="password"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.password}
+                    disabled={isSubmitting}
+                    hasError={!!(errors.password && touched.password)}
+                    errorText={errors.password}
+                  />
                 </div>
 
                 <div className="flex justify-between items-center">
