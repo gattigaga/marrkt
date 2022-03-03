@@ -16,12 +16,13 @@ const ShopValue: React.FC<Props> = ({
   image,
   align = "left",
 }) => {
-  const containerDirection = align === "left" ? "flex-row" : "flex-row-reverse";
+  const containerDirection =
+    align === "left" ? "md:flex-row" : "md:flex-row-reverse";
   const contentDirection = align === "left" ? "items-start" : "items-end";
   const textAlign = align === "left" ? "text-left" : "text-right";
 
   return (
-    <div className={`flex ${containerDirection}`}>
+    <div className={`flex flex-col ${containerDirection}`}>
       <Image
         className="object-cover"
         src={image}
@@ -29,17 +30,17 @@ const ShopValue: React.FC<Props> = ({
         width={720}
         height={800}
       />
-      <div className="w-16" />
+      <div className="w-16 h-6" />
       <div className={`flex flex-col ${contentDirection}`}>
         <p className={`font-medium text-xl text-black ${textAlign}`}>
           0{index + 1}
         </p>
         <p
-          className={`font-bold text-6xl text-black tracking-tighter mb-6 ${textAlign}`}
+          className={`font-bold text-black text-4xl tracking-tighter mb-6 ${textAlign} md:text-6xl`}
         >
           {title}
         </p>
-        <p className={`w-1/2 ${textAlign}`}>{description}</p>
+        <p className={`${textAlign} md:w-1/2`}>{description}</p>
       </div>
     </div>
   );
