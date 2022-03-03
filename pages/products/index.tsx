@@ -62,13 +62,13 @@ const ProductsPage: NextPage<Props> = ({
   return (
     <div>
       <Head>
-        <title>Marrkt | The World #1 Marketplace</title>
+        <title>Products | Marrkt</title>
       </Head>
 
       <Menu />
       <main className="px-4 pt-28 pb-24 md:px-8">
-        <div className="flex">
-          <div className="flex-1 mr-12">
+        <div className="flex flex-col md:flex-row">
+          <div className="flex-1 mb-16 md:mr-12">
             {!!products.length && (
               <>
                 <div className="grid grid-cols-2 gap-4 mb-8 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
@@ -110,7 +110,7 @@ const ProductsPage: NextPage<Props> = ({
               </p>
             )}
           </div>
-          <div className="w-64">
+          <div className="w-full border-t border-gray-200 pt-6 md:border-0 md:pt-0 md:w-64">
             <Filter categories={categories} />
           </div>
         </div>
