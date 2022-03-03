@@ -54,11 +54,11 @@ const ProfilePage: NextPage<Props> = ({}) => {
       </Head>
 
       <Menu />
-      <main className="min-h-screen flex px-4 pt-28 pb-24 md:px-8">
-        <div className="flex-1 mr-16">
+      <main className="min-h-screen flex flex-col-reverse px-4 pt-28 pb-24 md:flex-row md:px-8">
+        <div className="flex-1 mt-16 md:mt-0 md:mr-16">
           <AccountMenu />
         </div>
-        <div className="w-3/4 ml-auto">
+        <div className="md:w-3/4">
           <h1 className="text-md font-medium text-black mb-8">Profile</h1>
           <div>
             <Formik
@@ -103,8 +103,8 @@ const ProfilePage: NextPage<Props> = ({}) => {
                 isSubmitting,
               }) => (
                 <form onSubmit={handleSubmit}>
-                  <div className="flex mb-6">
-                    <div className="mr-6 flex-1">
+                  <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2">
+                    <div>
                       <Input
                         name="firstName"
                         id="firstName"
@@ -118,7 +118,7 @@ const ProfilePage: NextPage<Props> = ({}) => {
                         errorText={errors.firstName as string}
                       />
                     </div>
-                    <div className="flex-1">
+                    <div>
                       <Input
                         name="lastName"
                         id="lastName"
@@ -132,20 +132,20 @@ const ProfilePage: NextPage<Props> = ({}) => {
                         errorText={errors.lastName as string}
                       />
                     </div>
-                  </div>
-                  <div className="mb-8">
-                    <Input
-                      name="email"
-                      id="email"
-                      label="Email Address*"
-                      type="text"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      disabled={isSubmitting}
-                      hasError={!!(errors.email && touched.email)}
-                      errorText={errors.email}
-                    />
+                    <div className="md:col-span-2">
+                      <Input
+                        name="email"
+                        id="email"
+                        label="Email Address*"
+                        type="text"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.email}
+                        disabled={isSubmitting}
+                        hasError={!!(errors.email && touched.email)}
+                        errorText={errors.email}
+                      />
+                    </div>
                   </div>
 
                   <div className="flex justify-between items-center">
