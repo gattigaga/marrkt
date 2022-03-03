@@ -71,7 +71,7 @@ const CartPage: NextPage<Props> = ({}) => {
 
       <Menu ref={refMenu} />
       <main className="min-h-screen flex flex-col items-center">
-        <div className="w-2/3 pt-28 pb-24">
+        <div className="w-full px-6 pt-28 pb-24 md:w-2/3">
           <h1 className="text-md font-medium text-black mt-4 mb-8">My Cart</h1>
           <table className="w-full">
             <thead className="border-b-2 border-black">
@@ -81,7 +81,7 @@ const CartPage: NextPage<Props> = ({}) => {
                     Product
                   </p>
                 </th>
-                <th className="py-4">
+                <th className="hidden py-4 md:block">
                   <p className="text-xs font-medium text-black">QTY</p>
                 </th>
                 <th className="py-4">
@@ -104,7 +104,7 @@ const CartPage: NextPage<Props> = ({}) => {
                   return (
                     <tr key={item.id} className="border-b border-gray-200">
                       <td className="py-4">
-                        <div className="flex">
+                        <div className="flex items-start">
                           <Image
                             className="w-16 h-16 object-cover"
                             src={thumbnailURL || ""}
@@ -112,18 +112,25 @@ const CartPage: NextPage<Props> = ({}) => {
                             width={64}
                             height={64}
                           />
-                          <div className="w-40 ml-6 mr-auto py-2">
+                          <div className="w-24 ml-6 mr-auto md:w-40">
                             <p className="text-black text-xs font-medium truncate text-ellipsis overflow-hidden mb-1">
                               {item.product.name}
                             </p>
                             <p className="text-gray-500 text-xs">
                               {numberToCurrency(item.product.price)}
                             </p>
+                            <div className="mt-4 md:hidden">
+                              <Counter
+                                value={item.quantity}
+                                onClickIncrease={() => increaseQty(item.id)}
+                                onClickDecrease={() => decreaseQty(item.id)}
+                              />
+                            </div>
                           </div>
                         </div>
                       </td>
-                      <td>
-                        <div className="flex justify-center items-center">
+                      <td className="hidden md:block">
+                        <div className="flex h-24 justify-center items-center">
                           <Counter
                             value={item.quantity}
                             onClickIncrease={() => increaseQty(item.id)}
@@ -167,7 +174,7 @@ const CartPage: NextPage<Props> = ({}) => {
           </table>
           {!!cartItems.length && (
             <div className="flex">
-              <div className="w-72 mt-6 ml-auto flex flex-col items-end">
+              <div className="w-full mt-6 flex flex-col items-end md:ml-auto md:w-72">
                 <div className="w-full flex justify-between py-2 mb-8">
                   <p className="text-xs text-black">Subtotal</p>
                   <p className="text-xs text-black">
