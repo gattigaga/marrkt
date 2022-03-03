@@ -64,18 +64,18 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
       </Head>
 
       <Menu />
-      <main className="min-h-screen flex px-4 pt-28 pb-24 md:px-8">
-        <div className="flex-1 mr-16">
+      <main className="min-h-screen flex flex-col-reverse px-4 pt-28 pb-24 md:flex-row md:px-8">
+        <div className="flex-1 mt-16 md:mt-0 md:mr-16">
           <AccountMenu />
         </div>
-        <div className="w-3/4 ml-auto">
+        <div className="md:w-3/4">
           <h1 className="text-md font-medium text-black mb-8">
             Order #{router.query.invoice}
           </h1>
           <div>
-            <div className="mb-12">
+            <div className="mb-8">
               <h2 className="text-sm font-medium text-black mb-6">General</h2>
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
                 <Info label="Invoice" value={`#${order.invoice_code}`} />
                 <Info label="Payment Method" value="Paypal" />
                 <Info label="Total Items" value={`${order.items_count} pcs`} />
@@ -89,9 +89,9 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
               </div>
             </div>
 
-            <div>
+            <div className="mb-12">
               <h2 className="text-sm font-medium text-black mb-6">Shipping</h2>
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
                 <Info label="Person Name" value={order.shipping.person_name} />
                 <Info
                   label="Country Code"
@@ -119,7 +119,7 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
               </div>
             </div>
 
-            <table className="w-full mt-12">
+            <table className="w-full">
               <thead className="border-b-2 border-black">
                 <tr>
                   <th className="py-4">
@@ -157,7 +157,7 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
                             width={64}
                             height={64}
                           />
-                          <div className="w-40 ml-6 mr-auto py-2">
+                          <div className="w-24 ml-4 mr-auto md:w-40">
                             <p className="text-black text-xs font-medium truncate text-ellipsis overflow-hidden mb-1">
                               {item.product.name}
                             </p>
@@ -182,7 +182,7 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
                 })}
               </tbody>
             </table>
-            <div className="w-72 mt-6 ml-auto flex flex-col items-end">
+            <div className="mt-6 flex flex-col items-end md:ml-auto md:w-72">
               <div className="w-full flex justify-between py-2">
                 <p className="text-xs text-black">Subtotal</p>
                 <p className="text-xs text-black">
