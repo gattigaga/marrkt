@@ -48,7 +48,7 @@ const LoginPage: NextPage<Props> = ({}) => {
 
       <Menu />
       <main className="min-h-screen flex flex-col items-center">
-        <div className="w-96 pt-28 pb-24">
+        <div className="w-full pt-28 pb-24 px-6 md:px-0 md:w-96">
           <h1 className="text-md font-medium text-black mb-16">Login</h1>
           <Formik
             initialValues={{
