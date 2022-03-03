@@ -5,7 +5,7 @@ type Props = {
   index?: number;
   title: string;
   description: string;
-  image: string;
+  image: string | StaticImageData;
   align?: "left" | "right";
 };
 
