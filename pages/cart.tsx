@@ -112,14 +112,14 @@ const CartPage: NextPage<Props> = ({}) => {
                             width={64}
                             height={64}
                           />
-                          <div className="w-24 ml-6 mr-auto md:w-40">
+                          <div className="w-24 ml-4 mr-auto md:w-40">
                             <p className="text-black text-xs font-medium truncate text-ellipsis overflow-hidden mb-1">
                               {item.product.name}
                             </p>
                             <p className="text-gray-500 text-xs">
                               {numberToCurrency(item.product.price)}
                             </p>
-                            <div className="mt-4 md:hidden">
+                            <div className="mt-2 md:hidden">
                               <Counter
                                 value={item.quantity}
                                 onClickIncrease={() => increaseQty(item.id)}
