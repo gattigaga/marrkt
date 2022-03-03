@@ -118,14 +118,14 @@ const ProductDetailPage: NextPage<Props> = ({ product, relatedProducts }) => {
           </div>
 
           {/* Right side */}
-          <div className="w-full px-5 pt-16 md:w-1/3 md:pt-32 md:px-12">
+          <div className="w-full px-6 pt-16 md:w-1/3 md:pt-32 md:px-12">
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
             <p className="text-md mb-8">{numberToCurrency(product.price)}</p>
             <p className="text-xs leading-5 mb-8">{product.description}</p>
             <Button label="Add to cart" onClick={add} />
           </div>
         </div>
-        <div className="px-5 md:px-8">
+        <div className="px-6 md:px-8">
           <h2 className="mb-5 text-black text-lg font-medium md:mb-10 md:text-2xl">
             You might also like
           </h2>
