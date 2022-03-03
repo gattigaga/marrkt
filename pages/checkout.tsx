@@ -93,10 +93,10 @@ const CheckoutPage: NextPage<Props> = ({}) => {
       </Head>
 
       <Menu ref={refMenu} />
-      <main className="min-h-screen flex flex-col items-center">
-        <div className="w-1/3 pt-28 pb-24">
+      <main className="px-6 min-h-screen flex flex-col items-center md:px-0">
+        <div className="w-full pt-28 pb-24 md:w-1/2 lg:w-1/3">
           {!isCheckingOut && (
-            <div className="p-8 border">
+            <div className="p-6 border md:p-8">
               <h1 className="text-md font-medium text-black mt-4 mb-8">
                 Checkout
               </h1>
@@ -144,7 +144,7 @@ const CheckoutPage: NextPage<Props> = ({}) => {
                                 width={64}
                                 height={64}
                               />
-                              <div className="w-40 ml-6 mr-auto py-2">
+                              <div className="w-24 ml-4 mr-auto md:w-40">
                                 <p className="text-black text-xs font-medium truncate text-ellipsis overflow-hidden mb-1">
                                   {item.product.name}
                                 </p>
