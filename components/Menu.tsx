@@ -29,9 +29,6 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const refContainer = useRef(null);
-  const refLine1 = useRef(null);
-  const refLine2 = useRef(null);
-  const refLine3 = useRef(null);
   const refTotalItems = useRef(null);
   const cartItems = useStore((state) => state.cartItems);
   const removeFromCart = useStore((state) => state.removeFromCart);
@@ -41,20 +38,6 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
   }, [cartItems]);
 
   const user = supabase.auth.user();
-
-  const showLine = (element: gsap.TweenTarget) => {
-    gsap
-      .timeline()
-      .set(element, { alignSelf: "flex-start" })
-      .to(element, { width: "100%" });
-  };
-
-  const hideLine = (element: gsap.TweenTarget) => {
-    gsap
-      .timeline()
-      .set(element, { alignSelf: "flex-end" })
-      .to(element, { width: "0%" });
-  };
 
   const runTotalItemsAnimation = (
     onAnimationRun: () => void,
