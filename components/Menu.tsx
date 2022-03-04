@@ -12,6 +12,7 @@ import { gsap, Power2 } from "gsap";
 import Logo from "./Logo";
 import MenuPopup from "./MenuPopup";
 import CartPopup from "./CartPopup";
+import MenuLink from "./MenuLink";
 import { useStore } from "../store/store";
 import { supabase } from "../helpers/supabase";
 
@@ -181,82 +182,17 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
         {/* For bigger screen */}
         <nav className="hidden relative z-10 md:flex">
           <ul className="mr-8">
-            <li
-              className="inline-block"
-              onMouseEnter={() => {
-                if (refLine1.current) {
-                  showLine(refLine1.current);
-                }
-              }}
-              onMouseLeave={() => {
-                if (refLine1.current) {
-                  hideLine(refLine1.current);
-                }
-              }}
-            >
-              <Link href="/">
-                <a>
-                  <div className="flex flex-col">
-                    <span className="text-xs">Home</span>
-                    <div
-                      ref={refLine1}
-                      className="w-0 border-t border-black mt-1"
-                    />
-                  </div>
-                </a>
-              </Link>
+            <li className="inline-block">
+              <MenuLink label="Home" href="/" />
             </li>
-            <li
-              className="inline-block ml-8"
-              onMouseEnter={() => {
-                if (refLine2.current) {
-                  showLine(refLine2.current);
-                }
-              }}
-              onMouseLeave={() => {
-                if (refLine2.current) {
-                  hideLine(refLine2.current);
-                }
-              }}
-            >
-              <Link href="/products">
-                <a>
-                  <div className="flex flex-col">
-                    <span className="text-xs">Products</span>
-                    <div
-                      ref={refLine2}
-                      className="w-0 border-t border-black mt-1"
-                    />
-                  </div>
-                </a>
-              </Link>
+            <li className="inline-block ml-8">
+              <MenuLink label="Products" href="/products" />
             </li>
-            <li
-              className="inline-block ml-8"
-              onMouseEnter={() => {
-                if (refLine3.current) {
-                  showLine(refLine3.current);
-                }
-              }}
-              onMouseLeave={() => {
-                if (refLine3.current) {
-                  hideLine(refLine3.current);
-                }
-              }}
-            >
-              <Link href={user ? "/account/profile" : "/account/login"}>
-                <a>
-                  <div className="flex flex-col">
-                    <span className="text-xs">
-                      {user ? "My Account" : "Login"}
-                    </span>
-                    <div
-                      ref={refLine3}
-                      className="w-0 border-t border-black mt-1"
-                    />
-                  </div>
-                </a>
-              </Link>
+            <li className="inline-block ml-8">
+              <MenuLink
+                label={user ? "My Account" : "Login"}
+                href={user ? "/account/profile" : "/account/login"}
+              />
             </li>
           </ul>
           <button
