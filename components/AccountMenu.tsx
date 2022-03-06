@@ -4,9 +4,12 @@ import React from "react";
 import { supabase } from "../helpers/supabase";
 import { toast } from "react-toastify";
 
-type Props = {};
+type Props = {
+  onLogoutStart: () => void;
+  onLogoutEnd: () => void;
+};
 
-const AccountMenu: React.FC<Props> = ({}) => {
+const AccountMenu: React.FC<Props> = ({ onLogoutStart, onLogoutEnd }) => {
   const router = useRouter();
 
   const menus = [
@@ -24,14 +27,18 @@ const AccountMenu: React.FC<Props> = ({}) => {
 
   const logout = async () => {
     try {
+      onLogoutStart();
+
       const { error } = await supabase.auth.signOut();
 
       if (error) throw error;
 
-      router.push("/account/login");
+      await router.push("/account/login");
     } catch (error: any) {
       console.log(error);
       toast(error.message || "Failed to logout.");
+    } finally {
+      onLogoutEnd();
     }
   };
 
