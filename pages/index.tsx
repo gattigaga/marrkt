@@ -1,17 +1,44 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
 import Button from "../components/Button";
 import Layout from "../components/Layout";
 import ShopValue from "../components/ShopValue";
+import Product from "../components/Product";
 import imgFashion from "../public/images/fashion.jpg";
 import imgClothes from "../public/images/clothes.jpg";
 import imgTextile from "../public/images/textile.jpg";
+import axios from "../helpers/axios";
+import * as models from "../types/models";
+import { supabase } from "../helpers/supabase";
 
-type Props = {};
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { products } = await (async () => {
+    const params = {
+      page: 1,
+    };
 
-const HomePage: NextPage<Props> = ({}) => {
+    const res = await axios.get(`/products`, { params });
+    const result = res.data.data;
+
+    return { products: result.slice(0, 4) };
+  })();
+
+  return {
+    props: {
+      products,
+    },
+  };
+};
+
+type Props = {
+  products: (models.Product & {
+    category: models.ProductCategory;
+  })[];
+};
+
+const HomePage: NextPage<Props> = ({ products }) => {
   const router = useRouter();
 
   return (
@@ -50,7 +77,7 @@ const HomePage: NextPage<Props> = ({}) => {
             </div>
 
             {/* Shop value list */}
-            <div className="mb-24 md:mb-48">
+            <div className="mb-24">
               <ShopValue
                 index={0}
                 title="WELL DESIGNED"
@@ -72,6 +99,30 @@ const HomePage: NextPage<Props> = ({}) => {
                 description="Even if the clothes built with high quality materials and designed by experienced fashion designer, the price is still affordable."
                 image={imgFashion}
               />
+            </div>
+
+            {/* Some products */}
+            <div className="px-6 mb-24 md:px-8 md:mb-48">
+              <h2 className="mb-5 text-black text-lg text-center font-medium md:mb-10 md:text-2xl">
+                Our Products
+              </h2>
+              <div className="grid grid-cols-2 gap-4 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
+                {products.map((product) => {
+                  const { publicURL: imageURL } = supabase.storage
+                    .from("general")
+                    .getPublicUrl(`products/${product.thumbnail}`);
+
+                  return (
+                    <Product
+                      key={product.id}
+                      image={imageURL || ""}
+                      name={product.name}
+                      price={product.price}
+                      url={`/products/${product.slug}`}
+                    />
+                  );
+                })}
+              </div>
             </div>
 
             {/* Ask for shopping */}
