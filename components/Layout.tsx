@@ -37,11 +37,14 @@ const Layout: React.ForwardRefRenderFunction<Exposed, Props> = (
     const isBrowser = typeof window !== "undefined";
 
     if (isBrowser) {
-      const luxy = require("luxy.js");
+      (async () => {
+        // @ts-ignore
+        const luxy = await import("luxy.js");
 
-      luxy.init({
-        wrapperSpeed: 0.05,
-      });
+        luxy.default.init({
+          wrapperSpeed: 0.05,
+        });
+      })();
     }
   }, []);
 
