@@ -20,6 +20,8 @@ const Button: React.FC<Props> = ({
   const refSlide = useRef(null);
   const refLabel = useRef(null);
 
+  const defaultTextColor = color === "black" ? "white" : "black";
+
   const slideOut = (isHovered: boolean) => {
     if (!(refSlide.current && refLabel.current)) return;
 
@@ -72,7 +74,7 @@ const Button: React.FC<Props> = ({
       {!isLoading && (
         <span
           ref={refLabel}
-          className="relative text-white text-xs font-medium"
+          className={`relative text-${defaultTextColor} text-xs font-medium`}
         >
           {label}
         </span>
