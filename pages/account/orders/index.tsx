@@ -4,7 +4,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import queryString from "query-string";
 
-import Menu from "../../../components/Menu";
+import Layout from "../../../components/Layout";
 import OrderItem from "../../../components/OrderItem";
 import Pagination from "../../../components/Pagination";
 import { supabase } from "../../../helpers/supabase";
@@ -67,61 +67,62 @@ const OrdersPage: NextPage<Props> = ({ orders, totalPages }) => {
         <title>Orders | Marrkt</title>
       </Head>
 
-      <Menu />
-      <main className="min-h-screen flex flex-col-reverse px-4 pt-28 pb-24 md:flex-row md:px-8">
-        <div className="flex-1 mt-16 md:mt-0 md:mr-16">
-          <AccountMenu />
-        </div>
-        <div className="md:w-3/4">
-          <h1 className="text-md font-medium text-black mb-8">Orders</h1>
-          {!!orders.length && (
-            <>
-              <div className="mb-8">
-                {orders.map((order) => {
-                  const { publicURL: thumbnailURL } = supabase.storage
-                    .from("general")
-                    .getPublicUrl(
-                      `products/${order.items[0].product.thumbnail}`
+      <Layout>
+        <main className="min-h-screen flex flex-col-reverse px-4 pt-28 pb-24 md:flex-row md:px-8">
+          <div className="flex-1 mt-16 md:mt-0 md:mr-16">
+            <AccountMenu />
+          </div>
+          <div className="md:w-3/4">
+            <h1 className="text-md font-medium text-black mb-8">Orders</h1>
+            {!!orders.length && (
+              <>
+                <div className="mb-8">
+                  {orders.map((order) => {
+                    const { publicURL: thumbnailURL } = supabase.storage
+                      .from("general")
+                      .getPublicUrl(
+                        `products/${order.items[0].product.thumbnail}`
+                      );
+
+                    return (
+                      <OrderItem
+                        key={order.id}
+                        code={order.invoice_code}
+                        thumbnail={thumbnailURL || ""}
+                        totalItems={order.items_count}
+                        amount={order.total}
+                        date={order.created_at}
+                        url={`/account/orders/${order.invoice_code}`}
+                      />
                     );
+                  })}
+                </div>
+                <div className="flex justify-center">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(pageIndex) => {
+                      const query = queryString.stringify({
+                        ...router.query,
+                        page: pageIndex,
+                      });
 
-                  return (
-                    <OrderItem
-                      key={order.id}
-                      code={order.invoice_code}
-                      thumbnail={thumbnailURL || ""}
-                      totalItems={order.items_count}
-                      amount={order.total}
-                      date={order.created_at}
-                      url={`/account/orders/${order.invoice_code}`}
-                    />
-                  );
-                })}
+                      router.push(`/account/orders?${query}`);
+                    }}
+                  />
+                </div>
+              </>
+            )}
+            {!orders.length && (
+              <div>
+                <p className="text-xs text-black">
+                  There&lsquo;s no orders found.
+                </p>
               </div>
-              <div className="flex justify-center">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={(pageIndex) => {
-                    const query = queryString.stringify({
-                      ...router.query,
-                      page: pageIndex,
-                    });
-
-                    router.push(`/account/orders?${query}`);
-                  }}
-                />
-              </div>
-            </>
-          )}
-          {!orders.length && (
-            <div>
-              <p className="text-xs text-black">
-                There&lsquo;s no orders found.
-              </p>
-            </div>
-          )}
-        </div>
-      </main>
+            )}
+          </div>
+        </main>
+      </Layout>
     </div>
   );
 };
