@@ -5,6 +5,7 @@ import BeatLoader from "react-spinners/BeatLoader";
 type Props = {
   label: string;
   type?: "submit" | "button";
+  color?: "black" | "white";
   isLoading?: boolean;
   onClick?: () => void;
 };
@@ -12,6 +13,7 @@ type Props = {
 const Button: React.FC<Props> = ({
   label,
   type = "button",
+  color = "black",
   isLoading,
   onClick,
 }) => {
@@ -22,7 +24,14 @@ const Button: React.FC<Props> = ({
     if (!(refSlide.current && refLabel.current)) return;
 
     const slideWidth = isHovered ? "0%" : "100%";
-    const textColor = isHovered ? "black" : "white";
+
+    const textColor = (() => {
+      if (isHovered) {
+        return color === "black" ? "black" : "white";
+      }
+
+      return color === "black" ? "white" : "black";
+    })();
 
     gsap.to(refSlide.current, { width: slideWidth, duration: 0.3 });
     gsap.to(refLabel.current, { color: textColor, duration: 0.3 });
@@ -36,7 +45,7 @@ const Button: React.FC<Props> = ({
 
   return (
     <button
-      className="bg-white w-[128px] h-10 flex items-center justify-center border-2 border-black relative box-content"
+      className={`w-[128px] h-10 flex items-center justify-center border-2 border-${color} relative box-content`}
       type={type}
       onClick={isLoading ? undefined : onClick}
       onMouseEnter={() => {
@@ -58,7 +67,7 @@ const Button: React.FC<Props> = ({
     >
       <div
         ref={refSlide}
-        className="w-full h-full bg-black absolute top-0 left-0 box-content"
+        className={`w-full h-full bg-${color} absolute top-0 left-0 box-content`}
       />
       {!isLoading && (
         <span
