@@ -5,7 +5,6 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
 
 import Layout from "../../components/Layout";
 import Button from "../../components/Button";
@@ -41,113 +40,101 @@ type Props = {};
 const LoginPage: NextPage<Props> = ({}) => {
   const router = useRouter();
 
-  useEffect(() => {
-    const isBrowser = typeof window !== "undefined";
-
-    if (isBrowser) {
-      const luxy = require("luxy.js");
-
-      luxy.init();
-    }
-  }, []);
-
   return (
-    <div id="luxy">
+    <Layout>
       <Head>
         <title>Login | Marrkt</title>
       </Head>
 
-      <Layout>
-        <main className="min-h-screen flex flex-col items-center">
-          <div className="w-full pt-28 pb-24 px-6 md:px-0 md:w-96">
-            <h1 className="text-md font-medium text-black mb-16">Login</h1>
-            <Formik
-              initialValues={{
-                email: "",
-                password: "",
-              }}
-              validationSchema={validationSchema}
-              onSubmit={async (values, { setSubmitting }) => {
-                try {
-                  setSubmitting(true);
+      <main className="min-h-screen flex flex-col items-center">
+        <div className="w-full pt-28 pb-24 px-6 md:px-0 md:w-96">
+          <h1 className="text-md font-medium text-black mb-16">Login</h1>
+          <Formik
+            initialValues={{
+              email: "",
+              password: "",
+            }}
+            validationSchema={validationSchema}
+            onSubmit={async (values, { setSubmitting }) => {
+              try {
+                setSubmitting(true);
 
-                  const { email, password } = values;
+                const { email, password } = values;
 
-                  const { error } = await supabase.auth.signIn({
-                    email,
-                    password,
-                  });
+                const { error } = await supabase.auth.signIn({
+                  email,
+                  password,
+                });
 
-                  if (error) throw error;
+                if (error) throw error;
 
-                  router.push("/account/profile");
-                } catch (error: any) {
-                  console.log(error);
-                  toast(error.message || "Failed to login into your account.");
-                } finally {
-                  setSubmitting(false);
-                }
-              }}
-            >
-              {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                isSubmitting,
-              }) => (
-                <form onSubmit={handleSubmit}>
-                  <div className="mb-6">
-                    <Input
-                      name="email"
-                      id="email"
-                      label="Email Address*"
-                      type="email"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      disabled={isSubmitting}
-                      hasError={!!(errors.email && touched.email)}
-                      errorText={errors.email}
-                    />
-                  </div>
-                  <div className="mb-8">
-                    <Input
-                      name="password"
-                      id="password"
-                      label="Password*"
-                      type="password"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.password}
-                      disabled={isSubmitting}
-                      hasError={!!(errors.password && touched.password)}
-                      errorText={errors.password}
-                    />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <Link href="/account/register">
-                      <a>
-                        <p className="text-xs underline">
-                          Don&lsquo;t have an account ?
-                        </p>
-                      </a>
-                    </Link>
-                    <Button
-                      type="submit"
-                      label="Login"
-                      isLoading={isSubmitting}
-                    />
-                  </div>
-                </form>
-              )}
-            </Formik>
-          </div>
-        </main>
-      </Layout>
-    </div>
+                router.push("/account/profile");
+              } catch (error: any) {
+                console.log(error);
+                toast(error.message || "Failed to login into your account.");
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <div className="mb-6">
+                  <Input
+                    name="email"
+                    id="email"
+                    label="Email Address*"
+                    type="email"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.email}
+                    disabled={isSubmitting}
+                    hasError={!!(errors.email && touched.email)}
+                    errorText={errors.email}
+                  />
+                </div>
+                <div className="mb-8">
+                  <Input
+                    name="password"
+                    id="password"
+                    label="Password*"
+                    type="password"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.password}
+                    disabled={isSubmitting}
+                    hasError={!!(errors.password && touched.password)}
+                    errorText={errors.password}
+                  />
+                </div>
+                <div className="flex justify-between items-center">
+                  <Link href="/account/register">
+                    <a>
+                      <p className="text-xs underline">
+                        Don&lsquo;t have an account ?
+                      </p>
+                    </a>
+                  </Link>
+                  <Button
+                    type="submit"
+                    label="Login"
+                    isLoading={isSubmitting}
+                  />
+                </div>
+              </form>
+            )}
+          </Formik>
+        </div>
+      </main>
+    </Layout>
   );
 };
 
