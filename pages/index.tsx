@@ -55,13 +55,18 @@ const HomePage: NextPage<Props> = ({ products }) => {
                 <source src="/videos/jumbotron.mp4" type="video/mp4" />
               </video>
               <div className="absolute w-full h-full top-0 left-0 flex flex-col items-center justify-center p-4 md:p-8">
-                <div className="w-full sm:w-3/4 lg:w-8/12 xl:w-1/2">
+                <div className="w-full flex flex-col items-center sm:w-3/4 lg:w-8/12 xl:w-1/2">
                   <p className="font-bold text-5xl text-white tracking-tighter text-center mb-4 sm:text-7xl md:text-8xl">
                     HANDSOME AND BRAVE
                   </p>
-                  <p className="text-sm font-medium text-white text-center sm:text-xl md:text-2xl">
+                  <p className="text-sm font-medium text-white text-center mb-8 sm:text-xl md:text-2xl">
                     EMBRACE YOUR APPEARANCE
                   </p>
+                  <Button
+                    label="Shop now"
+                    color="white"
+                    onClick={() => router.push("/products")}
+                  />
                 </div>
               </div>
             </div>
