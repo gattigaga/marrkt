@@ -51,7 +51,7 @@ const HomePage: NextPage<Props> = ({ products }) => {
         <main className="min-h-screen">
           <div className="pb-40">
             <div className="w-full h-screen relative overflow-hidden mb-24 sm:mb-48">
-              <video className="object-cover w-full h-full" autoPlay muted>
+              <video className="object-cover w-full h-full" autoPlay muted loop>
                 <source src="/videos/jumbotron.mp4" type="video/mp4" />
               </video>
               <div className="absolute w-full h-full top-0 left-0 flex flex-col items-center justify-center p-4 md:p-8">
