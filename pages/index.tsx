@@ -1,13 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 
 import Button from "../components/Button";
 import Layout from "../components/Layout";
 import ShopValue from "../components/ShopValue";
 import imgFashion from "../public/images/fashion.jpg";
-import imgFashion1 from "../public/images/fashion-1.jpg";
 import imgClothes from "../public/images/clothes.jpg";
 import imgTextile from "../public/images/textile.jpg";
 
@@ -25,14 +23,10 @@ const HomePage: NextPage<Props> = ({}) => {
       <Layout>
         <main className="min-h-screen">
           <div className="pb-40">
-            <div className="w-full h-screen relative mb-24 sm:mb-48">
-              <Image
-                className="object-cover"
-                src={imgFashion1}
-                alt="Person"
-                layout="fill"
-                objectFit="cover"
-              />
+            <div className="w-full h-screen relative overflow-hidden mb-24 sm:mb-48">
+              <video className="object-cover w-full h-full" autoPlay muted>
+                <source src="/videos/jumbotron.mp4" type="video/mp4" />
+              </video>
               <div className="absolute w-full h-full top-0 left-0 flex flex-col items-center justify-center p-4 md:p-8">
                 <div className="w-full sm:w-3/4 lg:w-8/12 xl:w-1/2">
                   <p className="font-bold text-5xl text-white tracking-tighter text-center mb-4 sm:text-7xl md:text-8xl">
