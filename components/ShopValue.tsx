@@ -17,30 +17,36 @@ const ShopValue: React.FC<Props> = ({
   align = "left",
 }) => {
   const containerDirection =
-    align === "left" ? "md:flex-row" : "md:flex-row-reverse";
+    align === "left" ? "sm:flex-row" : "sm:flex-row-reverse";
   const contentDirection = align === "left" ? "items-start" : "items-end";
   const textAlign = align === "left" ? "text-left" : "text-right";
 
   return (
     <div className={`flex flex-col ${containerDirection}`}>
-      <Image
-        className="object-cover"
-        src={image}
-        alt={title}
-        width={720}
-        height={800}
-      />
-      <div className="w-16 h-6" />
-      <div className={`flex flex-col ${contentDirection}`}>
+      <div className="w-full aspect-[3/3.5] relative sm:w-64 md:w-80 lg:w-96 xl:w-1/2">
+        <Image
+          className="object-cover"
+          src={image}
+          alt={title}
+          layout="fill"
+          objectFit="cover"
+        />
+      </div>
+      <div className="w-8 h-8 lg:w-12" />
+      <div
+        className={`flex flex-1 flex-col ${contentDirection} sm:pt-4 lg:pt-8 xl:pt-12`}
+      >
         <p className={`font-medium text-xl text-black ${textAlign}`}>
           0{index + 1}
         </p>
         <p
-          className={`font-bold text-black text-4xl tracking-tighter mb-6 ${textAlign} md:text-6xl`}
+          className={`font-bold text-black text-4xl tracking-tighter mb-6 ${textAlign} md:text-6xl lg:text-7xl xl:w-3/4`}
         >
           {title}
         </p>
-        <p className={`${textAlign} md:w-1/2`}>{description}</p>
+        <p className={`${textAlign} text-xs leading-relaxed md:w-3/4 lg:w-1/2`}>
+          {description}
+        </p>
       </div>
     </div>
   );
