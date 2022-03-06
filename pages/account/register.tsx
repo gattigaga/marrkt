@@ -5,7 +5,6 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
 
 import Layout from "../../components/Layout";
 import Button from "../../components/Button";
@@ -52,153 +51,141 @@ type Props = {};
 const RegisterPage: NextPage<Props> = ({}) => {
   const router = useRouter();
 
-  useEffect(() => {
-    const isBrowser = typeof window !== "undefined";
-
-    if (isBrowser) {
-      const luxy = require("luxy.js");
-
-      luxy.init();
-    }
-  }, []);
-
   return (
-    <div id="luxy">
+    <Layout>
       <Head>
         <title>Register | Marrkt</title>
       </Head>
 
-      <Layout>
-        <main className="min-h-screen flex flex-col items-center">
-          <div className="w-full pt-28 pb-24 px-6 md:px-0 md:w-96">
-            <h1 className="text-md font-medium text-black mb-16">Register</h1>
-            <Formik
-              initialValues={{
-                firstName: "",
-                lastName: "",
-                email: "",
-                password: "",
-              }}
-              validationSchema={validationSchema}
-              onSubmit={async (values, { setSubmitting }) => {
-                try {
-                  setSubmitting(true);
+      <main className="min-h-screen flex flex-col items-center">
+        <div className="w-full pt-28 pb-24 px-6 md:px-0 md:w-96">
+          <h1 className="text-md font-medium text-black mb-16">Register</h1>
+          <Formik
+            initialValues={{
+              firstName: "",
+              lastName: "",
+              email: "",
+              password: "",
+            }}
+            validationSchema={validationSchema}
+            onSubmit={async (values, { setSubmitting }) => {
+              try {
+                setSubmitting(true);
 
-                  const { firstName, lastName, email, password } = values;
+                const { firstName, lastName, email, password } = values;
 
-                  const { error } = await supabase.auth.signUp(
-                    {
-                      email,
-                      password,
+                const { error } = await supabase.auth.signUp(
+                  {
+                    email,
+                    password,
+                  },
+                  {
+                    data: {
+                      first_name: firstName,
+                      last_name: lastName,
                     },
-                    {
-                      data: {
-                        first_name: firstName,
-                        last_name: lastName,
-                      },
-                    }
-                  );
+                  }
+                );
 
-                  if (error) throw error;
+                if (error) throw error;
 
-                  toast("You are successfully registered.");
-                  router.push("/account/login");
-                } catch (error: any) {
-                  console.log(error);
-                  toast(error.message || "Failed to register your account.");
-                } finally {
-                  setSubmitting(false);
-                }
-              }}
-            >
-              {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                isSubmitting,
-              }) => (
-                <form onSubmit={handleSubmit}>
-                  <div className="mb-6">
-                    <Input
-                      name="firstName"
-                      id="firstName"
-                      label="First Name*"
-                      type="text"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.firstName}
-                      disabled={isSubmitting}
-                      hasError={!!(errors.firstName && touched.firstName)}
-                      errorText={errors.firstName}
-                    />
-                  </div>
-                  <div className="mb-6">
-                    <Input
-                      name="lastName"
-                      id="lastName"
-                      label="Last Name*"
-                      type="text"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.lastName}
-                      disabled={isSubmitting}
-                      hasError={!!(errors.lastName && touched.lastName)}
-                      errorText={errors.lastName}
-                    />
-                  </div>
-                  <div className="mb-6">
-                    <Input
-                      name="email"
-                      id="email"
-                      label="Email Address*"
-                      type="text"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      disabled={isSubmitting}
-                      hasError={!!(errors.email && touched.email)}
-                      errorText={errors.email}
-                    />
-                  </div>
-                  <div className="mb-8">
-                    <Input
-                      name="password"
-                      id="password"
-                      label="Password*"
-                      type="password"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.password}
-                      disabled={isSubmitting}
-                      hasError={!!(errors.password && touched.password)}
-                      errorText={errors.password}
-                    />
-                  </div>
+                toast("You are successfully registered.");
+                router.push("/account/login");
+              } catch (error: any) {
+                console.log(error);
+                toast(error.message || "Failed to register your account.");
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <div className="mb-6">
+                  <Input
+                    name="firstName"
+                    id="firstName"
+                    label="First Name*"
+                    type="text"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.firstName}
+                    disabled={isSubmitting}
+                    hasError={!!(errors.firstName && touched.firstName)}
+                    errorText={errors.firstName}
+                  />
+                </div>
+                <div className="mb-6">
+                  <Input
+                    name="lastName"
+                    id="lastName"
+                    label="Last Name*"
+                    type="text"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.lastName}
+                    disabled={isSubmitting}
+                    hasError={!!(errors.lastName && touched.lastName)}
+                    errorText={errors.lastName}
+                  />
+                </div>
+                <div className="mb-6">
+                  <Input
+                    name="email"
+                    id="email"
+                    label="Email Address*"
+                    type="text"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.email}
+                    disabled={isSubmitting}
+                    hasError={!!(errors.email && touched.email)}
+                    errorText={errors.email}
+                  />
+                </div>
+                <div className="mb-8">
+                  <Input
+                    name="password"
+                    id="password"
+                    label="Password*"
+                    type="password"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.password}
+                    disabled={isSubmitting}
+                    hasError={!!(errors.password && touched.password)}
+                    errorText={errors.password}
+                  />
+                </div>
 
-                  <div className="flex justify-between items-center">
-                    <Link href="/account/login">
-                      <a>
-                        <p className="text-xs underline">
-                          Already have an account ?
-                        </p>
-                      </a>
-                    </Link>
-                    <Button
-                      type="submit"
-                      label="Register"
-                      isLoading={isSubmitting}
-                    />
-                  </div>
-                </form>
-              )}
-            </Formik>
-          </div>
-        </main>
-      </Layout>
-    </div>
+                <div className="flex justify-between items-center">
+                  <Link href="/account/login">
+                    <a>
+                      <p className="text-xs underline">
+                        Already have an account ?
+                      </p>
+                    </a>
+                  </Link>
+                  <Button
+                    type="submit"
+                    label="Register"
+                    isLoading={isSubmitting}
+                  />
+                </div>
+              </form>
+            )}
+          </Formik>
+        </div>
+      </main>
+    </Layout>
   );
 };
 
