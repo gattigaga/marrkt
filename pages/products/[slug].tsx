@@ -1,5 +1,5 @@
 import type { GetServerSideProps, NextPage } from "next";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Head from "next/head";
 import { v4 as uuid } from "uuid";
 import Image from "next/image";
@@ -81,85 +81,73 @@ const ProductDetailPage: NextPage<Props> = ({ product, relatedProducts }) => {
     refLayout.current?.runCartItemCountAnimation(() => addToCart(item));
   };
 
-  useEffect(() => {
-    const isBrowser = typeof window !== "undefined";
-
-    if (isBrowser) {
-      const luxy = require("luxy.js");
-
-      luxy.init();
-    }
-  }, []);
-
   return (
-    <div id="luxy">
+    <Layout ref={refLayout}>
       <Head>
         <title>{product.name} | Marrkt</title>
       </Head>
 
-      <Layout ref={refLayout}>
-        <main className="pb-24">
-          <div className="flex flex-col mb-24 md:flex-row">
-            {/* Left side */}
-            <div className="flex-1 grid grid-cols-2 gap-2">
-              <Image
-                className="w-full h-full object-cover"
-                src={thumbnailURL || ""}
-                alt={`${product.name} Thumbnail`}
-                width={480}
-                height={480}
-              />
-              {product.images.map((image, index) => {
-                const { publicURL: imageURL } = supabase.storage
-                  .from("general")
-                  .getPublicUrl(`products/${product.thumbnail}`);
+      <main className="pb-24">
+        <div className="flex flex-col mb-24 md:flex-row">
+          {/* Left side */}
+          <div className="flex-1 grid grid-cols-2 gap-2">
+            <Image
+              className="w-full h-full object-cover"
+              src={thumbnailURL || ""}
+              alt={`${product.name} Thumbnail`}
+              width={480}
+              height={480}
+            />
+            {product.images.map((image, index) => {
+              const { publicURL: imageURL } = supabase.storage
+                .from("general")
+                .getPublicUrl(`products/${product.thumbnail}`);
 
-                return (
-                  <Image
-                    key={image.id}
-                    className="w-full h-full object-cover"
-                    src={imageURL || ""}
-                    alt={`${product.name} ${index + 1}`}
-                    width={480}
-                    height={480}
-                  />
-                );
-              })}
-            </div>
-
-            {/* Right side */}
-            <div className="w-full px-6 pt-16 md:w-1/3 md:pt-32 md:px-12">
-              <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-              <p className="text-md mb-8">{numberToCurrency(product.price)}</p>
-              <p className="text-xs leading-5 mb-8">{product.description}</p>
-              <Button label="Add to cart" onClick={add} />
-            </div>
+              return (
+                <Image
+                  key={image.id}
+                  className="w-full h-full object-cover"
+                  src={imageURL || ""}
+                  alt={`${product.name} ${index + 1}`}
+                  width={480}
+                  height={480}
+                />
+              );
+            })}
           </div>
-          <div className="px-6 md:px-8">
-            <h2 className="mb-5 text-black text-lg font-medium md:mb-10 md:text-2xl">
-              You might also like
-            </h2>
-            <div className="grid grid-cols-2 gap-4 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
-              {relatedProducts.map((product) => {
-                const { publicURL: imageURL } = supabase.storage
-                  .from("general")
-                  .getPublicUrl(`products/${product.thumbnail}`);
 
-                return (
-                  <Product
-                    key={product.id}
-                    image={imageURL || ""}
-                    name={product.name}
-                    price={product.price}
-                    url={`/products/${product.slug}`}
-                  />
-                );
-              })}
-            </div>
+          {/* Right side */}
+          <div className="w-full px-6 pt-16 md:w-1/3 md:pt-32 md:px-12">
+            <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+            <p className="text-md mb-8">{numberToCurrency(product.price)}</p>
+            <p className="text-xs leading-5 mb-8">{product.description}</p>
+            <Button label="Add to cart" onClick={add} />
           </div>
-        </main>
-      </Layout>
-    </div>
+        </div>
+        <div className="px-6 md:px-8">
+          <h2 className="mb-5 text-black text-lg font-medium md:mb-10 md:text-2xl">
+            You might also like
+          </h2>
+          <div className="grid grid-cols-2 gap-4 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
+            {relatedProducts.map((product) => {
+              const { publicURL: imageURL } = supabase.storage
+                .from("general")
+                .getPublicUrl(`products/${product.thumbnail}`);
+
+              return (
+                <Product
+                  key={product.id}
+                  image={imageURL || ""}
+                  name={product.name}
+                  price={product.price}
+                  url={`/products/${product.slug}`}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </main>
+    </Layout>
   );
 };
 
