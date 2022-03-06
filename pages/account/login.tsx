@@ -5,6 +5,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 import Layout from "../../components/Layout";
 import Button from "../../components/Button";
@@ -40,8 +41,18 @@ type Props = {};
 const LoginPage: NextPage<Props> = ({}) => {
   const router = useRouter();
 
+  useEffect(() => {
+    const isBrowser = typeof window !== "undefined";
+
+    if (isBrowser) {
+      const luxy = require("luxy.js");
+
+      luxy.init();
+    }
+  }, []);
+
   return (
-    <div>
+    <div id="luxy">
       <Head>
         <title>Login | Marrkt</title>
       </Head>

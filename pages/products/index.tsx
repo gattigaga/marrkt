@@ -2,6 +2,7 @@ import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import queryString from "query-string";
+import { useEffect } from "react";
 
 import Filter from "../../components/Filter";
 import Layout from "../../components/Layout";
@@ -59,8 +60,18 @@ const ProductsPage: NextPage<Props> = ({
 
   const currentPage = Number(router.query.page as string) || 1;
 
+  useEffect(() => {
+    const isBrowser = typeof window !== "undefined";
+
+    if (isBrowser) {
+      const luxy = require("luxy.js");
+
+      luxy.init();
+    }
+  }, []);
+
   return (
-    <div>
+    <div id="luxy">
       <Head>
         <title>Products | Marrkt</title>
       </Head>

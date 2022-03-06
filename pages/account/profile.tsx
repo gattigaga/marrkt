@@ -5,6 +5,7 @@ import { Formik } from "formik";
 import BeatLoader from "react-spinners/BeatLoader";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 import AccountMenu from "../../components/AccountMenu";
 import Button from "../../components/Button";
@@ -50,8 +51,18 @@ const ProfilePage: NextPage<Props> = ({}) => {
 
   const user = supabase.auth.user();
 
+  useEffect(() => {
+    const isBrowser = typeof window !== "undefined";
+
+    if (isBrowser) {
+      const luxy = require("luxy.js");
+
+      luxy.init();
+    }
+  }, []);
+
   return (
-    <div>
+    <div id="luxy">
       <Head>
         <title>Profile | Marrkt</title>
       </Head>

@@ -1,6 +1,7 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 import Button from "../components/Button";
 import Layout from "../components/Layout";
@@ -41,8 +42,18 @@ type Props = {
 const HomePage: NextPage<Props> = ({ products }) => {
   const router = useRouter();
 
+  useEffect(() => {
+    const isBrowser = typeof window !== "undefined";
+
+    if (isBrowser) {
+      const luxy = require("luxy.js");
+
+      luxy.init();
+    }
+  }, []);
+
   return (
-    <div>
+    <div id="luxy">
       <Head>
         <title>Marrkt | The World #1 Marketplace</title>
       </Head>

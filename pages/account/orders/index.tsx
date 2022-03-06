@@ -1,6 +1,6 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import queryString from "query-string";
 import BeatLoader from "react-spinners/BeatLoader";
@@ -64,8 +64,18 @@ const OrdersPage: NextPage<Props> = ({ orders, totalPages }) => {
 
   const currentPage = Number(router.query.page as string) || 1;
 
+  useEffect(() => {
+    const isBrowser = typeof window !== "undefined";
+
+    if (isBrowser) {
+      const luxy = require("luxy.js");
+
+      luxy.init();
+    }
+  }, []);
+
   return (
-    <div>
+    <div id="luxy">
       <Head>
         <title>Orders | Marrkt</title>
       </Head>

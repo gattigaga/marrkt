@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BeatLoader from "react-spinners/BeatLoader";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
@@ -59,8 +59,18 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
   const shippingCost = 0;
   const total = subtotal + shippingCost;
 
+  useEffect(() => {
+    const isBrowser = typeof window !== "undefined";
+
+    if (isBrowser) {
+      const luxy = require("luxy.js");
+
+      luxy.init();
+    }
+  }, []);
+
   return (
-    <div>
+    <div id="luxy">
       <Head>
         <title>Order #{router.query.invoice} | The World #1 Marketplace</title>
       </Head>

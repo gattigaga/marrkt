@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import Layout, { Exposed as LayoutExposed } from "../components/Layout";
 import Counter from "../components/Counter";
@@ -66,8 +66,18 @@ const CartPage: NextPage<Props> = ({}) => {
     );
   };
 
+  useEffect(() => {
+    const isBrowser = typeof window !== "undefined";
+
+    if (isBrowser) {
+      const luxy = require("luxy.js");
+
+      luxy.init();
+    }
+  }, []);
+
   return (
-    <div>
+    <div id="luxy">
       <Head>
         <title>Cart | Marrkt</title>
       </Head>

@@ -1,5 +1,5 @@
 import type { GetServerSideProps, NextPage } from "next";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Head from "next/head";
 import { v4 as uuid } from "uuid";
 import Image from "next/image";
@@ -81,8 +81,18 @@ const ProductDetailPage: NextPage<Props> = ({ product, relatedProducts }) => {
     refLayout.current?.runCartItemCountAnimation(() => addToCart(item));
   };
 
+  useEffect(() => {
+    const isBrowser = typeof window !== "undefined";
+
+    if (isBrowser) {
+      const luxy = require("luxy.js");
+
+      luxy.init();
+    }
+  }, []);
+
   return (
-    <div>
+    <div id="luxy">
       <Head>
         <title>{product.name} | Marrkt</title>
       </Head>

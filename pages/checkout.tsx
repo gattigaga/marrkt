@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "react-toastify";
 import BeatLoader from "react-spinners/BeatLoader";
@@ -85,8 +85,18 @@ const CheckoutPage: NextPage<Props> = ({}) => {
     }
   };
 
+  useEffect(() => {
+    const isBrowser = typeof window !== "undefined";
+
+    if (isBrowser) {
+      const luxy = require("luxy.js");
+
+      luxy.init();
+    }
+  }, []);
+
   return (
-    <div>
+    <div id="luxy">
       <Head>
         <title>Checkout | Marrkt</title>
       </Head>
