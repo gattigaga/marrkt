@@ -34,7 +34,7 @@ const ShopValue: React.FC<Props> = ({
       </div>
       <div className="w-8 h-8 lg:w-12" />
       <div
-        className={`flex flex-1 flex-col ${contentDirection} sm:pt-4 lg:pt-8 xl:pt-12`}
+        className={`flex flex-1 flex-col ${contentDirection} px-6 sm:px-0 sm:pt-4 lg:pt-8 xl:pt-12`}
       >
         <p className={`font-medium text-xl text-black ${textAlign}`}>
           0{index + 1}
