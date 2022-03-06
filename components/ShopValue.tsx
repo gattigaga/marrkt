@@ -23,7 +23,7 @@ const ShopValue: React.FC<Props> = ({
 
   return (
     <div className={`flex flex-col ${containerDirection}`}>
-      <div className="w-full aspect-[3/3.5] relative sm:w-64 md:w-80 lg:w-96 xl:w-1/2">
+      <div className="w-full aspect-square relative sm:w-80 md:w-96 lg:w-1/2">
         <Image
           className="object-cover"
           src={image}
@@ -48,6 +48,7 @@ const ShopValue: React.FC<Props> = ({
           {description}
         </p>
       </div>
+      <div className="hidden w-8 h-8 sm:block lg:w-12" />
     </div>
   );
 };
