@@ -17,7 +17,7 @@ import { useStore } from "../store/store";
 import { supabase } from "../helpers/supabase";
 
 export type Exposed = {
-  runTotalItemsAnimation: (
+  runCartItemCountAnimation: (
     onAnimationRun: () => void,
     isReverse?: boolean
   ) => void;
@@ -39,7 +39,7 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
 
   const user = supabase.auth.user();
 
-  const runTotalItemsAnimation = (
+  const runCartItemCountAnimation = (
     onAnimationRun: () => void,
     isReverse = false
   ) => {
@@ -64,11 +64,11 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
   };
 
   const removeItem = (itemId: string) => {
-    runTotalItemsAnimation(() => removeFromCart(itemId), true);
+    runCartItemCountAnimation(() => removeFromCart(itemId), true);
   };
 
   useImperativeHandle(ref, () => ({
-    runTotalItemsAnimation,
+    runCartItemCountAnimation,
   }));
 
   useEffect(() => {

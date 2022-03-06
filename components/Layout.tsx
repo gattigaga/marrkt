@@ -9,7 +9,7 @@ import Footer from "./Footer";
 import Menu, { Exposed as MenuExposed } from "./Menu";
 
 export type Exposed = {
-  runCartItemCountAnimation: MenuExposed["runTotalItemsAnimation"];
+  runCartItemCountAnimation: MenuExposed["runCartItemCountAnimation"];
 };
 
 type Props = {
@@ -26,7 +26,7 @@ const Layout: React.ForwardRefRenderFunction<Exposed, Props> = (
     onAnimationRun: () => void,
     isReverse = false
   ) => {
-    refMenu.current?.runTotalItemsAnimation(onAnimationRun, isReverse);
+    refMenu.current?.runCartItemCountAnimation(onAnimationRun, isReverse);
   };
 
   useImperativeHandle(ref, () => ({
