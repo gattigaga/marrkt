@@ -103,7 +103,7 @@ const HomePage: NextPage<Props> = ({ products }) => {
 
             {/* Some products */}
             <div className="px-6 mb-24 md:px-8 md:mb-48">
-              <h2 className="mb-5 text-black text-lg text-center font-medium md:mb-10 md:text-2xl">
+              <h2 className="mb-5 text-black text-lg font-medium md:mb-10 md:text-2xl">
                 Our Products
               </h2>
               <div className="grid grid-cols-2 gap-4 sm:gap-y-6 md:grid-cols-4 md:gap-y-8">
