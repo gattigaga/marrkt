@@ -20,6 +20,7 @@ const Layout: React.ForwardRefRenderFunction<Exposed, Props> = (
   { children },
   ref
 ) => {
+  const refContent = useRef(null);
   const refMenu = useRef<MenuExposed>(null);
 
   const runCartItemCountAnimation = (
@@ -35,23 +36,36 @@ const Layout: React.ForwardRefRenderFunction<Exposed, Props> = (
 
   useEffect(() => {
     const isBrowser = typeof window !== "undefined";
+    let scroll: any = null;
 
     if (isBrowser) {
       (async () => {
         // @ts-ignore
-        const luxy = await import("luxy.js");
+        const LocomotiveScroll = (await import("locomotive-scroll")).default;
 
-        luxy.default.init({
-          wrapperSpeed: 0.05,
+        scroll = new LocomotiveScroll({
+          el: refContent.current,
+          smooth: true,
+          lerp: 0.08,
+          reloadOnContextChange: true,
+          scrollFromAnywhere: true,
+        });
+
+        scroll.on("scroll", (args) => {
+          const isScrollAtTheTop = args.scroll.y <= 64;
+
+          refMenu.current?.runMenuContainerAnimation(isScrollAtTheTop);
         });
       })();
     }
+
+    return () => scroll?.destroy();
   }, []);
 
   return (
     <div>
       <Menu ref={refMenu} />
-      <div id="luxy">
+      <div ref={refContent} data-scroll-container>
         {children}
         <Footer />
       </div>
