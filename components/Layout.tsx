@@ -14,10 +14,11 @@ export type Exposed = {
 
 type Props = {
   children: JSX.Element | JSX.Element[];
+  onEventTriggered?: (eventName: string) => void;
 };
 
 const Layout: React.ForwardRefRenderFunction<Exposed, Props> = (
-  { children },
+  { children, onEventTriggered },
   ref
 ) => {
   const refContent = useRef(null);
@@ -55,6 +56,10 @@ const Layout: React.ForwardRefRenderFunction<Exposed, Props> = (
           const isScrollAtTheTop = args.scroll.y <= 64;
 
           refMenu.current?.runMenuContainerAnimation(isScrollAtTheTop);
+        });
+
+        scroll.on("call", (eventName: string) => {
+          onEventTriggered && onEventTriggered(eventName);
         });
       })();
     }
