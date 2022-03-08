@@ -51,7 +51,7 @@ const Layout: React.ForwardRefRenderFunction<Exposed, Props> = (
           scrollFromAnywhere: true,
         });
 
-        scroll.on("scroll", (args) => {
+        scroll.on("scroll", (args: any) => {
           const isScrollAtTheTop = args.scroll.y <= 64;
 
           refMenu.current?.runMenuContainerAnimation(isScrollAtTheTop);
