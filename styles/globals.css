@@ -5,3 +5,12 @@
 .Toastify__progress-bar-theme--light {
   background: #6b7280; /* bg-gray-500 */
 }
+
+.has-scroll-smooth {
+  overflow: hidden;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
