@@ -73,7 +73,7 @@ const CartPage: NextPage<Props> = ({}) => {
       </Head>
 
       <main className="min-h-screen flex flex-col items-center">
-        <div className="w-full px-6 pt-28 pb-24 md:w-2/3">
+        <div className="w-full px-6 pt-28 pb-24 md:w-2/3" data-scroll-section>
           <h1 className="text-md font-medium text-black mt-4 mb-8">My Cart</h1>
           <table className="w-full">
             <thead className="border-b-2 border-black">
