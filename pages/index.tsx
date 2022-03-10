@@ -51,6 +51,7 @@ const HomePage: NextPage<Props> = ({ products }) => {
   const refShopValue1 = useRef<ShopValueExposed>(null);
   const refShopValue2 = useRef<ShopValueExposed>(null);
   const refShopValue3 = useRef<ShopValueExposed>(null);
+  const refHashtag = useRef(null);
 
   const runVideoAnimation = () => {
     gsap.fromTo(
@@ -111,6 +112,22 @@ const HomePage: NextPage<Props> = ({ products }) => {
     );
   };
 
+  const runHashtagAnimation = () => {
+    gsap.fromTo(
+      refHashtag.current,
+      {
+        opacity: 0,
+        y: 128,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        ease: Power2.easeOut,
+      }
+    );
+  };
+
   const handleEvent = (eventName: string) => {
     if (eventName === "video") {
       runVideoAnimation();
@@ -130,6 +147,10 @@ const HomePage: NextPage<Props> = ({ products }) => {
 
     if (eventName === "shopValueImage3") {
       refShopValue3.current?.runShowUpAnimation();
+    }
+
+    if (eventName === "hashtag") {
+      runHashtagAnimation();
     }
   };
 
@@ -227,19 +248,29 @@ const HomePage: NextPage<Props> = ({ products }) => {
 
         {/* Fixed image */}
         <div
-          className="mb-24 h-screen relative overflow-hidden sm:mb-48"
+          className="mb-12 h-screen relative overflow-hidden"
+          data-scroll-offset="50%"
+          data-scroll-call="hashtag"
           data-scroll-section
+          data-scroll
         >
           <div
             id="fixed-target"
             className="absolute bottom-[-100vh] top-[-100vh] left-0 right-0"
           />
           <div
-            className={`absolute top-[-100vh] left-0 right-0 h-full bg-cover bg-center bg-[url('/images/fashion-2.jpg')]`}
+            className="absolute top-[-100vh] left-0 right-0 h-full bg-cover bg-center bg-[url('/images/fashion-2.jpg')] flex"
             data-scroll-target="#fixed-target"
             data-scroll
             data-scroll-sticky
-          />
+          >
+            <p
+              ref={refHashtag}
+              className="m-auto font-bold text-7xl text-white opacity-0"
+            >
+              #BeFashionable
+            </p>
+          </div>
         </div>
 
         {/* Some products */}
