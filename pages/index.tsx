@@ -195,7 +195,7 @@ const HomePage: NextPage<Props> = ({ products }) => {
         </div>
 
         {/* Shop value list */}
-        <div className="mb-24" data-scroll-section>
+        <div className="mb-24 sm:mb-48" data-scroll-section>
           <ShopValue
             ref={refShopValue1}
             index={0}
@@ -222,6 +222,23 @@ const HomePage: NextPage<Props> = ({ products }) => {
             description="Even if the clothes built with high quality materials and designed by experienced fashion designer, the price is still affordable."
             image={imgFashion}
             eventName={"shopValueImage3"}
+          />
+        </div>
+
+        {/* Fixed image */}
+        <div
+          className="mb-24 h-screen relative overflow-hidden sm:mb-48"
+          data-scroll-section
+        >
+          <div
+            id="fixed-target"
+            className="absolute bottom-[-100vh] top-[-100vh] left-0 right-0"
+          />
+          <div
+            className={`absolute top-[-100vh] left-0 right-0 h-full bg-cover bg-center bg-[url('/images/fashion-2.jpg')]`}
+            data-scroll-target="#fixed-target"
+            data-scroll
+            data-scroll-sticky
           />
         </div>
 
