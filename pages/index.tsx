@@ -266,7 +266,7 @@ const HomePage: NextPage<Props> = ({ products }) => {
           >
             <p
               ref={refHashtag}
-              className="m-auto font-bold text-7xl text-white opacity-0"
+              className="m-auto font-bold text-4xl text-white opacity-0 sm:text-6xl md:text-7xl"
             >
               #BeFashionable
             </p>

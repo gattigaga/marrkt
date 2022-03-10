@@ -50,6 +50,12 @@ const Layout: React.ForwardRefRenderFunction<Exposed, Props> = (
           lerp: 0.08,
           reloadOnContextChange: true,
           scrollFromAnywhere: true,
+          smartphone: {
+            smooth: true,
+          },
+          tablet: {
+            smooth: true,
+          },
         });
 
         scroll.on("scroll", (args: any) => {
