@@ -88,7 +88,7 @@ const ProductDetailPage: NextPage<Props> = ({ product, relatedProducts }) => {
       </Head>
 
       <main className="pb-24">
-        <div className="flex flex-col mb-24 md:flex-row">
+        <div className="flex flex-col mb-24 md:flex-row" data-scroll-section>
           {/* Left side */}
           <div className="flex-1 grid grid-cols-2 gap-2">
             <Image
@@ -124,7 +124,7 @@ const ProductDetailPage: NextPage<Props> = ({ product, relatedProducts }) => {
             <Button label="Add to cart" onClick={add} />
           </div>
         </div>
-        <div className="px-6 md:px-8">
+        <div className="px-6 md:px-8" data-scroll-section>
           <h2 className="mb-5 text-black text-lg font-medium md:mb-10 md:text-2xl">
             You might also like
           </h2>
