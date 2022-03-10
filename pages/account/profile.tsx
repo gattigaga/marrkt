@@ -174,7 +174,7 @@ const ProfilePage: NextPage<Props> = ({}) => {
         )}
         {isLoading && (
           <div
-            className="w-full mt-40 flex flex-col items-center"
+            className="w-full h-screen flex flex-col items-center justify-center"
             data-scroll-section
           >
             <BeatLoader color="black" size={24} loading />
