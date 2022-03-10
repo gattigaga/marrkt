@@ -56,9 +56,12 @@ const ProfilePage: NextPage<Props> = ({}) => {
         <title>Profile | Marrkt</title>
       </Head>
 
-      <main className="min-h-screen flex flex-col-reverse px-4 pt-28 pb-24 md:flex-row md:px-8">
+      <main className="min-h-screen">
         {!isLoading && (
-          <>
+          <div
+            className="flex flex-col-reverse px-4 pt-28 pb-24 md:flex-row md:px-8"
+            data-scroll-section
+          >
             <div className="flex-1 mt-16 md:mt-0 md:mr-16">
               <AccountMenu
                 onLogoutStart={() => setIsLoading(true)}
@@ -167,10 +170,13 @@ const ProfilePage: NextPage<Props> = ({}) => {
                 </Formik>
               </div>
             </div>
-          </>
+          </div>
         )}
         {isLoading && (
-          <div className="w-full mt-40 flex flex-col items-center">
+          <div
+            className="w-full mt-40 flex flex-col items-center"
+            data-scroll-section
+          >
             <BeatLoader color="black" size={24} loading />
             <p className="mt-6 text-md text-black text-center">
               Signing out...
