@@ -4,6 +4,7 @@ import React, {
   useImperativeHandle,
   useRef,
 } from "react";
+import { useRouter } from "next/router";
 
 import Footer from "./Footer";
 import Menu, { Exposed as MenuExposed } from "./Menu";
@@ -21,6 +22,7 @@ const Layout: React.ForwardRefRenderFunction<Exposed, Props> = (
   { children, onEventTriggered },
   ref
 ) => {
+  const router = useRouter();
   const refContent = useRef(null);
   const refMenu = useRef<MenuExposed>(null);
 
@@ -71,7 +73,7 @@ const Layout: React.ForwardRefRenderFunction<Exposed, Props> = (
     }
 
     return () => scroll?.destroy();
-  }, []);
+  }, [router.query]);
 
   return (
     <div>
