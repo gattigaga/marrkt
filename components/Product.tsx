@@ -16,15 +16,17 @@ const Product: React.FC<Props> = ({ image, name, price, url }) => {
 
   return (
     <Link href={url}>
-      <a>
+      <a className="group">
         <figure>
-          <Image
-            className="w-full aspect-square mb-2 sm:mb-3"
-            src={image}
-            alt={name}
-            width={320}
-            height={320}
-          />
+          <div className="overflow-hidden">
+            <Image
+              className="w-full aspect-square mb-2 transition-all duration-300 group-hover:scale-125 sm:mb-3"
+              src={image}
+              alt={name}
+              width={320}
+              height={320}
+            />
+          </div>
           <figcaption>
             <p className="text-xs truncate text-ellipsis overflow-hidden font-medium sm:mb-1">
               {name}
