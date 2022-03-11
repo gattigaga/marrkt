@@ -101,7 +101,7 @@ const ProductDetailPage: NextPage<Props> = ({ product, relatedProducts }) => {
             {product.images.map((image, index) => {
               const { publicURL: imageURL } = supabase.storage
                 .from("general")
-                .getPublicUrl(`products/${product.thumbnail}`);
+                .getPublicUrl(`products/${image.image}`);
 
               return (
                 <Image
