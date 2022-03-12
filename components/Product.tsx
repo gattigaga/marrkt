@@ -18,9 +18,9 @@ const Product: React.FC<Props> = ({ image, name, price, url }) => {
     <Link href={url}>
       <a className="group">
         <figure>
-          <div className="overflow-hidden">
+          <div className="overflow-hidden mb-2 sm:mb-3">
             <Image
-              className="w-full aspect-square mb-2 transition-all duration-300 group-hover:scale-110 sm:mb-3"
+              className="w-full aspect-square transition-all duration-300 group-hover:scale-110"
               src={image}
               alt={name}
               width={320}
