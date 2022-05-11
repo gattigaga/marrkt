@@ -7,12 +7,12 @@ type Item = Order & {
   shipping: ShippingItem;
 };
 
-type Data = {
+type Content = {
   data?: Item | null;
   message?: string;
 };
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
   if (req.method !== "GET") {
     res.status(405).json({ message: "Method not allowed." });
     return;

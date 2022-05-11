@@ -1,15 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { supabase } from "../../helpers/supabase";
+import supabase from "../../helpers/supabase";
 import { ProductCategory } from "../../types/models";
 
 type Item = ProductCategory;
 
-type Data = {
+type Content = {
   data?: Item[] | null;
   message?: string;
 };
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
   if (req.method !== "GET") {
     res.status(405).json({ message: "Method not allowed." });
     return;
@@ -26,13 +26,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     res.status(200).json({ data: categories });
   } catch (error: any) {
-    console.log(error);
-
-    if ("code" in error) {
-      res.status(error.code).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: "Unknown server error" });
-    }
+    res.status(error.status).json({ message: error.message });
   }
 };
 
