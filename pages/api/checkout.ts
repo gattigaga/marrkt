@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { supabase } from "../../helpers/supabase";
+import supabase from "../../helpers/supabase";
 import { CartItem, Order, Product, ShippingItem } from "../../types/models";
 
 type Item = Order & {
@@ -7,12 +7,12 @@ type Item = Order & {
   shipping: ShippingItem;
 };
 
-type Data = {
+type Content = {
   data?: Item | null;
   message?: string;
 };
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
   if (req.method !== "POST") {
     res.status(405).json({ message: "Method not allowed." });
     return;
@@ -52,53 +52,45 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       throw productsError;
     }
 
-    const { data: shipping, error: shippingError } = await (() => {
-      const query = supabase
-        .from<ShippingItem>("shipping_items")
-        .insert([
-          {
-            person_name: body.shipping.person_name,
-            address_1: body.shipping.address_1,
-            address_2: body.shipping.address_2,
-            admin_area_1: body.shipping.admin_area_1,
-            admin_area_2: body.shipping.admin_area_2,
-            postal_code: body.shipping.postal_code,
-            country_code: body.shipping.country_code,
-          },
-        ])
-        .limit(1)
-        .single();
-
-      return query;
-    })();
+    const { data: shipping, error: shippingError } = await supabase
+      .from<ShippingItem>("shipping_items")
+      .insert([
+        {
+          person_name: body.shipping.person_name,
+          address_1: body.shipping.address_1,
+          address_2: body.shipping.address_2,
+          admin_area_1: body.shipping.admin_area_1,
+          admin_area_2: body.shipping.admin_area_2,
+          postal_code: body.shipping.postal_code,
+          country_code: body.shipping.country_code,
+        },
+      ])
+      .limit(1)
+      .single();
 
     if (shippingError) {
       throw shippingError;
     }
 
-    const { data: order, error: orderError } = await (() => {
-      const query = supabase
-        .from<Order>("orders")
-        .insert([
-          {
-            user_id: body.user_id,
-            shipping_item_id: shipping!.id,
-            invoice_code: body.invoice_code,
-            items_count: body.items.length,
-            total: body.items.reduce((acc, item) => {
-              const product = products?.find(
-                (product) => product.id === item.product_id
-              );
+    const { data: order, error: orderError } = await supabase
+      .from<Order>("orders")
+      .insert([
+        {
+          user_id: body.user_id,
+          shipping_item_id: shipping!.id,
+          invoice_code: body.invoice_code,
+          items_count: body.items.length,
+          total: body.items.reduce((acc, item) => {
+            const product = products?.find(
+              (product) => product.id === item.product_id
+            );
 
-              return acc + Number(product?.price) * item.quantity;
-            }, 0),
-          },
-        ])
-        .limit(1)
-        .single();
-
-      return query;
-    })();
+            return acc + Number(product?.price) * item.quantity;
+          }, 0),
+        },
+      ])
+      .limit(1)
+      .single();
 
     if (orderError) {
       throw orderError;
@@ -127,18 +119,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       throw cartItemsError;
     }
 
-    const { data: result, error: resultError } = await (() => {
-      const query = supabase
-        .from<Item>("orders")
-        .select(
-          "*, items:cart_items(*, product:products(*)), shipping:shipping_items(*)"
-        )
-        .eq("id", order!.id)
-        .limit(1)
-        .single();
-
-      return query;
-    })();
+    const { data: result, error: resultError } = await supabase
+      .from<Item>("orders")
+      .select(
+        "*, items:cart_items(*, product:products(*)), shipping:shipping_items(*)"
+      )
+      .eq("id", order!.id)
+      .limit(1)
+      .single();
 
     if (resultError) {
       throw resultError;
@@ -146,13 +134,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     res.status(200).json({ data: result });
   } catch (error: any) {
-    console.log(error);
-
-    if ("code" in error) {
-      res.status(error.code).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: "Unknown server error" });
-    }
+    res.status(error.status).json({ message: error.message });
   }
 };
 
