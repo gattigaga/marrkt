@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { supabase } from "../../../helpers/supabase";
+import supabase from "../../../helpers/supabase";
 import { CartItem, Order, Product, ShippingItem } from "../../../types/models";
 
 type Item = Order & {
@@ -23,18 +23,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       [key: string]: string;
     };
 
-    const { data: order, error } = await (() => {
-      const query = supabase
-        .from<Item>("orders")
-        .select(
-          "*, items:cart_items(*, product:products(*)), shipping:shipping_items(*)"
-        )
-        .eq("invoice_code", invoice)
-        .limit(1)
-        .single();
-
-      return query;
-    })();
+    const { data: order, error } = await supabase
+      .from<Item>("orders")
+      .select(
+        "*, items:cart_items(*, product:products(*)), shipping:shipping_items(*)"
+      )
+      .eq("invoice_code", invoice)
+      .limit(1)
+      .single();
 
     if (error) {
       throw error;
@@ -42,13 +38,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
     res.status(200).json({ data: order });
   } catch (error: any) {
-    console.log(error);
-
-    if ("code" in error) {
-      res.status(error.code).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: "Unknown server error" });
-    }
+    res.status(error.status).json({ message: error.message });
   }
 };
 
