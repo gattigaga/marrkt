@@ -1,4 +1,4 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { Formik } from "formik";
@@ -6,10 +6,10 @@ import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
-import Layout from "../../components/Layout";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
-import { supabase } from "../../helpers/supabase";
+import Layout from "../../../components/Layout";
+import Button from "../../../components/Button";
+import Input from "../../../components/Input";
+import useSignUpMutation from "../../../hooks/auth/use-sign-up-mutation";
 
 const validationSchema = Yup.object({
   firstName: Yup.string()
@@ -27,34 +27,21 @@ const validationSchema = Yup.object({
     .min(8, "Password should have at least 8 characters")
     .max(50, "Password should not more than 50 characters")
     .required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Confirm Password is mismatch")
+    .required("Confirm Password is required"),
 });
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { user } = await supabase.auth.api.getUserByCookie(req);
-
-  if (user) {
-    return {
-      redirect: {
-        destination: "/account/profile",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-};
 
 type Props = {};
 
-const RegisterPage: NextPage<Props> = ({}) => {
+const SignUpPage: NextPage<Props> = ({}) => {
   const router = useRouter();
+  const signUpMutation = useSignUpMutation();
 
   return (
     <Layout>
       <Head>
-        <title>Register | Marrkt</title>
+        <title>Sign Up | Marrkt</title>
       </Head>
 
       <main className="min-h-screen flex flex-col items-center">
@@ -62,41 +49,42 @@ const RegisterPage: NextPage<Props> = ({}) => {
           className="w-full pt-28 pb-24 px-6 md:px-0 md:w-96"
           data-scroll-section
         >
-          <h1 className="text-md font-medium text-black mb-16">Register</h1>
+          <h1 className="text-md font-medium text-black mb-16">Sign Up</h1>
           <Formik
             initialValues={{
               firstName: "",
               lastName: "",
               email: "",
               password: "",
+              confirmPassword: "",
             }}
             validationSchema={validationSchema}
             onSubmit={async (values, { setSubmitting }) => {
               try {
                 setSubmitting(true);
 
-                const { firstName, lastName, email, password } = values;
+                const {
+                  firstName,
+                  lastName,
+                  email,
+                  password,
+                  confirmPassword,
+                } = values;
 
-                const { error } = await supabase.auth.signUp(
-                  {
-                    email,
-                    password,
-                  },
-                  {
-                    data: {
-                      first_name: firstName,
-                      last_name: lastName,
-                    },
-                  }
-                );
+                await signUpMutation.mutateAsync({
+                  first_name: firstName,
+                  last_name: lastName,
+                  email,
+                  password,
+                  confirm_password: confirmPassword,
+                });
 
-                if (error) throw error;
+                sessionStorage.setItem("signupEmail", email);
 
-                toast("You are successfully registered.");
-                router.push("/account/login");
-              } catch (error: any) {
-                console.log(error);
-                toast(error.message || "Failed to register your account.");
+                await router.push("/auth/signup/email-sent");
+              } catch (error) {
+                console.error(error);
+                toast.error("Failed to sign up.");
               } finally {
                 setSubmitting(false);
               }
@@ -168,9 +156,25 @@ const RegisterPage: NextPage<Props> = ({}) => {
                     errorText={errors.password}
                   />
                 </div>
+                <div className="mb-8">
+                  <Input
+                    name="confirmPassword"
+                    id="confirmPassword"
+                    label="Confirm Password*"
+                    type="password"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.confirmPassword}
+                    disabled={isSubmitting}
+                    hasError={
+                      !!(errors.confirmPassword && touched.confirmPassword)
+                    }
+                    errorText={errors.confirmPassword}
+                  />
+                </div>
 
                 <div className="flex justify-between items-center">
-                  <Link href="/account/login">
+                  <Link href="/auth/signin">
                     <a>
                       <p className="text-xs underline">
                         Already have an account ?
@@ -179,7 +183,7 @@ const RegisterPage: NextPage<Props> = ({}) => {
                   </Link>
                   <Button
                     type="submit"
-                    label="Register"
+                    label="Sign Up"
                     isLoading={isSubmitting}
                   />
                 </div>
@@ -192,4 +196,4 @@ const RegisterPage: NextPage<Props> = ({}) => {
   );
 };
 
-export default RegisterPage;
+export default SignUpPage;
