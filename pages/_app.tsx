@@ -9,11 +9,14 @@ import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 import paypalConfig from "../config/paypal";
 import { supabase } from "../helpers/supabase";
 import { useStore } from "../store/store";
 import axios from "../helpers/axios";
+
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
   const clearCart = useStore((state) => state.clearCart);
@@ -42,17 +45,19 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [user]);
 
   return (
-    <PayPalScriptProvider options={paypalConfig}>
-      <Component {...pageProps} />
-      <ToastContainer
-        toastClassName={() =>
-          "bg-black relative flex p-1 min-h-10 justify-between overflow-hidden cursor-pointer"
-        }
-        bodyClassName={() => "text-xs font-white block p-3"}
-        position="bottom-right"
-        autoClose={2000}
-      />
-    </PayPalScriptProvider>
+    <QueryClientProvider client={queryClient}>
+      <PayPalScriptProvider options={paypalConfig}>
+        <Component {...pageProps} />
+        <ToastContainer
+          toastClassName={() =>
+            "bg-black relative flex p-1 min-h-10 justify-between overflow-hidden cursor-pointer"
+          }
+          bodyClassName={() => "text-xs font-white block p-3"}
+          position="bottom-right"
+          autoClose={2000}
+        />
+      </PayPalScriptProvider>
+    </QueryClientProvider>
   );
 }
 
