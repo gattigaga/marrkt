@@ -1,7 +1,7 @@
 import React from "react";
-import useUserQuery from "../hooks/user/use-user-query";
 
 import MenuLink from "./MenuLink";
+import useUserQuery from "../hooks/user/use-user-query";
 
 type Props = {};
 

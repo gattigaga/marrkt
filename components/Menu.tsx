@@ -14,7 +14,7 @@ import MenuPopup from "./MenuPopup";
 import CartPopup from "./CartPopup";
 import MenuLink from "./MenuLink";
 import { useStore } from "../store/store";
-import { supabase } from "../helpers/supabase";
+import useUserQuery from "../hooks/user/use-user-query";
 
 export type Exposed = {
   runCartItemCountAnimation: (
@@ -33,12 +33,11 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
   const refTotalItems = useRef(null);
   const cartItems = useStore((state) => state.cartItems);
   const removeFromCart = useStore((state) => state.removeFromCart);
+  const { data: myself } = useUserQuery();
 
   const totalItems = useMemo(() => {
     return cartItems.reduce((acc, item) => acc + item.quantity, 0);
   }, [cartItems]);
-
-  const user = supabase.auth.user();
 
   const runCartItemCountAnimation = (
     onAnimationRun: () => void,
@@ -153,8 +152,8 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
             </li>
             <li className="inline-block ml-8">
               <MenuLink
-                label={user ? "My Account" : "Login"}
-                href={user ? "/account/profile" : "/account/login"}
+                label={myself ? "My Account" : "Login"}
+                href={myself ? "/account/profile" : "/account/login"}
               />
             </li>
           </ul>
