@@ -7,7 +7,7 @@ import Button from "./Button";
 import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
 import CartInfo from "./CartInfo";
-import { supabase } from "../helpers/supabase";
+import supabase from "../helpers/supabase";
 import { useStore } from "../store/store";
 
 type Props = {
