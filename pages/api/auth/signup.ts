@@ -14,13 +14,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
   }
 
   try {
-    const { fullname, username, email, password, confirm_password } =
+    const { first_name, last_name, email, password, confirm_password } =
       req.body as {
-        fullname: string;
-        username: string;
-        email: string;
-        password: string;
-        confirm_password: string;
+        [key: string]: string;
       };
 
     if (password !== confirm_password) {
@@ -37,8 +33,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
       },
       {
         data: {
-          fullname,
-          username,
+          first_name,
+          last_name,
         },
       }
     );
