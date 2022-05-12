@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { supabase } from "../helpers/supabase";
+import supabase from "../helpers/supabase";
 import { toast } from "react-toastify";
 
 type Props = {
