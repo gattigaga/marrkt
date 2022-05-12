@@ -1,12 +1,12 @@
 import React from "react";
+import useUserQuery from "../hooks/user/use-user-query";
 
 import MenuLink from "./MenuLink";
-import { supabase } from "../helpers/supabase";
 
 type Props = {};
 
 const Footer: React.FC<Props> = ({}) => {
-  const user = supabase.auth.user();
+  const { data: myself } = useUserQuery();
 
   return (
     <footer className="pt-12 pb-8 bg-black" data-scroll-section>
@@ -37,8 +37,8 @@ const Footer: React.FC<Props> = ({}) => {
               </li>
               <li className="flex opacity-40">
                 <MenuLink
-                  label={user ? "My Account" : "Login"}
-                  href={user ? "/account/profile" : "/account/login"}
+                  label={myself ? "My Account" : "Login"}
+                  href={myself ? "/account/profile" : "/account/login"}
                   color="white"
                 />
               </li>
