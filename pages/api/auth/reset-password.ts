@@ -16,8 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
     const token = req.cookies.access_token;
 
     const { password, confirm_password } = req.body as {
-      password: string;
-      confirm_password: string;
+      [key: string]: string;
     };
 
     if (password !== confirm_password) {

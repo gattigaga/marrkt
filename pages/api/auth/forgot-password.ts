@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
 
   try {
     const { email } = req.body as {
-      email: string;
+      [key: string]: string;
     };
 
     const { error } = await supabase.auth.api.resetPasswordForEmail(email);

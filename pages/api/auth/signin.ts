@@ -18,8 +18,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
 
   try {
     const { email, password } = req.body as {
-      email: string;
-      password: string;
+      [key: string]: string;
     };
 
     const { user, session, error } = await supabase.auth.signIn({

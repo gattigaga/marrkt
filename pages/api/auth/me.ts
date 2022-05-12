@@ -34,12 +34,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
 
   if (req.method === "PUT") {
     try {
-      const { fullname, username, password, confirm_password } = req.body as {
-        fullname: string;
-        username: string;
-        password: string;
-        confirm_password: string;
-      };
+      const { first_name, last_name, password, confirm_password } =
+        req.body as {
+          [key: string]: string;
+        };
 
       if (password && password !== confirm_password) {
         res
@@ -51,8 +49,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
       const { user, error } = await supabase.auth.api.updateUser(token, {
         password,
         data: {
-          fullname,
-          username,
+          first_name,
+          last_name,
         },
       });
 
