@@ -38,7 +38,7 @@ const Footer: React.FC<Props> = ({}) => {
               <li className="flex opacity-40">
                 <MenuLink
                   label={myself ? "My Account" : "Login"}
-                  href={myself ? "/account/profile" : "/account/login"}
+                  href={myself ? "/account/profile" : "/auth/signin"}
                   color="white"
                 />
               </li>

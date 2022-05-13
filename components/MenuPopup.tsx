@@ -96,7 +96,7 @@ const MenuPopup: React.FC<Props> = ({ isOpen, onClickBackdrop }) => {
               </div>
             </a>
           </Link>
-          <Link href={myself ? "/account/profile" : "/account/login"}>
+          <Link href={myself ? "/account/profile" : "/auth/signin"}>
             <a>
               <div className="py-2 px-4 border-t border-b border-gray-200">
                 <p className="text-xs text-black">

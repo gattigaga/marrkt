@@ -153,7 +153,7 @@ const Menu: React.ForwardRefRenderFunction<Exposed, Props> = ({}, ref) => {
             <li className="inline-block ml-8">
               <MenuLink
                 label={myself ? "My Account" : "Login"}
-                href={myself ? "/account/profile" : "/account/login"}
+                href={myself ? "/account/profile" : "/auth/signin"}
               />
             </li>
           </ul>
