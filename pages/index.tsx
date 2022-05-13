@@ -1,8 +1,10 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap, Power2 } from "gsap";
+import Cookies from "js-cookie";
+import { addDays } from "date-fns";
 
 import Button from "../components/Button";
 import Layout from "../components/Layout";
@@ -15,7 +17,7 @@ import imgClothes from "../public/images/clothes.jpg";
 import imgTextile from "../public/images/textile.jpg";
 import axios from "../helpers/axios";
 import * as models from "../types/models";
-import { supabase } from "../helpers/supabase";
+import supabase from "../helpers/supabase";
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const { products } = await (async () => {
@@ -153,6 +155,30 @@ const HomePage: NextPage<Props> = ({ products }) => {
       runHashtagAnimation();
     }
   };
+
+  // Listen to recovery link to open reset password page
+  // and listen to sign in link to sign in with password.
+  useEffect(() => {
+    const rawParams = router.asPath.replace("/#", "");
+    const params = new URLSearchParams(rawParams);
+    const accessToken = params.get("access_token");
+    const type = params.get("type");
+
+    if (accessToken) {
+      Cookies.set("access_token", accessToken, {
+        expires: addDays(new Date(), 7),
+        path: "/",
+      });
+
+      if (type === "signup") {
+        router.replace("/account/profile");
+      }
+
+      if (type === "recovery") {
+        router.replace("/auth/reset-password");
+      }
+    }
+  }, []);
 
   return (
     <Layout onEventTriggered={handleEvent}>
