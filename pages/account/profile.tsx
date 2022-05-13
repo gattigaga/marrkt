@@ -10,7 +10,9 @@ import AccountMenu from "../../components/AccountMenu";
 import Button from "../../components/Button";
 import Layout from "../../components/Layout";
 import Input from "../../components/Input";
-import { supabase } from "../../helpers/supabase";
+import useUserQuery from "../../hooks/user/use-user-query";
+import { withAuthGuard } from "../../helpers/server";
+import useUpdateUserMutation from "../../hooks/user/use-update-user-mutation";
 
 const validationSchema = Yup.object({
   firstName: Yup.string()
@@ -26,29 +28,20 @@ const validationSchema = Yup.object({
     .required("Email is required"),
 });
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { user } = await supabase.auth.api.getUserByCookie(req);
-
-  if (!user) {
+export const getServerSideProps: GetServerSideProps = withAuthGuard(
+  async () => {
     return {
-      redirect: {
-        destination: "/account/login",
-        permanent: false,
-      },
+      props: {},
     };
   }
-
-  return {
-    props: {},
-  };
-};
+);
 
 type Props = {};
 
 const ProfilePage: NextPage<Props> = ({}) => {
   const [isLoading, setIsLoading] = useState(false);
-
-  const user = supabase.auth.user();
+  const { data: myself } = useUserQuery();
+  const updateUserMutation = useUpdateUserMutation();
 
   return (
     <Layout>
@@ -73,26 +66,22 @@ const ProfilePage: NextPage<Props> = ({}) => {
               <div>
                 <Formik
                   initialValues={{
-                    firstName: user?.user_metadata.first_name || "",
-                    lastName: user?.user_metadata.last_name || "",
-                    email: user?.email || "",
+                    firstName: myself?.first_name || "",
+                    lastName: myself?.last_name || "",
+                    email: myself?.email || "",
                   }}
                   validationSchema={validationSchema}
+                  enableReinitialize
                   onSubmit={async (values, { setSubmitting }) => {
                     try {
                       setSubmitting(true);
 
-                      const { firstName, lastName, email } = values;
+                      const { firstName, lastName } = values;
 
-                      const { error } = await supabase.auth.update({
-                        email,
-                        data: {
-                          first_name: firstName,
-                          last_name: lastName,
-                        },
+                      await updateUserMutation.mutateAsync({
+                        first_name: firstName,
+                        last_name: lastName,
                       });
-
-                      if (error) throw error;
 
                       toast("Profile successfully update.");
                     } catch (error: any) {
@@ -151,9 +140,9 @@ const ProfilePage: NextPage<Props> = ({}) => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.email}
-                            disabled={isSubmitting}
+                            disabled
                             hasError={!!(errors.email && touched.email)}
-                            errorText={errors.email}
+                            errorText={errors.email as string}
                           />
                         </div>
                       </div>
