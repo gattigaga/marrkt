@@ -11,7 +11,9 @@ export const getProductCategories = async (): Promise<Response> => {
 };
 
 const useProductCategoriesQuery = () => {
-  return useQuery("products-categories", getProductCategories);
+  return useQuery("products-categories", getProductCategories, {
+    initialData: [],
+  });
 };
 
 export default useProductCategoriesQuery;
