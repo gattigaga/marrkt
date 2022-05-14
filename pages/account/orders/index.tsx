@@ -8,61 +8,31 @@ import BeatLoader from "react-spinners/BeatLoader";
 import Layout from "../../../components/Layout";
 import OrderItem from "../../../components/OrderItem";
 import Pagination from "../../../components/Pagination";
-import { supabase } from "../../../helpers/supabase";
+import supabase from "../../../helpers/supabase";
 import AccountMenu from "../../../components/AccountMenu";
-import axios from "../../../helpers/axios";
-import * as models from "../../../types/models";
+import { withAuthGuard } from "../../../helpers/server";
+import useOrdersQuery from "../../../hooks/orders/useOrdersQuery";
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  query: urlQuery,
-}) => {
-  const { user } = await supabase.auth.api.getUserByCookie(req);
-
-  if (!user) {
+export const getServerSideProps: GetServerSideProps = withAuthGuard(
+  async ({}) => {
     return {
-      redirect: {
-        destination: "/account/login",
-        permanent: false,
-      },
+      props: {},
     };
   }
+);
 
-  const { orders, totalPages } = await (async () => {
-    const params = {
-      user_id: user?.id,
-      page: urlQuery?.page || 1,
-    };
+type Props = {};
 
-    const res = await axios.get("/orders", { params });
-    const { data: orders, metadata } = res.data;
-
-    return {
-      orders,
-      totalPages: metadata.totalPages,
-    };
-  })();
-
-  return {
-    props: {
-      orders,
-      totalPages,
-    },
-  };
-};
-
-type Props = {
-  orders: (models.Order & {
-    items: (models.CartItem & { product: models.Product })[];
-  })[];
-  totalPages: number;
-};
-
-const OrdersPage: NextPage<Props> = ({ orders, totalPages }) => {
+const OrdersPage: NextPage<Props> = ({}) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const currentPage = Number(router.query.page as string) || 1;
+
+  const { data: orderData } = useOrdersQuery(currentPage);
+
+  const orders = orderData?.data || [];
+  const totalPages = orderData?.metadata.totalPages || 1;
 
   return (
     <Layout>
