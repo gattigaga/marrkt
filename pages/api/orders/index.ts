@@ -22,7 +22,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
   }
 
   try {
-    const { user_id, page = "1" } = req.query as {
+    const token = req.cookies.access_token;
+
+    const { user, error } = await supabase.auth.api.getUser(token);
+
+    if (error || !user) {
+      throw error;
+    }
+
+    const { page = "1" } = req.query as {
       [key: string]: string;
     };
 
@@ -33,7 +41,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
         .from<Item>("orders")
         .select("*, items:cart_items(*, product:products(*))")
         .order("created_at", { ascending: false })
-        .eq("user_id", user_id);
+        .eq("user_id", user.id);
 
       const min = totalItemsPerPage * (Number(page) - 1);
       const max = totalItemsPerPage * Number(page) - 1;
@@ -54,7 +62,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
           count: "exact",
           head: true,
         })
-        .eq("user_id", user_id);
+        .eq("user_id", user.id);
 
       const { count, error } = await query;
 
