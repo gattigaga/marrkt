@@ -7,7 +7,7 @@ import Filter from "../../components/Filter";
 import Layout from "../../components/Layout";
 import Pagination from "../../components/Pagination";
 import Product from "../../components/Product";
-import { supabase } from "../../helpers/supabase";
+import supabase from "../../helpers/supabase";
 import axios from "../../helpers/axios";
 import * as models from "../../types/models";
 
@@ -110,7 +110,7 @@ const ProductsPage: NextPage<Props> = ({
             )}
           </div>
           <div className="w-full border-t border-gray-200 pt-6 md:border-0 md:pt-0 md:w-64">
-            <Filter categories={categories} />
+            <Filter />
           </div>
         </div>
       </main>

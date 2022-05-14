@@ -2,17 +2,16 @@ import React from "react";
 import { useRouter } from "next/router";
 import queryString from "query-string";
 import { Formik } from "formik";
+
 import CheckBox from "./CheckBox";
+import useProductCategoriesQuery from "../hooks/product-categories/useProductCategoriesQuery";
 
-type Props = {
-  categories: {
-    name: string;
-    slug: string;
-  }[];
-};
+type Props = {};
 
-const Filter: React.FC<Props> = ({ categories }) => {
+const Filter: React.FC<Props> = () => {
   const router = useRouter();
+  const { data: categories } = useProductCategoriesQuery();
+
   const query = router.query as { [key: string]: string };
 
   return (
@@ -76,7 +75,7 @@ const Filter: React.FC<Props> = ({ categories }) => {
             </div>
             <div className="mb-10">
               <p className="text-xs text-black font-medium mb-4">Categories</p>
-              {categories.map((category, index) => {
+              {categories?.map((category, index) => {
                 const isLast = index === categories.length - 1;
                 const isChecked = values.categories.includes(category.slug);
 
@@ -109,6 +108,11 @@ const Filter: React.FC<Props> = ({ categories }) => {
                   </div>
                 );
               })}
+              {!categories?.length && (
+                <p className="text-xs text-black">
+                  There&lsquo;s no categories found.
+                </p>
+              )}
             </div>
             <div>
               <p className="text-xs text-black font-medium mb-4">Price Range</p>
