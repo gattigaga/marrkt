@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 type Response = void;
 
@@ -7,6 +7,19 @@ const postSignOut = async (): Promise<Response> => {
   await axios.post("/api/auth/signout");
 };
 
-const useSignOutMutation = () => useMutation(postSignOut);
+const useSignOutMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(postSignOut, {
+    onMutate: async () => {
+      await queryClient.cancelQueries("me");
+
+      queryClient.setQueryData("me", null);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("me");
+    },
+  });
+};
 
 export default useSignOutMutation;
