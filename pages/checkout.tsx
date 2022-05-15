@@ -12,9 +12,9 @@ import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
 import { useStore } from "../store/store";
 import supabase from "../helpers/supabase";
-import axios from "../helpers/axios";
 import { withAuthGuard } from "../helpers/server";
 import useUserQuery from "../hooks/user/use-user-query";
+import useCheckoutMutation from "../hooks/checkout/useCheckoutMutation";
 
 export const getServerSideProps: GetServerSideProps = withAuthGuard(
   async () => {
@@ -33,6 +33,7 @@ const CheckoutPage: NextPage<Props> = ({}) => {
   const invoiceCode = useMemo(() => `${Date.now()}`, []);
   const { data: myself } = useUserQuery();
   const router = useRouter();
+  const checkoutMutation = useCheckoutMutation();
 
   const subtotal = useMemo(() => {
     const items = cartItems.map((item) => ({
@@ -80,7 +81,7 @@ const CheckoutPage: NextPage<Props> = ({}) => {
         })),
       };
 
-      await axios.post("/checkout", body);
+      await checkoutMutation.mutateAsync(body);
       await router.push(`/account/orders/${invoiceCode}`);
 
       clearCart();
