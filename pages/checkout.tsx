@@ -14,7 +14,7 @@ import { useStore } from "../store/store";
 import supabase from "../helpers/supabase";
 import { withAuthGuard } from "../helpers/server";
 import useUserQuery from "../hooks/user/use-user-query";
-import useCheckoutMutation from "../hooks/checkout/useCheckoutMutation";
+import useCheckoutMutation from "../hooks/checkout/use-checkout-mutation";
 
 export const getServerSideProps: GetServerSideProps = withAuthGuard(
   async () => {

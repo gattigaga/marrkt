@@ -11,7 +11,7 @@ import Pagination from "../../../components/Pagination";
 import supabase from "../../../helpers/supabase";
 import AccountMenu from "../../../components/AccountMenu";
 import { withAuthGuard } from "../../../helpers/server";
-import useOrdersQuery from "../../../hooks/orders/useOrdersQuery";
+import useOrdersQuery from "../../../hooks/orders/use-orders-query";
 
 export const getServerSideProps: GetServerSideProps = withAuthGuard(
   async ({}) => {

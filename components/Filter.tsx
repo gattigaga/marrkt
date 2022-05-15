@@ -4,7 +4,7 @@ import queryString from "query-string";
 import { Formik } from "formik";
 
 import CheckBox from "./CheckBox";
-import useProductCategoriesQuery from "../hooks/product-categories/useProductCategoriesQuery";
+import useProductCategoriesQuery from "../hooks/product-categories/use-product-categories-query";
 
 type Props = {};
 

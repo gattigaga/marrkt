@@ -8,7 +8,7 @@ import Layout from "../../components/Layout";
 import Pagination from "../../components/Pagination";
 import Product from "../../components/Product";
 import supabase from "../../helpers/supabase";
-import useProductsQuery from "../../hooks/products/useProductsQuery";
+import useProductsQuery from "../../hooks/products/use-products-query";
 
 type Props = {};
 
