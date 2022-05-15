@@ -16,9 +16,6 @@ const useSignOutMutation = () => {
 
       queryClient.setQueryData("me", null);
     },
-    onSettled: () => {
-      queryClient.invalidateQueries("me");
-    },
   });
 };
 
