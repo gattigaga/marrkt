@@ -8,26 +8,18 @@ import Counter from "../components/Counter";
 import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
 import { useStore } from "../store/store";
-import { supabase } from "../helpers/supabase";
+import supabase from "../helpers/supabase";
 import Button from "../components/Button";
 import { useRouter } from "next/router";
+import { withAuthGuard } from "../helpers/server";
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { user } = await supabase.auth.api.getUserByCookie(req);
-
-  if (!user) {
+export const getServerSideProps: GetServerSideProps = withAuthGuard(
+  async () => {
     return {
-      redirect: {
-        destination: "/account/login",
-        permanent: false,
-      },
+      props: {},
     };
   }
-
-  return {
-    props: {},
-  };
-};
+);
 
 type Props = {};
 
