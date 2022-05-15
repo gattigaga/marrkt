@@ -1,12 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import supabase from "../../helpers/supabase";
-import { ProductCategory } from "../../types/models";
-
-type Item = ProductCategory;
 
 type Content = {
-  data?: Item[] | null;
-  message?: string;
+  data?: any[];
+  message: string;
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
@@ -17,14 +14,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
 
   try {
     const { data: categories, error } = await supabase
-      .from<Item>("product_categories")
+      .from("product_categories")
       .select("*");
 
     if (error) {
       throw error;
     }
 
-    res.status(200).json({ data: categories });
+    res.status(200).json({
+      data: categories,
+      message: "There are existings product categories.",
+    });
   } catch (error: any) {
     res.status(error.status).json({ message: error.message });
   }
