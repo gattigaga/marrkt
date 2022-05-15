@@ -22,7 +22,9 @@ export const getOrders = async (page: number): Promise<Response> => {
 };
 
 const useOrdersQuery = (page: number) => {
-  return useQuery(["orders", { page }], () => getOrders(page));
+  return useQuery(["orders", { page }], () => getOrders(page), {
+    keepPreviousData: true,
+  });
 };
 
 export default useOrdersQuery;
