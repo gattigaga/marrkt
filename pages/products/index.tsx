@@ -1,4 +1,4 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import queryString from "query-string";
@@ -8,56 +8,21 @@ import Layout from "../../components/Layout";
 import Pagination from "../../components/Pagination";
 import Product from "../../components/Product";
 import supabase from "../../helpers/supabase";
-import axios from "../../helpers/axios";
-import * as models from "../../types/models";
+import useProductsQuery from "../../hooks/products/useProductsQuery";
 
-export const getServerSideProps: GetServerSideProps = async ({
-  query: urlQuery,
-}) => {
-  const categories = await (async () => {
-    const res = await axios.get("/product-categories");
-    const result = res.data.data;
+type Props = {};
 
-    return result;
-  })();
-
-  const { products, totalPages } = await (async () => {
-    const params = {
-      ...urlQuery,
-      page: urlQuery?.page || 1,
-    };
-
-    const res = await axios.get("/products", { params });
-    const { data: products, metadata } = res.data;
-
-    return { products, totalPages: metadata.totalPages };
-  })();
-
-  return {
-    props: {
-      categories,
-      products,
-      totalPages,
-    },
-  };
-};
-
-type Props = {
-  categories: models.ProductCategory[];
-  products: (models.Product & {
-    category: models.ProductCategory;
-  })[];
-  totalPages: number;
-};
-
-const ProductsPage: NextPage<Props> = ({
-  categories,
-  products,
-  totalPages,
-}) => {
+const ProductsPage: NextPage<Props> = ({}) => {
   const router = useRouter();
 
-  const currentPage = Number(router.query.page as string) || 1;
+  const { data: productsData } = useProductsQuery({
+    ...router.query,
+    page: (router.query?.page || "1") as string,
+  });
+
+  const products = productsData?.data || [];
+  const totalPages = productsData?.metadata.totalPages;
+  const currentPage = Number(router.query?.page as string) || 1;
 
   return (
     <Layout>
