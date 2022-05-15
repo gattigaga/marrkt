@@ -1,15 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import supabase from "../../helpers/supabase";
-import { CartItem, Order, Product, ShippingItem } from "../../types/models";
-
-type Item = Order & {
-  items: (CartItem & { product: Product })[];
-  shipping: ShippingItem;
-};
 
 type Content = {
-  data?: Item | null;
-  message?: string;
+  data?: any;
+  message: string;
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
@@ -46,11 +40,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
 
     const { data: products, error: productsError } = await (() => {
       const productIds = body.items.map((item) => item.product_id);
-
-      const query = supabase
-        .from<Product>("products")
-        .select("*")
-        .in("id", productIds);
+      const query = supabase.from("products").select("*").in("id", productIds);
 
       return query;
     })();
@@ -60,7 +50,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
     }
 
     const { data: shipping, error: shippingError } = await supabase
-      .from<ShippingItem>("shipping_items")
+      .from("shipping_items")
       .insert([
         {
           person_name: body.shipping.person_name,
@@ -80,11 +70,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
     }
 
     const { data: order, error: orderError } = await supabase
-      .from<Order>("orders")
+      .from("orders")
       .insert([
         {
           user_id: user.id,
-          shipping_item_id: shipping!.id,
+          shipping_item_id: shipping.id,
           invoice_code: body.invoice_code,
           items_count: body.items.length,
           total: body.items.reduce((acc, item) => {
@@ -110,14 +100,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
         );
 
         return {
-          order_id: order!.id,
+          order_id: order.id,
           product_id: item.product_id,
           quantity: item.quantity,
           total: Number(product?.price) * item.quantity,
         };
       });
 
-      const query = supabase.from<CartItem>("cart_items").insert(cartItems);
+      const query = supabase.from("cart_items").insert(cartItems);
 
       return query;
     })();
@@ -127,11 +117,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
     }
 
     const { data: result, error: resultError } = await supabase
-      .from<Item>("orders")
+      .from("orders")
       .select(
         "*, items:cart_items(*, product:products(*)), shipping:shipping_items(*)"
       )
-      .eq("id", order!.id)
+      .eq("id", order.id)
       .limit(1)
       .single();
 
@@ -139,7 +129,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
       throw resultError;
     }
 
-    res.status(200).json({ data: result });
+    res.status(200).json({
+      data: result,
+      message: "Checkout successful.",
+    });
   } catch (error: any) {
     res.status(error.status).json({ message: error.message });
   }
