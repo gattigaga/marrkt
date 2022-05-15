@@ -59,7 +59,7 @@ const SignInPage: NextPage<Props> = ({}) => {
                 router.push("/account/profile");
               } catch (error: any) {
                 console.error(error);
-                toast(error.message || "Failed to login into your account.");
+                toast(error.message || "Failed to sign in into your account.");
               } finally {
                 setSubmitting(false);
               }
