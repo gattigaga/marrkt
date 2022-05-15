@@ -6,44 +6,15 @@ import "locomotive-scroll/dist/locomotive-scroll.css";
 import "../styles/globals.css";
 
 import type { AppProps } from "next/app";
-import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import paypalConfig from "../config/paypal";
-import { supabase } from "../helpers/supabase";
-import { useStore } from "../store/store";
-import axios from "../helpers/axios";
 
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const clearCart = useStore((state) => state.clearCart);
-
-  const user = supabase.auth.user();
-
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        axios.post("/auth", {
-          event,
-          session,
-        });
-      }
-    );
-
-    return () => {
-      authListener?.unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!user) {
-      clearCart();
-    }
-  }, [user]);
-
   return (
     <QueryClientProvider client={queryClient}>
       <PayPalScriptProvider options={paypalConfig}>
