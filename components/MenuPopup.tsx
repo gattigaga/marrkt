@@ -100,7 +100,7 @@ const MenuPopup: React.FC<Props> = ({ isOpen, onClickBackdrop }) => {
             <a>
               <div className="py-2 px-4 border-t border-b border-gray-200">
                 <p className="text-xs text-black">
-                  {myself ? "My Account" : "Login"}
+                  {myself ? "My Account" : "Sign In"}
                 </p>
               </div>
             </a>
