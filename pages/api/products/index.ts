@@ -1,14 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import supabase from "../../../helpers/supabase";
-import { Product, ProductCategory } from "../../../types/models";
-
-type Item = Product & {
-  category: ProductCategory;
-};
 
 type Content = {
-  data?: Item[] | null;
-  message?: string;
+  data?: any;
+  message: string;
   metadata?: {
     page: number;
     totalPages: number;
@@ -36,7 +31,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
 
     const { data: products, error: productsError } = await (() => {
       const query = supabase
-        .from<Item>("products")
+        .from("products")
         .select("*, category:product_categories!inner(*)")
         .order("name");
 
@@ -71,7 +66,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
 
     const { data: totalPages, error: totalPagesError } = await (async () => {
       const query = supabase
-        .from<Item>("products")
+        .from("products")
         .select("*, category:product_categories!inner(*)", {
           count: "exact",
           head: true,
@@ -108,6 +103,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
 
     res.status(200).json({
       data: products,
+      message: "There are existing products.",
       metadata: {
         page: Number(page),
         totalPages,
