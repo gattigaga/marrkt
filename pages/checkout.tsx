@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -11,8 +11,18 @@ import Layout from "../components/Layout";
 import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
 import { useStore } from "../store/store";
-import { supabase } from "../helpers/supabase";
+import supabase from "../helpers/supabase";
 import axios from "../helpers/axios";
+import { withAuthGuard } from "../helpers/server";
+import useUserQuery from "../hooks/user/use-user-query";
+
+export const getServerSideProps: GetServerSideProps = withAuthGuard(
+  async () => {
+    return {
+      props: {},
+    };
+  }
+);
 
 type Props = {};
 
@@ -21,9 +31,8 @@ const CheckoutPage: NextPage<Props> = ({}) => {
   const cartItems = useStore((state) => state.cartItems);
   const clearCart = useStore((state) => state.clearCart);
   const invoiceCode = useMemo(() => `${Date.now()}`, []);
+  const { data: myself } = useUserQuery();
   const router = useRouter();
-
-  const user = supabase.auth.user();
 
   const subtotal = useMemo(() => {
     const items = cartItems.map((item) => ({
@@ -46,7 +55,7 @@ const CheckoutPage: NextPage<Props> = ({}) => {
     postal_code?: string;
     country_code: string;
   }) => {
-    if (!user) {
+    if (!myself) {
       toast("Cannot checkout ! You should logged in before.");
       return;
     }
@@ -55,7 +64,6 @@ const CheckoutPage: NextPage<Props> = ({}) => {
 
     try {
       const body = {
-        user_id: user.id,
         invoice_code: invoiceCode,
         shipping: {
           person_name: shipping.person_name,
