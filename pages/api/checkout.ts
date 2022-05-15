@@ -19,8 +19,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
   }
 
   try {
+    const token = req.cookies.access_token;
+
+    const { user, error } = await supabase.auth.api.getUser(token);
+
+    if (error || !user) {
+      throw error;
+    }
+
     const body = req.body as {
-      user_id: string;
       invoice_code: string;
       shipping: {
         person_name: string;
@@ -76,7 +83,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Content>) => {
       .from<Order>("orders")
       .insert([
         {
-          user_id: body.user_id,
+          user_id: user.id,
           shipping_item_id: shipping!.id,
           invoice_code: body.invoice_code,
           items_count: body.items.length,
