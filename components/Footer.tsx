@@ -9,7 +9,7 @@ const Footer: React.FC<Props> = ({}) => {
   const { data: myself } = useUserQuery();
 
   return (
-    <footer className="pt-12 pb-8 bg-black" data-scroll-section>
+    <footer className="pt-12 pb-8 bg-black">
       <div className="px-6 py-16 border-t border-white border-opacity-10 md:px-8">
         <div className="grid grid-cols-2 gap-x-4 gap-y-20 sm:gap-x-20 lg:grid-cols-5">
           <div className="col-span-2 sm:col-span-full">

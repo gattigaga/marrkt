@@ -31,7 +31,7 @@ const ProductsPage: NextPage<Props> = ({}) => {
       </Head>
 
       <main className="px-6 pt-28 pb-24 md:px-8">
-        <div className="flex flex-col md:flex-row" data-scroll-section>
+        <div className="flex flex-col md:flex-row">
           <div className="flex-1 mb-16 md:mr-12">
             {!!products.length && (
               <>

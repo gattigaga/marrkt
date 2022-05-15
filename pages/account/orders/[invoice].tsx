@@ -61,10 +61,7 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
       </Head>
 
       <main className="min-h-screen">
-        <div
-          className="flex flex-col-reverse px-4 pt-28 pb-24 md:flex-row md:px-8"
-          data-scroll-section
-        >
+        <div className="flex flex-col-reverse px-4 pt-28 pb-24 md:flex-row md:px-8">
           <div className="flex-1 mt-16 md:mt-0 md:mr-16">
             <AccountMenu />
           </div>

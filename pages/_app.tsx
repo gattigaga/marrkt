@@ -2,7 +2,6 @@ import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/500.css";
 import "@fontsource/poppins/700.css";
 import "react-toastify/dist/ReactToastify.css";
-import "locomotive-scroll/dist/locomotive-scroll.css";
 import "../styles/globals.css";
 
 import type { AppProps } from "next/app";

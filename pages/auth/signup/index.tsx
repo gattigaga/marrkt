@@ -45,10 +45,7 @@ const SignUpPage: NextPage<Props> = ({}) => {
       </Head>
 
       <main className="min-h-screen flex flex-col items-center">
-        <div
-          className="w-full pt-28 pb-24 px-6 md:px-0 md:w-96"
-          data-scroll-section
-        >
+        <div className="w-full pt-28 pb-24 px-6 md:px-0 md:w-96">
           <h1 className="text-md font-medium text-black mb-16">Sign Up</h1>
           <Formik
             initialValues={{

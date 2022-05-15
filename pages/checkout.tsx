@@ -101,10 +101,7 @@ const CheckoutPage: NextPage<Props> = ({}) => {
       </Head>
 
       <main className="px-6 min-h-screen flex flex-col items-center md:px-0">
-        <div
-          className="w-full pt-28 pb-24 md:w-1/2 lg:w-1/3"
-          data-scroll-section
-        >
+        <div className="w-full pt-28 pb-24 md:w-1/2 lg:w-1/3">
           {!isCheckingOut && (
             <div className="p-6 border md:p-8">
               <h1 className="text-md font-medium text-black mt-4 mb-8">
