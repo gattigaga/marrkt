@@ -15,20 +15,22 @@ import Product from "../components/Product";
 import imgFashion from "../public/images/fashion.jpg";
 import imgClothes from "../public/images/clothes.jpg";
 import imgTextile from "../public/images/textile.jpg";
-import axios from "../helpers/axios";
 import * as models from "../types/models";
 import supabase from "../helpers/supabase";
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { products } = await (async () => {
-    const params = {
-      page: 1,
-    };
+  const products = await (async () => {
+    const { data: products, error } = await supabase
+      .from("products")
+      .select("*, category:product_categories!inner(*)")
+      .order("name")
+      .range(0, 3);
 
-    const res = await axios.get(`/products`, { params });
-    const result = res.data.data;
+    if (error) {
+      throw error;
+    }
 
-    return { products: result.slice(0, 4) };
+    return products;
   })();
 
   return {
