@@ -7,42 +7,39 @@ import { useRouter } from "next/router";
 import { format } from "date-fns";
 
 import Layout from "../../../components/Layout";
-import { supabase } from "../../../helpers/supabase";
+import supabase from "../../../helpers/supabase";
 import AccountMenu from "../../../components/AccountMenu";
 import Info from "../../../components/Info";
 import { numberToCurrency } from "../../../helpers/formatter";
-import axios from "../../../helpers/axios";
 import * as models from "../../../types/models";
+import { withAuthGuard } from "../../../helpers/server";
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  query: urlQuery,
-}) => {
-  const { user } = await supabase.auth.api.getUserByCookie(req);
+export const getServerSideProps: GetServerSideProps = withAuthGuard(
+  async ({ query }) => {
+    const order = await (async () => {
+      const { data: order, error } = await supabase
+        .from("orders")
+        .select(
+          "*, items:cart_items(*, product:products(*)), shipping:shipping_items(*)"
+        )
+        .eq("invoice_code", query.invoice)
+        .limit(1)
+        .single();
 
-  if (!user) {
+      if (error) {
+        throw error;
+      }
+
+      return order;
+    })();
+
     return {
-      redirect: {
-        destination: "/account/login",
-        permanent: false,
+      props: {
+        order,
       },
     };
   }
-
-  const order = await (async () => {
-    const { invoice } = urlQuery;
-    const res = await axios.get(`/orders/${invoice}`);
-    const result = res.data.data;
-
-    return result;
-  })();
-
-  return {
-    props: {
-      order,
-    },
-  };
-};
+);
 
 type Props = {
   order: models.Order & {
