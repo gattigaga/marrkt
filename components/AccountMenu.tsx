@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { supabase } from "../helpers/supabase";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
-type Props = {
-  onLogoutStart: () => void;
-  onLogoutEnd: () => void;
-};
+import useSignOutMutation from "../hooks/auth/use-sign-out-mutation";
 
-const AccountMenu: React.FC<Props> = ({ onLogoutStart, onLogoutEnd }) => {
+type Props = {};
+
+const AccountMenu: React.FC<Props> = () => {
   const router = useRouter();
+  const signOutMutation = useSignOutMutation();
 
   const menus = [
     {
@@ -27,18 +27,15 @@ const AccountMenu: React.FC<Props> = ({ onLogoutStart, onLogoutEnd }) => {
 
   const logout = async () => {
     try {
-      onLogoutStart();
-
-      const { error } = await supabase.auth.signOut();
-
-      if (error) throw error;
-
-      await router.push("/account/login");
+      await signOutMutation.mutateAsync();
+      await router.push("/auth/signin");
     } catch (error: any) {
       console.log(error);
       toast(error.message || "Failed to logout.");
     } finally {
-      onLogoutEnd();
+      Cookies.remove("access_token", {
+        path: "/",
+      });
     }
   };
 

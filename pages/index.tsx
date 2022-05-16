@@ -1,8 +1,11 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap, Power2 } from "gsap";
+import Cookies from "js-cookie";
+import { addDays } from "date-fns";
+import { useInView } from "react-intersection-observer";
 
 import Button from "../components/Button";
 import Layout from "../components/Layout";
@@ -13,20 +16,23 @@ import Product from "../components/Product";
 import imgFashion from "../public/images/fashion.jpg";
 import imgClothes from "../public/images/clothes.jpg";
 import imgTextile from "../public/images/textile.jpg";
-import axios from "../helpers/axios";
 import * as models from "../types/models";
-import { supabase } from "../helpers/supabase";
+import supabase from "../helpers/supabase";
+import Image from "next/image";
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { products } = await (async () => {
-    const params = {
-      page: 1,
-    };
+  const products = await (async () => {
+    const { data: products, error } = await supabase
+      .from("products")
+      .select("*, category:product_categories!inner(*)")
+      .order("name")
+      .range(0, 3);
 
-    const res = await axios.get(`/products`, { params });
-    const result = res.data.data;
+    if (error) {
+      throw error;
+    }
 
-    return { products: result.slice(0, 4) };
+    return products;
   })();
 
   return {
@@ -51,121 +57,193 @@ const HomePage: NextPage<Props> = ({ products }) => {
   const refShopValue1 = useRef<ShopValueExposed>(null);
   const refShopValue2 = useRef<ShopValueExposed>(null);
   const refShopValue3 = useRef<ShopValueExposed>(null);
+  const refParallaxImage = useRef(null);
   const refHashtag = useRef(null);
 
-  const runVideoAnimation = () => {
-    gsap.fromTo(
-      refVideo.current,
-      {
-        scale: 2,
-      },
-      {
-        scale: 1,
-        duration: 1.5,
-        delay: 1,
-        ease: Power2.easeOut,
-      }
-    );
+  const [refVideoSection, isVideoSectionInView] = useInView({
+    triggerOnce: true,
+  });
 
-    gsap.fromTo(
-      refVideoText.current,
-      {
-        opacity: 0,
-        scale: 1.5,
-      },
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 1.2,
-        delay: 1.3,
-        ease: Power2.easeOut,
-      }
-    );
-  };
+  const [refQuoteSection, isQuoteSectionInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.95,
+  });
 
-  const runQuoteAnimation = () => {
-    gsap.fromTo(
-      refQuoteText.current,
-      {
-        opacity: 0,
-        y: 64,
-      },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1.2,
-        ease: Power2.easeOut,
-      }
-    );
+  const [refShopValue1Section, isShopValue1SectionInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.5,
+  });
 
-    gsap.fromTo(
-      refQuoteLine.current,
-      {
-        width: 0,
-      },
-      {
-        width: "6rem",
-        duration: 1,
-        delay: 0.5,
-        ease: Power2.easeOut,
-      }
-    );
-  };
+  const [refShopValue2Section, isShopValue2SectionInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.5,
+  });
 
-  const runHashtagAnimation = () => {
-    gsap.fromTo(
-      refHashtag.current,
-      {
-        opacity: 0,
-        y: 128,
-      },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1.2,
-        ease: Power2.easeOut,
-      }
-    );
-  };
+  const [refShopValue3Section, isShopValue3SectionInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.5,
+  });
 
-  const handleEvent = (eventName: string) => {
-    if (eventName === "video") {
+  const [refParallaxSection, isParallaxSectionInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.5,
+  });
+
+  // Listen to recovery link to open reset password page
+  // and listen to sign in link to sign in with password.
+  useEffect(() => {
+    const rawParams = router.asPath.replace("/#", "");
+    const params = new URLSearchParams(rawParams);
+    const accessToken = params.get("access_token");
+    const type = params.get("type");
+
+    if (accessToken) {
+      Cookies.set("access_token", accessToken, {
+        expires: addDays(new Date(), 7),
+        path: "/",
+      });
+
+      if (type === "signup") {
+        router.replace("/account/profile");
+      }
+
+      if (type === "recovery") {
+        router.replace("/auth/reset-password");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const runVideoAnimation = () => {
+      gsap.fromTo(
+        refVideo.current,
+        {
+          scale: 2,
+        },
+        {
+          scale: 1,
+          duration: 1.5,
+          delay: 1,
+          ease: Power2.easeOut,
+        }
+      );
+
+      gsap.fromTo(
+        refVideoText.current,
+        {
+          opacity: 0,
+          scale: 1.5,
+        },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 1.2,
+          delay: 1.3,
+          ease: Power2.easeOut,
+        }
+      );
+    };
+
+    if (isVideoSectionInView) {
       runVideoAnimation();
     }
+  }, [isVideoSectionInView]);
 
-    if (eventName === "quote") {
+  useEffect(() => {
+    const runQuoteAnimation = () => {
+      gsap.fromTo(
+        refQuoteText.current,
+        {
+          opacity: 0,
+          y: 64,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          ease: Power2.easeOut,
+        }
+      );
+
+      gsap.fromTo(
+        refQuoteLine.current,
+        {
+          width: 0,
+        },
+        {
+          width: "6rem",
+          duration: 1,
+          delay: 0.5,
+          ease: Power2.easeOut,
+        }
+      );
+    };
+
+    if (isQuoteSectionInView) {
       runQuoteAnimation();
     }
+  }, [isQuoteSectionInView]);
 
-    if (eventName === "shopValueImage1") {
+  useEffect(() => {
+    if (isShopValue1SectionInView) {
       refShopValue1.current?.runShowUpAnimation();
     }
+  }, [isShopValue1SectionInView]);
 
-    if (eventName === "shopValueImage2") {
+  useEffect(() => {
+    if (isShopValue2SectionInView) {
       refShopValue2.current?.runShowUpAnimation();
     }
+  }, [isShopValue2SectionInView]);
 
-    if (eventName === "shopValueImage3") {
+  useEffect(() => {
+    if (isShopValue3SectionInView) {
       refShopValue3.current?.runShowUpAnimation();
     }
+  }, [isShopValue3SectionInView]);
 
-    if (eventName === "hashtag") {
+  useEffect(() => {
+    const runHashtagAnimation = () => {
+      gsap.fromTo(
+        refHashtag.current,
+        {
+          opacity: 0,
+          y: 128,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          ease: Power2.easeOut,
+        }
+      );
+    };
+
+    if (isParallaxSectionInView) {
       runHashtagAnimation();
     }
-  };
+  }, [isParallaxSectionInView]);
+
+  useEffect(() => {
+    if (typeof window !== undefined && refParallaxImage.current) {
+      const SimpleParallax = require("simple-parallax-js");
+
+      new SimpleParallax(refParallaxImage.current, {
+        scale: 1.3,
+      });
+    }
+  }, []);
 
   return (
-    <Layout onEventTriggered={handleEvent}>
+    <Layout>
       <Head>
         <title>Marrkt | The World #1 Fashion Marketplace</title>
       </Head>
 
       <main className="min-h-screen pb-40">
         <div
+          ref={refVideoSection}
           className="w-full h-screen relative overflow-hidden mb-24 sm:mb-48"
-          data-scroll-call="video"
-          data-scroll-section
-          data-scroll
         >
           <video
             ref={refVideo}
@@ -198,11 +276,8 @@ const HomePage: NextPage<Props> = ({ products }) => {
 
         {/* Quote */}
         <div
+          ref={refQuoteSection}
           className="flex flex-col items-center mx-auto mb-24 px-6 sm:w-2/3 sm:mb-48 lg:w-1/2"
-          data-scroll-call="quote"
-          data-scroll-offset="40%"
-          data-scroll-section
-          data-scroll
         >
           <p
             ref={refQuoteText}
@@ -216,54 +291,57 @@ const HomePage: NextPage<Props> = ({ products }) => {
         </div>
 
         {/* Shop value list */}
-        <div className="mb-24 sm:mb-48" data-scroll-section>
-          <ShopValue
-            ref={refShopValue1}
-            index={0}
-            title="WELL DESIGNED"
-            description="All clothes are designed by experienced fashion designer. So this means the clothes makes you looks fashionable and standout in your meet up."
-            image={imgClothes}
-            eventName={"shopValueImage1"}
-          />
+        <div className="mb-24 sm:mb-48">
+          <div ref={refShopValue1Section}>
+            <ShopValue
+              ref={refShopValue1}
+              index={0}
+              title="WELL DESIGNED"
+              description="All clothes are designed by experienced fashion designer. So this means the clothes makes you looks fashionable and standout in your meet up."
+              image={imgClothes}
+              eventName={"shopValueImage1"}
+            />
+          </div>
           <div className="h-20 md:h-32" />
-          <ShopValue
-            ref={refShopValue2}
-            index={1}
-            title="HIGH QUALITY MATERIALS"
-            description="Built with high quality materials. So it will have good durability, even in the extreme weather."
-            image={imgTextile}
-            align="right"
-            eventName={"shopValueImage2"}
-          />
+          <div ref={refShopValue2Section}>
+            <ShopValue
+              ref={refShopValue2}
+              index={1}
+              title="HIGH QUALITY MATERIALS"
+              description="Built with high quality materials. So it will have good durability, even in the extreme weather."
+              image={imgTextile}
+              align="right"
+              eventName={"shopValueImage2"}
+            />
+          </div>
           <div className="h-20 md:h-32" />
-          <ShopValue
-            ref={refShopValue3}
-            index={2}
-            title="AFFORDABLE PRICE"
-            description="Even if the clothes built with high quality materials and designed by experienced fashion designer, the price is still affordable."
-            image={imgFashion}
-            eventName={"shopValueImage3"}
-          />
+          <div ref={refShopValue3Section}>
+            <ShopValue
+              ref={refShopValue3}
+              index={2}
+              title="AFFORDABLE PRICE"
+              description="Even if the clothes built with high quality materials and designed by experienced fashion designer, the price is still affordable."
+              image={imgFashion}
+              eventName={"shopValueImage3"}
+            />
+          </div>
         </div>
 
         {/* Fixed image */}
         <div
-          className="mb-12 h-screen relative overflow-hidden"
-          data-scroll-offset="50%"
-          data-scroll-call="hashtag"
-          data-scroll-section
-          data-scroll
+          ref={refParallaxSection}
+          className="mb-12 h-[80vh] border relative overflow-hidden"
         >
-          <div
-            id="fixed-target"
-            className="absolute bottom-[-100vh] top-[-100vh] left-0 right-0"
-          />
-          <div
-            className="absolute top-[-100vh] left-0 right-0 h-full bg-cover bg-center bg-[url('/images/fashion-2.jpg')] flex"
-            data-scroll-target="#fixed-target"
-            data-scroll
-            data-scroll-sticky
-          >
+          <div ref={refParallaxImage} className="w-full h-full">
+            <Image
+              className="w-full h-full object-cover"
+              src="/images/fashion-2.jpg"
+              alt="Well-Fashioned Man"
+              width={1366}
+              height={768}
+            />
+          </div>
+          <div className="w-full h-full absolute top-0 left-0 flex z-20">
             <p
               ref={refHashtag}
               className="m-auto font-bold text-4xl text-white opacity-0 sm:text-6xl md:text-7xl"
@@ -274,7 +352,7 @@ const HomePage: NextPage<Props> = ({ products }) => {
         </div>
 
         {/* Some products */}
-        <div className="px-6 mb-24 md:px-8 md:mb-48" data-scroll-section>
+        <div className="px-6 mb-24 md:px-8 md:mb-48">
           <h2 className="mb-5 text-black text-lg font-medium md:mb-10 md:text-2xl">
             Our Products
           </h2>
@@ -298,7 +376,7 @@ const HomePage: NextPage<Props> = ({ products }) => {
         </div>
 
         {/* Ask for shopping */}
-        <div className="mx-auto px-6 sm:w-2/3" data-scroll-section>
+        <div className="mx-auto px-6 sm:w-2/3">
           <p className="text-center font-bold text-5xl tracking-tighter mb-8 sm:text-6xl sm:mb-16 md:text-7xl lg:text-8xl xl:text-9xl xl:mb-20">
             WHAT ARE YOU WAITING FOR?
           </p>

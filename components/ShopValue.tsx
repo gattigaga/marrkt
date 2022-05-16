@@ -61,17 +61,8 @@ const ShopValue: React.ForwardRefRenderFunction<Exposed, Props> = (
   }));
 
   return (
-    <div
-      className={`flex flex-col ${containerDirection}`}
-      data-scroll-call={eventName}
-      data-scroll-offset="40%"
-      data-scroll
-    >
-      <div
-        className="w-full aspect-square relative overflow-hidden sm:w-80 md:w-96 lg:w-1/2"
-        data-scroll-speed="1"
-        data-scroll
-      >
+    <div className={`flex flex-col ${containerDirection}`}>
+      <div className="w-full aspect-square relative overflow-hidden sm:w-80 md:w-96 lg:w-1/2">
         <div ref={refImage} className="w-full h-full opacity-0">
           <Image src={image} alt={title} layout="fill" objectFit="cover" />
         </div>
@@ -80,8 +71,6 @@ const ShopValue: React.ForwardRefRenderFunction<Exposed, Props> = (
       <div
         ref={refText}
         className={`flex flex-1 flex-col ${contentDirection} px-6 opacity-0 sm:px-0 sm:pt-4 lg:pt-8 xl:pt-12`}
-        data-scroll-speed="3"
-        data-scroll
       >
         <p className={`font-medium text-xl text-black ${textAlign}`}>
           0{index + 1}

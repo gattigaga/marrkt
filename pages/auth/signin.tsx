@@ -1,15 +1,17 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 import Layout from "../../components/Layout";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
-import { supabase } from "../../helpers/supabase";
+import useSignInMutation from "../../hooks/auth/use-sign-in-mutation";
+import { addDays } from "date-fns";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -18,40 +20,21 @@ const validationSchema = Yup.object({
   password: Yup.string().required("Password is required"),
 });
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { user } = await supabase.auth.api.getUserByCookie(req);
-
-  if (user) {
-    return {
-      redirect: {
-        destination: "/account/profile",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-};
-
 type Props = {};
 
-const LoginPage: NextPage<Props> = ({}) => {
+const SignInPage: NextPage<Props> = ({}) => {
   const router = useRouter();
+  const signInMutation = useSignInMutation();
 
   return (
     <Layout>
       <Head>
-        <title>Login | Marrkt</title>
+        <title>Sign In | Marrkt</title>
       </Head>
 
       <main className="min-h-screen flex flex-col items-center">
-        <div
-          className="w-full pt-28 pb-24 px-6 md:px-0 md:w-96"
-          data-scroll-section
-        >
-          <h1 className="text-md font-medium text-black mb-16">Login</h1>
+        <div className="w-full pt-28 pb-24 px-6 md:px-0 md:w-96">
+          <h1 className="text-md font-medium text-black mb-16">Sign In</h1>
           <Formik
             initialValues={{
               email: "",
@@ -62,19 +45,18 @@ const LoginPage: NextPage<Props> = ({}) => {
               try {
                 setSubmitting(true);
 
-                const { email, password } = values;
+                const response = await signInMutation.mutateAsync(values);
+                const accessToken = response.session.access_token;
 
-                const { error } = await supabase.auth.signIn({
-                  email,
-                  password,
+                Cookies.set("access_token", accessToken, {
+                  expires: addDays(new Date(), 7),
+                  path: "/",
                 });
-
-                if (error) throw error;
 
                 router.push("/account/profile");
               } catch (error: any) {
-                console.log(error);
-                toast(error.message || "Failed to login into your account.");
+                console.error(error);
+                toast(error.message || "Failed to sign in into your account.");
               } finally {
                 setSubmitting(false);
               }
@@ -119,7 +101,7 @@ const LoginPage: NextPage<Props> = ({}) => {
                   />
                 </div>
                 <div className="flex justify-between items-center">
-                  <Link href="/account/register">
+                  <Link href="/auth/signup">
                     <a>
                       <p className="text-xs underline">
                         Don&lsquo;t have an account ?
@@ -128,7 +110,7 @@ const LoginPage: NextPage<Props> = ({}) => {
                   </Link>
                   <Button
                     type="submit"
-                    label="Login"
+                    label="Sign In"
                     isLoading={isSubmitting}
                   />
                 </div>
@@ -141,4 +123,4 @@ const LoginPage: NextPage<Props> = ({}) => {
   );
 };
 
-export default LoginPage;
+export default SignInPage;

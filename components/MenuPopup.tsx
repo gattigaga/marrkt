@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
-import { supabase } from "../helpers/supabase";
+
+import useUserQuery from "../hooks/user/use-user-query";
 
 type Props = {
   isOpen?: boolean;
@@ -13,7 +14,7 @@ const MenuPopup: React.FC<Props> = ({ isOpen, onClickBackdrop }) => {
   const refPopup = useRef(null);
   const refPopupContent = useRef(null);
 
-  const user = supabase.auth.user();
+  const { data: myself } = useUserQuery();
 
   useEffect(() => {
     const showMenu = () => {
@@ -95,11 +96,11 @@ const MenuPopup: React.FC<Props> = ({ isOpen, onClickBackdrop }) => {
               </div>
             </a>
           </Link>
-          <Link href={user ? "/account/profile" : "/account/login"}>
+          <Link href={myself ? "/account/profile" : "/auth/signin"}>
             <a>
               <div className="py-2 px-4 border-t border-b border-gray-200">
                 <p className="text-xs text-black">
-                  {user ? "My Account" : "Login"}
+                  {myself ? "My Account" : "Sign In"}
                 </p>
               </div>
             </a>

@@ -1,68 +1,36 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import queryString from "query-string";
-import BeatLoader from "react-spinners/BeatLoader";
 
 import Layout from "../../../components/Layout";
 import OrderItem from "../../../components/OrderItem";
 import Pagination from "../../../components/Pagination";
-import { supabase } from "../../../helpers/supabase";
+import supabase from "../../../helpers/supabase";
 import AccountMenu from "../../../components/AccountMenu";
-import axios from "../../../helpers/axios";
-import * as models from "../../../types/models";
+import { withAuthGuard } from "../../../helpers/server";
+import useOrdersQuery from "../../../hooks/orders/use-orders-query";
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  query: urlQuery,
-}) => {
-  const { user } = await supabase.auth.api.getUserByCookie(req);
-
-  if (!user) {
+export const getServerSideProps: GetServerSideProps = withAuthGuard(
+  async ({}) => {
     return {
-      redirect: {
-        destination: "/account/login",
-        permanent: false,
-      },
+      props: {},
     };
   }
+);
 
-  const { orders, totalPages } = await (async () => {
-    const params = {
-      user_id: user?.id,
-      page: urlQuery?.page || 1,
-    };
+type Props = {};
 
-    const res = await axios.get("/orders", { params });
-    const { data: orders, metadata } = res.data;
-
-    return {
-      orders,
-      totalPages: metadata.totalPages,
-    };
-  })();
-
-  return {
-    props: {
-      orders,
-      totalPages,
-    },
-  };
-};
-
-type Props = {
-  orders: (models.Order & {
-    items: (models.CartItem & { product: models.Product })[];
-  })[];
-  totalPages: number;
-};
-
-const OrdersPage: NextPage<Props> = ({ orders, totalPages }) => {
-  const [isLoading, setIsLoading] = useState(false);
+const OrdersPage: NextPage<Props> = ({}) => {
   const router = useRouter();
 
   const currentPage = Number(router.query.page as string) || 1;
+
+  const { data: orderData } = useOrdersQuery(currentPage);
+
+  const orders = orderData?.data || [];
+  const totalPages = orderData?.metadata.totalPages || 1;
 
   return (
     <Layout>
@@ -71,79 +39,60 @@ const OrdersPage: NextPage<Props> = ({ orders, totalPages }) => {
       </Head>
 
       <main className="min-h-screen">
-        {!isLoading && (
-          <div
-            className="flex flex-col-reverse px-4 pt-28 pb-24 md:flex-row md:px-8"
-            data-scroll-section
-          >
-            <div className="flex-1 mt-16 md:mt-0 md:mr-16">
-              <AccountMenu
-                onLogoutStart={() => setIsLoading(true)}
-                onLogoutEnd={() => setIsLoading(false)}
-              />
-            </div>
-            <div className="md:w-3/4">
-              <h1 className="text-md font-medium text-black mb-8">Orders</h1>
-              {!!orders.length && (
-                <>
-                  <div className="mb-8">
-                    {orders.map((order) => {
-                      const { publicURL: thumbnailURL } = supabase.storage
-                        .from("general")
-                        .getPublicUrl(
-                          `products/${order.items[0].product.thumbnail}`
-                        );
-
-                      return (
-                        <OrderItem
-                          key={order.id}
-                          code={order.invoice_code}
-                          thumbnail={thumbnailURL || ""}
-                          totalItems={order.items_count}
-                          amount={order.total}
-                          date={order.created_at}
-                          url={`/account/orders/${order.invoice_code}`}
-                        />
+        <div className="flex flex-col-reverse px-4 pt-28 pb-24 md:flex-row md:px-8">
+          <div className="flex-1 mt-16 md:mt-0 md:mr-16">
+            <AccountMenu />
+          </div>
+          <div className="md:w-3/4">
+            <h1 className="text-md font-medium text-black mb-8">Orders</h1>
+            {!!orders.length && (
+              <>
+                <div className="mb-8">
+                  {orders.map((order) => {
+                    const { publicURL: thumbnailURL } = supabase.storage
+                      .from("general")
+                      .getPublicUrl(
+                        `products/${order.items[0].product.thumbnail}`
                       );
-                    })}
-                  </div>
-                  <div className="flex justify-center">
-                    <Pagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      onPageChange={(pageIndex) => {
-                        const query = queryString.stringify({
-                          ...router.query,
-                          page: pageIndex,
-                        });
 
-                        router.push(`/account/orders?${query}`);
-                      }}
-                    />
-                  </div>
-                </>
-              )}
-              {!orders.length && (
-                <div>
-                  <p className="text-xs text-black">
-                    There&lsquo;s no orders found.
-                  </p>
+                    return (
+                      <OrderItem
+                        key={order.id}
+                        code={order.invoice_code}
+                        thumbnail={thumbnailURL || ""}
+                        totalItems={order.items_count}
+                        amount={order.total}
+                        date={order.created_at}
+                        url={`/account/orders/${order.invoice_code}`}
+                      />
+                    );
+                  })}
                 </div>
-              )}
-            </div>
+                <div className="flex justify-center">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(pageIndex) => {
+                      const query = queryString.stringify({
+                        ...router.query,
+                        page: pageIndex,
+                      });
+
+                      router.push(`/account/orders?${query}`);
+                    }}
+                  />
+                </div>
+              </>
+            )}
+            {!orders.length && (
+              <div>
+                <p className="text-xs text-black">
+                  There&lsquo;s no orders found.
+                </p>
+              </div>
+            )}
           </div>
-        )}
-        {isLoading && (
-          <div
-            className="w-full h-screen flex flex-col items-center justify-center"
-            data-scroll-section
-          >
-            <BeatLoader color="black" size={24} loading />
-            <p className="mt-6 text-md text-black text-center">
-              Signing out...
-            </p>
-          </div>
-        )}
+        </div>
       </main>
     </Layout>
   );

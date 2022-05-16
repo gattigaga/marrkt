@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -11,8 +11,18 @@ import Layout from "../components/Layout";
 import { numberToCurrency } from "../helpers/formatter";
 import { getSubtotal } from "../helpers/math";
 import { useStore } from "../store/store";
-import { supabase } from "../helpers/supabase";
-import axios from "../helpers/axios";
+import supabase from "../helpers/supabase";
+import { withAuthGuard } from "../helpers/server";
+import useUserQuery from "../hooks/user/use-user-query";
+import useCheckoutMutation from "../hooks/checkout/use-checkout-mutation";
+
+export const getServerSideProps: GetServerSideProps = withAuthGuard(
+  async () => {
+    return {
+      props: {},
+    };
+  }
+);
 
 type Props = {};
 
@@ -21,9 +31,9 @@ const CheckoutPage: NextPage<Props> = ({}) => {
   const cartItems = useStore((state) => state.cartItems);
   const clearCart = useStore((state) => state.clearCart);
   const invoiceCode = useMemo(() => `${Date.now()}`, []);
+  const { data: myself } = useUserQuery();
   const router = useRouter();
-
-  const user = supabase.auth.user();
+  const checkoutMutation = useCheckoutMutation();
 
   const subtotal = useMemo(() => {
     const items = cartItems.map((item) => ({
@@ -46,7 +56,7 @@ const CheckoutPage: NextPage<Props> = ({}) => {
     postal_code?: string;
     country_code: string;
   }) => {
-    if (!user) {
+    if (!myself) {
       toast("Cannot checkout ! You should logged in before.");
       return;
     }
@@ -55,7 +65,6 @@ const CheckoutPage: NextPage<Props> = ({}) => {
 
     try {
       const body = {
-        user_id: user.id,
         invoice_code: invoiceCode,
         shipping: {
           person_name: shipping.person_name,
@@ -72,7 +81,7 @@ const CheckoutPage: NextPage<Props> = ({}) => {
         })),
       };
 
-      await axios.post("/checkout", body);
+      await checkoutMutation.mutateAsync(body);
       await router.push(`/account/orders/${invoiceCode}`);
 
       clearCart();
@@ -92,10 +101,7 @@ const CheckoutPage: NextPage<Props> = ({}) => {
       </Head>
 
       <main className="px-6 min-h-screen flex flex-col items-center md:px-0">
-        <div
-          className="w-full pt-28 pb-24 md:w-1/2 lg:w-1/3"
-          data-scroll-section
-        >
+        <div className="w-full pt-28 pb-24 md:w-1/2 lg:w-1/3">
           {!isCheckingOut && (
             <div className="p-6 border md:p-8">
               <h1 className="text-md font-medium text-black mt-4 mb-8">
