@@ -79,7 +79,7 @@ const Button: React.FC<Props> = ({
           {label}
         </span>
       )}
-      {isLoading && <BeatLoader color="black" size={8} loading />}
+      {isLoading && <BeatLoader color={defaultTextColor} size={8} loading />}
     </button>
   );
 };
